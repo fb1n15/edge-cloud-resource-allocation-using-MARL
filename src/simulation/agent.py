@@ -3,7 +3,7 @@ import numpy as np
 
 class Agent:
 
-    def __init__(self, x, y, rot, model, sight):
+    def __init__(self, x, y, rot, sight):
         """
         :param x: x position relative to top left
         :param y: y position relative to top left
@@ -13,7 +13,6 @@ class Agent:
         self._x = x
         self._y = y
         self._rot = rot
-        self._model = model
         self._sight = sight
 
     def rotate_left(self):
@@ -38,17 +37,22 @@ class Agent:
         elif self._rot == 3:
             self._x -= 1
 
-    def scan_area(self):
+    def get_sight_area(self):
         """
-        Scan the nearby area, rotate the observation in the direction of rotation
+        Find the box for the sight area
         :return:
         """
 
-        area = self._model.get_area(self._x - self._sight,
-                                    self._x + self._sight,
-                                    self._y - self._sight,
-                                    self._y + self._sight)
+        return (self._x - self._sight,
+                self._x + self._sight,
+                self._y - self._sight,
+                self._y + self._sight)
 
-        print(area)
-
-        return np.rot90(area, k=-self._rot, axes=(0, 1))
+    def get_rotation(self):
+        """
+        0 -> Up
+        1 -> Left
+        2 -> Down
+        3 -> Right
+        """
+        return self._rot

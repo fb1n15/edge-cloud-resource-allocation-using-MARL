@@ -1,10 +1,15 @@
 import pytest
 
+from simulation.agent import Agent
 from simulation.gridworld import GridWorldModel
 from simulation.survivor import Survivor
 from simulation.obstacles import OutsideMap
+from simulation.obstacles import Obstacle
 
-from tests.simulation.unitests import TestObstacle
+
+class TestObstacle(Obstacle):
+    pass
+
 
 w = 5
 h = 5
@@ -59,3 +64,44 @@ def test_get_area():
     assert area[0, 1] is None
     assert area[1, 1] is None
     assert area[1, 0] is None
+
+
+def test_sight():
+    gridworld = GridWorldModel(w, h, 0, world=[[TestObstacle(), None],
+                                               [None, None]])
+    agent = Agent(x=0, y=0, rot=0, sight=1)
+
+    scan_area = gridworld.agent_scan(agent)
+    print(scan_area)
+    assert isinstance(scan_area[0, 0], TestObstacle)
+    assert scan_area[1, 0] is None
+    assert scan_area[0, 1] is None
+    assert scan_area[1, 1] is None
+
+    agent.rotate_right()
+    scan_area2 = gridworld.agent_scan(agent)
+    assert isinstance(scan_area2[0, 1], TestObstacle)
+    assert scan_area2[1, 1] is None
+    assert scan_area2[1, 0] is None
+    assert scan_area2[0, 0] is None
+
+    agent.rotate_right()
+    scan_area3 = gridworld.agent_scan(agent)
+    assert isinstance(scan_area3[1, 1], TestObstacle)
+    assert scan_area3[1, 0] is None
+    assert scan_area3[0, 0] is None
+    assert scan_area3[0, 1] is None
+
+    agent.rotate_right()
+    scan_area4 = gridworld.agent_scan(agent)
+    assert isinstance(scan_area4[1, 0], TestObstacle)
+    assert scan_area4[0, 0] is None
+    assert scan_area4[0, 1] is None
+    assert scan_area4[1, 1] is None
+
+    agent.rotate_right()
+    scan_area5 = gridworld.agent_scan(agent)
+    assert isinstance(scan_area5[0, 0], TestObstacle)
+    assert scan_area5[1, 0] is None
+    assert scan_area5[0, 1] is None
+    assert scan_area5[1, 1] is None

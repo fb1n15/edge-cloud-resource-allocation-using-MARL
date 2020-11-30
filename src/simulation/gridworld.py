@@ -8,19 +8,15 @@ from simulation.obstacles import OutsideMap
 class GridWorldModel:
     """Model for the grid world"""
 
-    def __init__(self, width, height, num_survivors, agents=None, world=None):
+    def __init__(self, width, height, num_survivors, world=None):
         """
         :param width: Width of the map
         :param height: Height of the map
-        :param agents: List of agents
         :param world: Default obstacles world in a grid
         """
-        if agents is None:
-            agents = list()
         if world is None:
             world = [[None for _ in range(width)] for _ in range(height)]
 
-        self._agents = agents
         self._world = world
         self._width = width
         self._height = height
@@ -63,3 +59,16 @@ class GridWorldModel:
         bottom = min(self._height, bottom) + 1  # +1 for inclusivity
         grid = np.array([[self.get_at_cell(x, y) for x in range(left, right)] for y in range(top, bottom)])
         return grid
+
+    def agent_scan(self, agent):
+
+        area = self.get_area(*agent.get_sight_area())
+
+        return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
+
+
+class GridWorld:
+    """Logic for managing the simulation2"""
+    def __init__(self, width, height, num_survivors, agents, world=None):
+        self._agents = agents
+        self.model = GridWorldModel(width, height, num_survivors, world)
