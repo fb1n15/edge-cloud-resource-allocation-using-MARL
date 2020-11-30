@@ -1,0 +1,3 @@
+
+class Survivor:
+    """Survivor"""
