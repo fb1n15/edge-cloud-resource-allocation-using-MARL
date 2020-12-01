@@ -2,7 +2,7 @@ from random import randrange
 import numpy as np
 
 from simulation.survivor import Survivor
-from simulation.obstacles import OutsideMap
+from simulation.obstacles import Obstacle
 
 
 class GridWorldModel:
@@ -15,7 +15,7 @@ class GridWorldModel:
         :param world: Default obstacles world in a grid
         """
         if world is None:
-            world = [[None for _ in range(width)] for _ in range(height)]
+            world = [[Obstacle.Empty for _ in range(width)] for _ in range(height)]
 
         self._world = world
         self._width = width
@@ -28,7 +28,7 @@ class GridWorldModel:
         while i < num_survivors:
             x = randrange(self._width)
             y = randrange(self._height)
-            if self.get_at_cell(x, y) is None:
+            if self.get_at_cell(x, y) == Obstacle.Empty:
                 self.set_at_cell(x, y, Survivor())
                 i += 1
 
@@ -36,7 +36,7 @@ class GridWorldModel:
         return 0 <= x < self._width and 0 <= y < self._height
 
     def get_at_cell(self, x, y):
-        return self._world[y][x] if self.point_in_bounds(x, y) else OutsideMap()
+        return self._world[y][x] if self.point_in_bounds(x, y) else Obstacle.OutsideMap
 
     def set_at_cell(self, x, y, obj):
         if not self.point_in_bounds(x, y):
@@ -53,11 +53,7 @@ class GridWorldModel:
         :param bottom: Bottom of the area (inclusive)
         :return: np array of the area in the map
         """
-        left = max(0, left)
-        right = min(self._width, right) + 1  # +1 for inclusivity
-        top = max(0, top)
-        bottom = min(self._height, bottom) + 1  # +1 for inclusivity
-        grid = np.array([[self.get_at_cell(x, y) for x in range(left, right)] for y in range(top, bottom)])
+        grid = np.array([[self.get_at_cell(x, y) for x in range(left, right+1)] for y in range(top, bottom+1)])
         return grid
 
     def agent_scan(self, agent):
@@ -66,9 +62,3 @@ class GridWorldModel:
 
         return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
 
-
-class GridWorld:
-    """Logic for managing the simulation2"""
-    def __init__(self, width, height, num_survivors, agents, world=None):
-        self._agents = agents
-        self.model = GridWorldModel(width, height, num_survivors, world)

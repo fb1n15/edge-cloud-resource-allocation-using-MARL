@@ -1,13 +1,9 @@
-from abc import ABC
+from enum import Enum
 
 
-class Obstacle(ABC):
+class Obstacle(Enum):
     """Obstacle"""
-
-
-class Tree(Obstacle):
-    """Tree obstacle"""
-
-
-class OutsideMap(Obstacle):
-    """OutsideMap"""
+    TestObstacle = -1
+    OutsideMap = 0
+    Empty = 1
+    Tree = 2
