@@ -8,18 +8,22 @@ from simulation.obstacles import Obstacle
 class GridWorldModel:
     """Model for the grid world"""
 
-    def __init__(self, width, height, num_survivors, world=None):
+    def __init__(self, width, height, num_survivors, agents=None, world=None):
         """
         :param width: Width of the map
         :param height: Height of the map
         :param world: Default obstacles world in a grid
         """
+        if agents is None:
+            agents = []
         if world is None:
             world = [[Obstacle.Empty for _ in range(width)] for _ in range(height)]
 
         self._world = world
         self._width = width
         self._height = height
+
+        self._agents = agents
 
         self.generate_survivors(num_survivors)
 
@@ -62,3 +66,8 @@ class GridWorldModel:
 
         return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
 
+    def get_width(self):
+        return self._width
+
+    def get_height(self):
+        return self._height

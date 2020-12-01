@@ -11,8 +11,8 @@ tf1, tf, tfv = try_import_tf()
 parser = argparse.ArgumentParser()
 parser.add_argument("--torch", action="store_true")
 parser.add_argument("--as-test", action="store_true")
-parser.add_argument("--stop-iters", type=int, default=10000)
-parser.add_argument("--stop-reward", type=float, default=10)
+parser.add_argument("--stop-iters", type=int, default=1000)
+parser.add_argument("--stop-reward", type=float, default=9.5)
 parser.add_argument("--stop-timesteps", type=int, default=1000000)
 
 
@@ -38,7 +38,7 @@ def run_same_policy(args, stop):
         }
     }
 
-    results = tune.run("PG", config=config, stop=stop, verbose=1, checkpoint_freq=100)
+    results = tune.run("PPO", config=config, stop=stop, verbose=1, checkpoint_freq=100)
 
 
 def main():

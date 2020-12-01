@@ -11,53 +11,70 @@ from simulation.obstacles import Obstacle
 from simulation.survivor import Survivor
 
 
-class GridWorldEnv(MultiAgentEnv):
-    """Logic for managing the simulation"""
+class SimulationController:
+    def __init__(self, width, height, num_survivors, num_agents, sight, battery):
+        self._width = width
+        self._height = height
+        self._num_survivors = num_survivors
+        self._num_agents = num_agents
+        self._sight = sight
+        self._battery = battery
 
-    def __init__(self, config):
-        self._width = config["width"]
-        self._height = config["height"]
-        self._num_survivors = config["num_survivors"]
-        self._num_agents = config["num_agents"]
-        self._sight = config["sight"]
-        self._battery = config["battery"]
-        # self._start_world = config.get("start_world", [[Obstacle.Empty for _ in range(self._width)] for _ in range(self._height)])
+    def initialise(self):
+        self.agents = [Agent(x=i + int(self._width / 2), y=i + int(self._height / 2), rot=0, sight=self._sight,
+                             battery=self._battery) for i in
+                       range(self._num_agents)]
+        self.model = GridWorldModel(self._width, self._height, self._num_survivors)
 
-        self.action_space = Discrete(len(Agent().actions()))
-        self.observation_space = Box(low=0, high=len(Obstacle) + 1, shape=((self._sight * 2 + 1) ** 2,))
-
-    def reset(self) -> MultiAgentDict:
-        self._agents = [Agent(x=i+int(self._width/2), y=i+int(self._height/2), rot=0, sight=self._sight, battery=self._battery) for i in
-                        range(self._num_agents)]
-        self._model = GridWorldModel(self._width, self._height, self._num_survivors)
-        return self._get_observations()
-
-    def _get_observations(self) -> MultiAgentDict:
+    def get_observations(self) -> MultiAgentDict:
         obs = {}
-        for i, agent in enumerate(self._agents):
-            agent_obs = self._model.agent_scan(agent).flatten()
+        for i, agent in enumerate(self.agents):
+            agent_obs = self.model.agent_scan(agent).flatten()
             obs[i] = [x.value if isinstance(x, Obstacle) else len(Obstacle)
                       for x in agent_obs]
             assert len(agent_obs) == (self._sight * 2 + 1) ** 2
         return obs
 
-    def _all_agents_dead(self):
-        return [agent.is_dead() for i, agent in enumerate(self._agents)]
+    def all_agents_dead(self):
+        return [agent.is_dead() for i, agent in enumerate(self.agents)]
 
-    def step(self, action_dict: MultiAgentDict) -> Tuple[
-        MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
+    def perform_actions(self, action_dict):
         # Set all rewards at 0 to start with
-        rew = {i: 0 for i in range(len(self._agents))}
-
-        for i, agent in enumerate(self._agents):
+        rew = {i: 0 for i in range(len(self.agents))}
+        for i, agent in enumerate(self.agents):
             # Perform selected action
             if i in action_dict.keys():
                 agent.actions()[action_dict[i]]()
-                if isinstance(self._model.get_at_cell(agent.get_x(), agent.get_y()), Survivor):
+                if isinstance(self.model.get_at_cell(agent.get_x(), agent.get_y()), Survivor):
                     rew[i] += 1
-                    self._model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
-        obs = self._get_observations()
-        done = {}
-        done["__all__"] = all(self._all_agents_dead())
+                    self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
+        return rew
+
+
+class GridWorldEnv(MultiAgentEnv):
+    """Logic for managing the simulation"""
+
+    def __init__(self, config):
+
+        self.controller = SimulationController(config["width"],
+                                               config["height"],
+                                               config["num_survivors"],
+                                               config["num_agents"],
+                                               config["sight"],
+                                               config["battery"])
+
+        self.action_space = Discrete(len(Agent().actions()))
+        self.observation_space = Box(low=0, high=len(Obstacle) + 1, shape=((config["sight"] * 2 + 1) ** 2,))
+
+    def reset(self) -> MultiAgentDict:
+        self.controller.initialise()
+        return self.controller.get_observations()
+
+    def step(self, action_dict: MultiAgentDict) -> Tuple[
+        MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
+
+        rew = self.controller.perform_actions(action_dict)
+        obs = self.controller.get_observations()
+        done = {"__all__": all(self.controller.all_agents_dead())}
 
         return obs, rew, done, {}
