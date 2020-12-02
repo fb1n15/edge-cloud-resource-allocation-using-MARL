@@ -20,6 +20,9 @@ class SimulationController:
         self._sight = sight
         self._battery = battery
 
+        self.agents = None
+        self.model = None
+
     def initialise(self):
         self.agents = [Agent(x=i + int(self._width / 2), y=i + int(self._height / 2), rot=0, sight=self._sight,
                              battery=self._battery) for i in
@@ -27,6 +30,7 @@ class SimulationController:
         self.model = GridWorldModel(self._width, self._height, self._num_survivors)
 
     def get_observations(self) -> MultiAgentDict:
+        agent_positions = self.get_agent_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
             agent_obs = self.model.agent_scan(agent).flatten()
@@ -48,7 +52,16 @@ class SimulationController:
                 if isinstance(self.model.get_at_cell(agent.get_x(), agent.get_y()), Survivor):
                     rew[i] += 1
                     self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
+                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
+                    rew[i] -= 10
+                    # If it goes outside map, punish it
         return rew
+
+    def get_agent_positions(self):
+        positions = {}
+        for agent in self.agents:
+            positions[(agent.get_x(), agent.get_y())] = agent
+        return positions
 
 
 class GridWorldEnv(MultiAgentEnv):
