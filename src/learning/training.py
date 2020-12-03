@@ -11,14 +11,14 @@ from ray.rllib.utils.framework import try_import_tf, try_import_torch
 tf1, tf, tfv = try_import_tf()
 
 stop = {
-    "training_iteration": 100,
-    "episode_reward_mean": 9.5,
+    "training_iteration": 500,
+    "episode_reward_mean": 14,
 }
 config = {
     "env": GridWorldEnv,
     "framework": "tf",
-    "num_gpus": 0,
-    "num_workers": 5,
+    "num_gpus": 1,
+    "num_workers": 8,
     # "num_cpus_for_driver": 1,
     # "num_cpus_per_worker": 1,
     # "lr": 0.01,
@@ -26,11 +26,11 @@ config = {
     "env_config": {
         "width": 20,
         "height": 20,
-        "num_survivors": 10,
-        "num_agents": 2,
+        "num_survivors": 15,
+        "num_agents": 3,
         "start_world": [[]],
         "sight": 4,
-        "battery": 200,
+        "battery": 100,
     }
 }
 
@@ -40,7 +40,7 @@ ray.init()
 def run_same_policy():
     """Use the same policy for both agents (trivial case)."""
 
-    analysis = tune.run("PPO", name="drone_rescue", config=config, stop=stop, verbose=1, checkpoint_freq=1, checkpoint_at_end=True)
+    analysis = tune.run("PPO", name="drone_rescue", config=config, stop=stop, verbose=1, checkpoint_freq=100, checkpoint_at_end=True)
 
     checkpoints = analysis.get_trial_checkpoints_paths(
         trial=analysis.get_best_trial("episode_reward_mean", mode="max"),

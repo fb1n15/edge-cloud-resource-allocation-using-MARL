@@ -1,7 +1,6 @@
 import pygame
 
 from simulation.obstacles import Obstacle
-from simulation.survivor import Survivor
 
 
 def render_gridworld(gridworld_controller, width, height):
@@ -25,9 +24,13 @@ def render_gridworld(gridworld_controller, width, height):
                 colour = (0, 0, 0)
             elif cell == Obstacle.Empty:
                 colour = (255, 255, 255)
+
+                for pos in agent_positions:
+                    if abs(pos[0] - x) <= gridworld_controller.get_sight_range() and abs(pos[1] - y) <= gridworld_controller.get_sight_range():
+                        colour = (220, 220, 220)
             elif cell == Obstacle.Tree:
                 colour = (0, 255, 0)
-            elif isinstance(cell, Survivor):
+            elif cell == Obstacle.Survivor:
                 colour = (255, 0, 0)
             rect = pygame.Rect((x*block_width, y*block_height), (block_width+1, block_height+1))
             rect_outline = pygame.Rect((x*block_width, y*block_height), (block_width+1, block_height+1))

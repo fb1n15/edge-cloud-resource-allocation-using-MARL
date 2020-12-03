@@ -1,7 +1,6 @@
 from random import randrange
 import numpy as np
 
-from simulation.survivor import Survivor
 from simulation.obstacles import Obstacle
 
 
@@ -33,7 +32,7 @@ class GridWorldModel:
             x = randrange(self._width)
             y = randrange(self._height)
             if self.get_at_cell(x, y) == Obstacle.Empty:
-                self.set_at_cell(x, y, Survivor())
+                self.set_at_cell(x, y, Obstacle.Survivor)
                 i += 1
 
     def point_in_bounds(self, x, y):
@@ -47,22 +46,23 @@ class GridWorldModel:
             raise ValueError("(%d, %d) is out of bounds".format(x, y))
         self._world[y][x] = obj
 
-    def get_area(self, left, right, top, bottom):
+    def get_area(self, left, right, top, bottom, agent_positions):
         """
         Gets a square area of the map.
         The grid is
+        :param agent_positions:
         :param left: The left of the area (inclusive)
         :param right: Right of the area (inclusive)
         :param top: The top of the area (inclusive)
         :param bottom: Bottom of the area (inclusive)
         :return: np array of the area in the map
         """
-        grid = np.array([[self.get_at_cell(x, y) for x in range(left, right+1)] for y in range(top, bottom+1)])
+        grid = np.array([[self.get_at_cell(x, y) if (x, y) not in agent_positions else Obstacle.Agent for x in range(left, right+1)] for y in range(top, bottom+1)])
         return grid
 
-    def agent_scan(self, agent):
+    def agent_scan(self, agent, agent_positions):
 
-        area = self.get_area(*agent.get_sight_area())
+        area = self.get_area(*agent.get_sight_area(), agent_positions)
 
         return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
 

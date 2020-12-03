@@ -21,16 +21,17 @@ gridworld = env.controller
 # gridworld = SimulationController(20, 20, 10, 2, 4, 200)
 # gridworld.initialise()
 
-print(checkpoints)
+print(checkpoints[-1])
 
 episode_reward = 0
 done = False
 obs = env.reset()
+running = True
 
 
 def step_simulation():
     global done, obs
-    while True:
+    while running:
         sleep(0.2)
         action = {}
         for agent_id, agent_obs in obs.items():
@@ -45,8 +46,8 @@ def restart_simulation():
     obs = env.reset()
 
 
-WIDTH = 400
-HEIGHT = 480
+WIDTH = 640
+HEIGHT = 720
 
 pygame.init()
 pygame.key.set_repeat(300, 30)
@@ -60,7 +61,7 @@ pygame.draw.rect(screen, (255, 0, 0), rect)
 pygame.display.flip()
 
 # Declaration of some ThorPy elements ...
-slider = thorpy.SliderX(100, (12, 35), "My Slider")
+slider = thorpy.SliderX(100, (12, 35), "Speed")
 button = thorpy.make_button("Restart", func=restart_simulation)
 box = thorpy.Box(elements=[slider, button])
 menu = thorpy.Menu(box)
@@ -88,3 +89,4 @@ while running:
     pygame.display.update()
 
 pygame.quit()
+running = False

@@ -8,7 +8,6 @@ from ray.rllib.utils.typing import MultiAgentDict
 from simulation.agent import Agent
 from simulation.gridworld import GridWorldModel
 from simulation.obstacles import Obstacle
-from simulation.survivor import Survivor
 
 
 class SimulationController:
@@ -33,9 +32,8 @@ class SimulationController:
         agent_positions = self.get_agent_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
-            agent_obs = self.model.agent_scan(agent).flatten()
-            obs[i] = [x.value if isinstance(x, Obstacle) else len(Obstacle)
-                      for x in agent_obs]
+            agent_obs = self.model.agent_scan(agent, agent_positions).flatten()
+            obs[i] = [x.value for x in agent_obs]
             assert len(agent_obs) == (self._sight * 2 + 1) ** 2
         return obs
 
@@ -49,11 +47,11 @@ class SimulationController:
             # Perform selected action
             if i in action_dict.keys():
                 agent.actions()[action_dict[i]]()
-                if isinstance(self.model.get_at_cell(agent.get_x(), agent.get_y()), Survivor):
+                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.Survivor:
                     rew[i] += 1
                     self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
-                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
-                    rew[i] -= 10
+                # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
+                    # rew[i] -=
                     # If it goes outside map, punish it
         return rew
 
@@ -62,6 +60,9 @@ class SimulationController:
         for agent in self.agents:
             positions[(agent.get_x(), agent.get_y())] = agent
         return positions
+
+    def get_sight_range(self):
+        return self._sight
 
 
 class GridWorldEnv(MultiAgentEnv):
@@ -77,7 +78,7 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["battery"])
 
         self.action_space = Discrete(len(Agent().actions()))
-        self.observation_space = Box(low=0, high=len(Obstacle) + 1, shape=((config["sight"] * 2 + 1) ** 2,))
+        self.observation_space = Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1) ** 2,))
 
     def reset(self) -> MultiAgentDict:
         self.controller.initialise()

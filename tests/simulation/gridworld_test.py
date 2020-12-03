@@ -2,7 +2,6 @@ import pytest
 
 from simulation.agent import Agent
 from simulation.gridworld import GridWorldModel
-from simulation.survivor import Survivor
 from simulation.obstacles import Obstacle
 
 
@@ -21,7 +20,7 @@ def test_survivors(gridworld):
     c = 0
     for x in range(w):
         for y in range(h):
-            if isinstance(gridworld.get_at_cell(x, y), Survivor):
+            if gridworld.get_at_cell(x, y) == Obstacle.Survivor:
                 c += 1
     assert c == s
 

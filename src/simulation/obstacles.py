@@ -7,3 +7,5 @@ class Obstacle(Enum):
     OutsideMap = 0
     Empty = 1
     Tree = 2
+    Survivor = 3
+    Agent = 4
