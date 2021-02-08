@@ -6,26 +6,33 @@ from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
 from simulation.agent import Agent
-from simulation.gridworld import GridWorldModel
+from simulation.gridworld import SimulationModel
 from simulation.obstacles import Obstacle
 
 
 class SimulationController:
-    def __init__(self, width, height, num_survivors, num_agents, sight, battery):
+    def __init__(self, width, height, num_survivors, num_agents,
+                 sight, battery, reward_map, battery_costs, autogen_config):
         self._width = width
         self._height = height
         self._num_survivors = num_survivors
         self._num_agents = num_agents
         self._sight = sight
         self._battery = battery
+        self._reward_map = reward_map
+        self._battery_costs = battery_costs
+        self._autogen_config = autogen_config
 
         self.agents = None
         self.model = None
 
     def initialise(self):
-        self.agents = [Agent(x=i + int(self._width / 2), y=i + int(self._height / 2), rot=0, sight=self._sight,
-                             battery=self._battery) for i in range(self._num_agents)]
-        self.model = GridWorldModel(self._width, self._height, self._num_survivors)
+        self.agents = [Agent(rot=0,
+                             sight=self._sight,
+                             battery=self._battery,
+                             battery_costs=self._battery_costs)
+                       for i in range(self._num_agents)]
+        self.model = SimulationModel(self._width, self._height, self._num_survivors, agents=self.agents, autogen_config=self._autogen_config)
 
     def get_observations(self) -> MultiAgentDict:
         agent_positions = self.get_agent_positions()
@@ -44,11 +51,14 @@ class SimulationController:
         rew = {i: 0 for i in range(len(self.agents))}
         for i, agent in enumerate(self.agents):
             # Perform selected action
-            if i in action_dict.keys():
+            if i in action_dict.keys() and not agent.is_dead():
                 agent.actions()[action_dict[i]]()
                 if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.Survivor:
-                    rew[i] += 1
+                    rew[i] += self._reward_map["rescue"]
                     self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
+                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.Tree:
+                    rew[i] += self._reward_map["hit tree"]
+                    agent.kill()
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
@@ -66,6 +76,7 @@ class SimulationController:
 
 class GridWorldEnv(MultiAgentEnv):
     """Logic for managing the simulation"""
+    VERSION = 1  # Increment each time there are non-backwards compatible changes made to simulation
 
     def __init__(self, config):
         self.controller = SimulationController(config["width"],
@@ -73,7 +84,10 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["num_survivors"],
                                                config["num_agents"],
                                                config["sight"],
-                                               config["battery"])
+                                               config["battery"],
+                                               config["rewards"],
+                                               config["battery costs"],
+                                               config["autogen config"])
 
         self.action_space = Discrete(len(Agent().actions()))
         self.observation_space = Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1) ** 2,))

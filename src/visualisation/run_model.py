@@ -1,6 +1,7 @@
 from time import sleep
 
 import pygame
+import ray
 import thorpy
 import threading
 
@@ -30,7 +31,7 @@ class SimulationRunner:
 
     def step_simulation(self):
         while self.running:
-            sleep(0.2)
+            # sleep(0.2)
             action = {}
             for agent_id, agent_obs in self.obs.items():
                 action[agent_id] = self.agent.compute_action(agent_obs)
@@ -88,5 +89,6 @@ def start_displaying(runner):
 
 
 def main(experiment):
+    ray.init()
     runner = SimulationRunner(experiment)
     start_displaying(runner)

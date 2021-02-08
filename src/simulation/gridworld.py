@@ -1,13 +1,15 @@
+import random
 from random import randrange
 import numpy as np
+import noise
 
 from simulation.obstacles import Obstacle
 
 
-class GridWorldModel:
+class SimulationModel:
     """Model for the grid world"""
 
-    def __init__(self, width, height, num_survivors, agents=None, world=None):
+    def __init__(self, width, height, num_survivors, agents=None, world=None, autogen_config=None):
         """
         :param width: Width of the map
         :param height: Height of the map
@@ -23,8 +25,42 @@ class GridWorldModel:
         self._height = height
 
         self._agents = agents
+        if autogen_config is not None:
+            self.generate_terrain(autogen_config)
 
         self.generate_survivors(num_survivors)
+
+        self.generate_agent_positions()
+
+    def generate_noise_grid(self, scale, octaves, persistence, lacunarity):
+        noise_grid = [[0 for _ in range(self._width)] for _ in range(self._height)]
+        x_rand = random.randrange(0, 1000)
+        y_rand = random.randrange(0, 1000)
+        # Add a random offset to the perlin noise
+        for x in range(self._width):
+            for y in range(self._height):
+                noise_grid[y][x] = noise.pnoise2(x / scale + x_rand,
+                                                 y / scale + y_rand,
+                                                 octaves=octaves,
+                                                 persistence=persistence,
+                                                 lacunarity=lacunarity)
+        return noise_grid
+
+    def generate_terrain(self, autogen_config):
+        chosen_map, chosen_map_config = random.choice(list(autogen_config.items()))
+
+        if "trees" in chosen_map_config:
+            self.generate_trees(chosen_map_config["trees"])
+
+    def generate_trees(self, tree_config):
+        noise_grid = self.generate_noise_grid(tree_config["scale"],
+                                              tree_config["octaves"],
+                                              tree_config["persistence"],
+                                              tree_config["lacunarity"])
+        for x in range(self._width):
+            for y in range(self._height):
+                if noise_grid[y][x] > tree_config["threshold"]:
+                    self.set_at_cell(x, y, Obstacle.Tree)
 
     def generate_survivors(self, num_survivors):
         i = 0
@@ -34,6 +70,14 @@ class GridWorldModel:
             if self.get_at_cell(x, y) == Obstacle.Empty:
                 self.set_at_cell(x, y, Obstacle.Survivor)
                 i += 1
+
+    def generate_agent_positions(self):
+        for agent in self._agents:
+            for i in range(100000):# Try until it cannot find any where - to prevent infinite loop
+                x = randrange(self._width)
+                y = randrange(self._height)
+                if self.get_at_cell(x, y) == Obstacle.Empty:
+                    agent.set_pos(x, y)
 
     def point_in_bounds(self, x, y):
         return 0 <= x < self._width and 0 <= y < self._height
@@ -57,7 +101,8 @@ class GridWorldModel:
         :param bottom: Bottom of the area (inclusive)
         :return: np array of the area in the map
         """
-        grid = np.array([[self.get_at_cell(x, y) if (x, y) not in agent_positions else Obstacle.Agent for x in range(left, right+1)] for y in range(top, bottom+1)])
+        grid = np.array([[self.get_at_cell(x, y) if (x, y) not in agent_positions else Obstacle.Agent for x in
+                          range(left, right + 1)] for y in range(top, bottom + 1)])
         return grid
 
     def agent_scan(self, agent, agent_positions):

@@ -66,5 +66,4 @@ zipp==3.4.0
 
 pygame~=2.0.1
 thorpy~=1.7
-PyInquirer~=1.0.3
 pytest~=6.2.2

@@ -1,7 +1,3 @@
-import argparse
-import os
-import uuid
-
 import ray
 from datetime import datetime
 
@@ -28,13 +24,34 @@ config = {
     # "model": {"fcnet_hiddens": [8, 8]},
     "lr": tune.grid_search([0.001, 0.0001, 0.00001]),
     "env_config": {
-        "width": 20,
-        "height": 20,
-        "num_survivors": 15,
-        "num_agents": 2,
+        "version": GridWorldEnv.VERSION,
+        "width": 50,
+        "height": 50,
+        "num_survivors": 25,
+        "num_agents": 3,
         "start_world": [[]],
-        "sight": 4,
-        "battery": 100,
+        "sight": 6,
+        "battery": 200,
+        "rewards": {
+            "rescue": 1,
+            "hit tree": -5
+        },
+        "battery costs": {
+            "rotate left": 1,
+            "rotate right": 1,
+            "advance": 2
+        },
+        "autogen config": {
+            "forest fire 1": {
+                "trees": {
+                    "scale": 20.0,
+                    "octaves": 6,
+                    "persistence": 0.5,
+                    "lacunarity": 2.0,
+                    "threshold": 0.07
+                }
+            }
+        }
     }
 }
 

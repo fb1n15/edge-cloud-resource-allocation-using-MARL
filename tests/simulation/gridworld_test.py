@@ -1,7 +1,7 @@
 import pytest
 
 from simulation.agent import Agent
-from simulation.gridworld import GridWorldModel
+from simulation.gridworld import SimulationModel
 from simulation.obstacles import Obstacle
 
 
@@ -12,7 +12,7 @@ s = 10
 
 @pytest.fixture
 def gridworld():
-    gridworld = GridWorldModel(w, h, s)
+    gridworld = SimulationModel(w, h, s)
     return gridworld
 
 
@@ -51,7 +51,7 @@ def test_bounds(gridworld):
 
 
 def test_get_area():
-    gridworld = GridWorldModel(w, h, 0)
+    gridworld = SimulationModel(w, h, 0)
     gridworld.set_at_cell(1, 1, Obstacle.TestObstacle)
     area = gridworld.get_area(1, 3, 1, 3)
     assert area[0, 0] == Obstacle.TestObstacle
@@ -61,8 +61,8 @@ def test_get_area():
 
 
 def test_sight():
-    gridworld = GridWorldModel(w, h, 0, world=[[Obstacle.TestObstacle, Obstacle.Empty],
-                                               [Obstacle.Empty, Obstacle.Empty]])
+    gridworld = SimulationModel(w, h, 0, world=[[Obstacle.TestObstacle, Obstacle.Empty],
+                                                [Obstacle.Empty, Obstacle.Empty]])
     agent = Agent(x=0, y=0, rot=0, sight=1)
 
     scan_area = gridworld.agent_scan(agent)

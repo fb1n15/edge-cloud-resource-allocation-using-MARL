@@ -1,8 +1,13 @@
 #!/bin/bash
-echo "Loading conda environment"
-module load conda/4.4.0
-source activate ip_env
-echo "Loaded conda environment"
+#PBS -l walltime=00:05:00
 
-python src/learning/training.py
+# Load conda environement
+module load singularity/3.2.0
+echo "starting"
+# Navigate to working dir
+cd $PBS_O_WORKDIR
+
+export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/marl_disaster_relief/src"
+singularity exec image.sif python src/marl-disaster.py train
+
 echo "Finishing job"

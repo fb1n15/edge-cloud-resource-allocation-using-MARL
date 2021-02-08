@@ -1,6 +1,8 @@
 import os
 import json
 
+from simulation.environment import GridWorldEnv
+
 
 def save_checkpoints(checkpoints):
     """Save checkpoints into file with some model parameter settings"""
@@ -42,12 +44,16 @@ def explore_checkpoints():
             continue
         trials = []
         environment = None
+        valid = True
         for trial in subdirs(os.path.join(default_path, experiment)):
             checkpoints = []
             results = list(load_results(os.path.join(default_path, experiment, trial, "result.json")))
             config = load_params(os.path.join(default_path, experiment, trial, "params.json"))
             if len(results) == 0:
                 break
+            if config["env_config"].get("version", -1) < GridWorldEnv.VERSION:
+                # If the config is using an old version of the simulation environment, don't include
+                valid = False
             if environment is None:
                 environment = config["env_config"]
 
@@ -66,17 +72,19 @@ def explore_checkpoints():
                 "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
                 "config": config
             })
-        best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])
-        experiments.append({
-            "name": experiment,
-            "trials": trials,
-            "environment": environment,
-            "best trial": {
-                "trial name": best_trial["name"],
-                "checkpoint name": best_trial["best checkpoint"]["name"],
-                "episode_reward_mean": best_trial["best checkpoint"]["episode_reward_mean"],
-                "path": best_trial["best checkpoint"]["path"],
-                "config": best_trial["config"],
-            }
-        })
+        print(experiment, valid)
+        if valid and len(trials) > 0:
+            best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])
+            experiments.append({
+                "name": experiment,
+                "trials": trials,
+                "environment": environment,
+                "best trial": {
+                    "trial name": best_trial["name"],
+                    "checkpoint name": best_trial["best checkpoint"]["name"],
+                    "episode_reward_mean": best_trial["best checkpoint"]["episode_reward_mean"],
+                    "path": best_trial["best checkpoint"]["path"],
+                    "config": best_trial["config"],
+                }
+            })
     return experiments
