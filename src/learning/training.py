@@ -1,33 +1,37 @@
 import argparse
 import os
+import uuid
 
 import ray
+from datetime import datetime
 
 from simulation.environment import GridWorldEnv
+from common.checkpoint_handler import save_checkpoints
 
 from ray import tune
-from ray.rllib.utils.framework import try_import_tf, try_import_torch
+from ray.rllib.utils.framework import try_import_torch
 
-tf1, tf, tfv = try_import_tf()
+torch, nn = try_import_torch()
 
 stop = {
-    "training_iteration": 500,
-    "episode_reward_mean": 14,
+    "training_iteration": 5,
+    # "episode_reward_mean": 14,
 }
 config = {
     "env": GridWorldEnv,
-    "framework": "tf",
-    "num_gpus": 1,
-    "num_workers": 8,
+    "framework": "torch",
+    # "num_gpus": 1,
+    # "num_workers": 0,
     # "num_cpus_for_driver": 1,
     # "num_cpus_per_worker": 1,
     # "lr": 0.01,
     # "model": {"fcnet_hiddens": [8, 8]},
+    "lr": tune.grid_search([0.001, 0.0001, 0.00001]),
     "env_config": {
         "width": 20,
         "height": 20,
         "num_survivors": 15,
-        "num_agents": 3,
+        "num_agents": 2,
         "start_world": [[]],
         "sight": 4,
         "battery": 100,
@@ -37,10 +41,21 @@ config = {
 ray.init()
 
 
-def run_same_policy():
-    """Use the same policy for both agents (trivial case)."""
+def get_name():
+    time = str(datetime.now()).replace(":", "-").replace(".", "-")
+    return f"DroneRescue {time}"
 
-    analysis = tune.run("PPO", name="drone_rescue", config=config, stop=stop, verbose=1, checkpoint_freq=100, checkpoint_at_end=True)
+
+def run_same_policy():
+    """Use the same policy for both agents"""
+
+    analysis = tune.run("PPO", name=get_name(),
+                        config=config,
+                        stop=stop,
+                        verbose=2,
+                        checkpoint_freq=1,
+                        checkpoint_at_end=True
+                        )
 
     checkpoints = analysis.get_trial_checkpoints_paths(
         trial=analysis.get_best_trial("episode_reward_mean", mode="max"),
@@ -49,20 +64,8 @@ def run_same_policy():
     return checkpoints
 
 
-def save_checkpoints(checkpoints):
-    path = os.path.expanduser(os.path.join("~", "Gridworld"))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    with open(os.path.join(path, "checkpoints.txt"), "w+") as f:
-        f.write(str(checkpoints))
-
-
-def load_checkpoints():
-    with open(os.path.join(os.path.expanduser("~"), "Gridworld", "checkpoints.txt"), "r") as f:
-        return eval(f.readline())
-
-
-def main():
+def main(restore=None):
+    # TODO add restore checkpoint option
     checkpoints = run_same_policy()
     save_checkpoints(checkpoints)
     print(checkpoints)

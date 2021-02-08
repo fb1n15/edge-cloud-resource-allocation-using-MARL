@@ -24,8 +24,7 @@ class SimulationController:
 
     def initialise(self):
         self.agents = [Agent(x=i + int(self._width / 2), y=i + int(self._height / 2), rot=0, sight=self._sight,
-                             battery=self._battery) for i in
-                       range(self._num_agents)]
+                             battery=self._battery) for i in range(self._num_agents)]
         self.model = GridWorldModel(self._width, self._height, self._num_survivors)
 
     def get_observations(self) -> MultiAgentDict:
@@ -51,8 +50,8 @@ class SimulationController:
                     rew[i] += 1
                     self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
-                    # rew[i] -=
-                    # If it goes outside map, punish it
+                # rew[i] -=
+                # If it goes outside map, punish it
         return rew
 
     def get_agent_positions(self):
@@ -69,7 +68,6 @@ class GridWorldEnv(MultiAgentEnv):
     """Logic for managing the simulation"""
 
     def __init__(self, config):
-
         self.controller = SimulationController(config["width"],
                                                config["height"],
                                                config["num_survivors"],
@@ -86,7 +84,6 @@ class GridWorldEnv(MultiAgentEnv):
 
     def step(self, action_dict: MultiAgentDict) -> Tuple[
         MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
-
         rew = self.controller.perform_actions(action_dict)
         obs = self.controller.get_observations()
         done = {"__all__": all(self.controller.all_agents_dead())}
