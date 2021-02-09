@@ -29,7 +29,6 @@ do
         if [[ ${n} == "${thishost}" ]]
         then
                 echo "first allocate node - use as headnode ..."
-                module load PyTorch
                 ray start --head
                 sleep 5
         else
