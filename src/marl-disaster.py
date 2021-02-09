@@ -23,7 +23,8 @@ class CLIPromptExperimentChooser(ExperimentChooser):
 
     @staticmethod
     def _experiment_to_str(experiment):
-        return f"{experiment['name']} | best trial = {experiment['best trial']['episode_reward_mean']} | {experiment['environment']}"
+        checkpoint_scores = " ".join(f"{checkpoint['episode_reward_mean']}" for trial in experiment["trials"] for checkpoint in trial["checkpoints"])
+        return f"{experiment['name']} | best trial = {experiment['best trial']['episode_reward_mean']} | {experiment['environment']} | {checkpoint_scores}"
 
     def _ask_input_int(self):
         while True:

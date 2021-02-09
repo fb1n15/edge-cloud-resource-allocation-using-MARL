@@ -9,6 +9,7 @@ RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa \
 && apt-get update \
 && apt-get -y install python3.6 python3-pip
+RUN apt-get install -y python3.6-dev
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
 RUN update-alternatives --config python
@@ -19,7 +20,7 @@ RUN python -m pip install --upgrade "pip < 21.0"
 COPY requirements.txt .
 
 #RUN python -m pip install numpy==1.19.5
-RUN pip3 install -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 # DO whacky thing to fix ray
 #RUN pip3 -y uninstall tree

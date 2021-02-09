@@ -28,7 +28,11 @@ def subdirs(path):
 def load_results(results_path):
     with open(results_path, "r") as f:
         for line in f.readlines():
-            yield json.loads(line)
+            try:
+                yield json.loads(line)
+            except:
+                pass
+                #TODO remove
 
 
 def load_params(params_path):
@@ -61,17 +65,17 @@ def explore_checkpoints():
                 checkpoints.append({
                     "name": checkpoint,
                     "episode_reward_mean": results[i]["episode_reward_mean"],
-                    "path": os.path.join(default_path, experiment, trial, checkpoint, f"checkpoint-{i+1}")
+                    "path": os.path.join(default_path, experiment, trial, checkpoint, checkpoint.replace("_", "-"))
                 })
                 # Check that all the environments are the same for each checkpoint in a trial
                 assert results[i]["config"]["env_config"] == environment
-
-            trials.append({
-                "name": trial,
-                "checkpoints": checkpoints,
-                "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
-                "config": config
-            })
+            if len(checkpoints) > 0:
+                trials.append({
+                    "name": trial,
+                    "checkpoints": checkpoints,
+                    "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
+                    "config": config
+                })
         print(experiment, valid)
         if valid and len(trials) > 0:
             best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])

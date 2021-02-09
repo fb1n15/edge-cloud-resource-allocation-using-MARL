@@ -24,11 +24,11 @@ Create singularity container with
 
 Set python path to be the sources root of src/
 
-`export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/marl_disaster_relief/src"`
+`export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/git/marl_disaster_relief/src"`
 
 Run with 
 
-`singularity exec image.sif python src/learning/training.py`
+`singularity exec image.sif python src/marl-disaster.py train`
 
 or
 
