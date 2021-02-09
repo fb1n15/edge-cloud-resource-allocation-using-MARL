@@ -10,9 +10,6 @@ from ray.rllib.utils.framework import try_import_torch
 torch, nn = try_import_torch()
 
 
-ray.init()
-
-
 def get_name():
     time = str(datetime.now()).replace(":", "-").replace(".", "-")
     return f"DroneRescue {time}"
@@ -38,6 +35,7 @@ def run_same_policy():
 
 def main(restore=None):
     # TODO add restore checkpoint option
+    ray.init(address='auto')
     checkpoints = run_same_policy()
     save_checkpoints(checkpoints)
     print(checkpoints)
