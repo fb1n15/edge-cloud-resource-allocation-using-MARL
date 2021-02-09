@@ -29,7 +29,7 @@ do
         if [[ ${n} == "${thishost}" ]]
         then
                 echo "first allocate node - use as headnode ..."
-                ray start --head
+                singularity exec image.sif ray start --head
                 sleep 5
         else
                 ssh ${n}  $PBS_O_WORKDIR/startWorkerNode.sh ${thishostNport}
