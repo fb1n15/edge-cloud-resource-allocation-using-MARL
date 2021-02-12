@@ -19,6 +19,10 @@ RUN python -m pip install --upgrade "pip < 21.0"
 
 COPY requirements.txt .
 
+# Install torch
+RUN python -m pip install torch==1.7.1+cu92 torchvision==0.8.2+cu92 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+#RUN python -m pip install torch torchvision
+
 #RUN python -m pip install numpy==1.19.5
 RUN python -m pip install -r requirements.txt
 
@@ -29,6 +33,5 @@ RUN python -m pip install -r requirements.txt
 #RUN pip3 install dm-tree
 
 RUN apt -y install libgl1-mesa-glx
+RUN apt-get -y install nvidia-modprobe
 
-# Install torch
-RUN python -m pip install torch==1.7.0 -f https://download.pytorch.org/whl/torch_stable.html

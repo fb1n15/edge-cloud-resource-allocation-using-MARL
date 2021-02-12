@@ -33,17 +33,15 @@ class SimulationModel:
         self.generate_agent_positions()
 
     def generate_noise_grid(self, scale, octaves, persistence, lacunarity):
-        noise_grid = [[0 for _ in range(self._width)] for _ in range(self._height)]
+        # Add a random offset to the perlin noise
         x_rand = random.randrange(0, 1000)
         y_rand = random.randrange(0, 1000)
-        # Add a random offset to the perlin noise
-        for x in range(self._width):
-            for y in range(self._height):
-                noise_grid[y][x] = noise.pnoise2(x / scale + x_rand,
-                                                 y / scale + y_rand,
-                                                 octaves=octaves,
-                                                 persistence=persistence,
-                                                 lacunarity=lacunarity)
+        noise_grid = ((noise.pnoise2(x / scale + x_rand,
+                                     y / scale + y_rand,
+                                     octaves=octaves,
+                                     persistence=persistence,
+                                     lacunarity=lacunarity)
+                       for x in range(self._width)) for y in range(self._height))
         return noise_grid
 
     def generate_terrain(self, autogen_config):
@@ -57,9 +55,13 @@ class SimulationModel:
                                               tree_config["octaves"],
                                               tree_config["persistence"],
                                               tree_config["lacunarity"])
-        for x in range(self._width):
-            for y in range(self._height):
-                if noise_grid[y][x] > tree_config["threshold"]:
+        for x, row in enumerate(noise_grid):
+            for y, cell in enumerate(row):
+                # Leave 1 cell clear round the edge of the map
+                # Only when the noise is above the threshold should there be trees
+                if cell > tree_config["threshold"] \
+                        and x not in (0, self.get_width()-1) \
+                        and y not in (0, self.get_height()-1):
                     self.set_at_cell(x, y, Obstacle.Tree)
 
     def generate_survivors(self, num_survivors):
@@ -73,7 +75,7 @@ class SimulationModel:
 
     def generate_agent_positions(self):
         for agent in self._agents:
-            for i in range(100000):# Try until it cannot find any where - to prevent infinite loop
+            for i in range(100000):  # Try until it cannot find any where - to prevent infinite loop
                 x = randrange(self._width)
                 y = randrange(self._height)
                 if self.get_at_cell(x, y) == Obstacle.Empty:

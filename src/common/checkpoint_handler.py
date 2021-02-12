@@ -68,7 +68,7 @@ def explore_checkpoints():
                     "path": os.path.join(default_path, experiment, trial, checkpoint, checkpoint.replace("_", "-"))
                 })
                 # Check that all the environments are the same for each checkpoint in a trial
-                assert results[i]["config"]["env_config"] == environment
+                # assert results[i]["config"]["env_config"] == environment
             if len(checkpoints) > 0:
                 trials.append({
                     "name": trial,

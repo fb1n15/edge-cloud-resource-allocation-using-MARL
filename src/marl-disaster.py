@@ -1,11 +1,12 @@
 """
-Run this with marl-disaster.py <train/run>
+Run this with marl-disaster.py <train/run/mapgen>
 -r/--restore | restore training from checkpoint
 
 """
 from abc import ABC, abstractmethod
 import sys
 from getopt import getopt
+
 
 from common.checkpoint_handler import explore_checkpoints
 
@@ -59,9 +60,11 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-r", "--restore"):
             restore = arg
+
     if argv[1] == "train":
         from learning import training
         training.main(restore=restore)
+
     elif argv[1] == "run":
         from visualisation import run_model
         if restore is not None:
@@ -69,6 +72,12 @@ def main(argv):
         experiments = explore_checkpoints()
         chooser = CLIPromptExperimentChooser(experiments)
         run_model.main(chooser.select_experiment())
+
+    elif argv[1] == "mapgen":
+        if restore is not None:
+            raise Exception("Cannot restore for run, only train")
+        from visualisation import mapgen
+        mapgen.main()
 
 
 if __name__ == "__main__":

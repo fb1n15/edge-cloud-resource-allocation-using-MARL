@@ -35,7 +35,7 @@ def run_same_policy():
 
 def main(restore=None):
     # TODO add restore checkpoint option
-    ray.init(address='auto')
+    ray.init()
     checkpoints = run_same_policy()
     save_checkpoints(checkpoints)
     print(checkpoints)

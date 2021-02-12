@@ -1,9 +1,10 @@
 import pygame
 
+from simulation.environment import SimulationController
 from simulation.obstacles import Obstacle
 
 
-def render_gridworld(gridworld_controller, width, height):
+def render_gridworld(gridworld_controller: SimulationController, width, height):
     gridworld = gridworld_controller.model
     gridworld_width = gridworld.get_width()
     gridworld_height = gridworld.get_height()
