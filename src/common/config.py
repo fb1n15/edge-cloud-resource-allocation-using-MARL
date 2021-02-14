@@ -9,8 +9,8 @@ stop = {
 
 env_config = {
     "version": GridWorldEnv.VERSION,
-    "width": 40,
-    "height": 40,
+    "width": 60,
+    "height": 60,
     "num_survivors": 25,
     "num_agents": 4,
     "start_world": [[]],
@@ -26,13 +26,25 @@ env_config = {
         "advance": 2
     },
     "autogen config": {
-        "forest fire 1": {
+        "forest fire": {
+            "chance": 1,
             "trees": {
                 "scale": 20.0,
                 "octaves": 6,
                 "persistence": 0.5,
                 "lacunarity": 2.0,
                 "threshold": 0.07
+            },
+            "rocks": {
+                "scale": 6.0,
+                "octaves": 10,
+                "persistence": 0.5,
+                "lacunarity": 5.0,
+                "threshold": 0.20
+            },
+            "fire spread": {
+                "speed": 10,
+                "starting points": 5
             }
         }
     }

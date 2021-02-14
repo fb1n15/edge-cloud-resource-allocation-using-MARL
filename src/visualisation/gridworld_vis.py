@@ -31,8 +31,14 @@ def render_gridworld(gridworld_controller: SimulationController, width, height):
                         colour = (220, 220, 220)
             elif cell == Obstacle.Tree:
                 colour = (0, 255, 0)
+            elif cell == Obstacle.TreeFire:
+                colour = (255, 120, 50)
+            elif cell == Obstacle.Rocks:
+                colour = (150, 150, 175)
             elif cell == Obstacle.Survivor:
                 colour = (255, 0, 0)
+            else:
+                raise Exception("Cell type not implemented")
             rect = pygame.Rect((x*block_width, y*block_height), (block_width+1, block_height+1))
             rect_outline = pygame.Rect((x*block_width, y*block_height), (block_width+1, block_height+1))
             pygame.draw.rect(surface, colour, rect)

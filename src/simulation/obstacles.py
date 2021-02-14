@@ -2,10 +2,18 @@ from enum import Enum
 
 
 class Obstacle(Enum):
-    """Obstacle"""
+    """Obstacles
+    Trees can be cleared by the drones, but costs a lot of energy
+    Rocks cannot be passed by ground drones, and will destroy the drone
+    Road
+    """
     TestObstacle = -1
-    OutsideMap = 0
-    Empty = 1
-    Tree = 2
-    Survivor = 3
-    Agent = 4
+    Survivor = 0
+    Agent = 1
+    OutsideMap = 2
+    Empty = 3
+    Tree = 4
+    TreeFire = 5
+    BurnedTree = 6
+    Rocks = 7
+    Road = 8
