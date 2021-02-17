@@ -13,7 +13,12 @@ class Obstacle(Enum):
     OutsideMap = 2
     Empty = 3
     Tree = 4
-    TreeFire = 5
     BurnedTree = 6
     Rocks = 7
     Road = 8
+    Wall = 9
+    HQ = 10
+
+
+def is_flammable(obstacle):
+    return obstacle in (Obstacle.Tree, )

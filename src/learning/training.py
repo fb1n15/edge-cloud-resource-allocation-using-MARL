@@ -2,7 +2,6 @@ import ray
 from datetime import datetime
 
 from common.config import stop, config
-from common.checkpoint_handler import save_checkpoints
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
@@ -37,7 +36,6 @@ def main(restore=None):
     # TODO add restore checkpoint option
     ray.init()
     checkpoints = run_same_policy()
-    save_checkpoints(checkpoints)
     print(checkpoints)
 
 

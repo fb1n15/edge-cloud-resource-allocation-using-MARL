@@ -1,7 +1,7 @@
 import pytest
 
 from simulation.agent import Agent
-from simulation.gridworld import SimulationModel
+from simulation.gridworld_model import SimulationModel
 from simulation.obstacles import Obstacle
 
 

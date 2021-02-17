@@ -4,20 +4,6 @@ import json
 from simulation.environment import GridWorldEnv
 
 
-def save_checkpoints(checkpoints):
-    """Save checkpoints into file with some model parameter settings"""
-    path = "GridworldCheckPoints/"
-    if not os.path.exists(path):
-        os.makedirs(path)
-    with open(os.path.join(path, "checkpoints.txt"), "w+") as f:
-        f.write(str(checkpoints))
-
-
-def load_checkpoints():
-    with open(os.path.join("GridworldCheckPoints", "checkpoints.txt"), "r") as f:
-        return eval(f.readline())
-
-
 def subdirs(path):
     """Yield directory names contained in directory"""
     for item in os.listdir(path):

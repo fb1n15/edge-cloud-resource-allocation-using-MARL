@@ -30,14 +30,15 @@ class SimulationRunner:
         self.running = True
 
     def step_simulation(self):
+        clock = pygame.time.Clock()
         while self.running:
-            # sleep(0.2)
+            clock.tick(5)
             action = {}
             for agent_id, agent_obs in self.obs.items():
                 action[agent_id] = self.agent.compute_action(agent_obs)
             self.obs, self.reward, self.done, self.info = self.env.step(action)
-            # episode_reward += reward
-            # Check if all the drones have run out of battery
+        # episode_reward += reward
+        # Check if all the drones have run out of battery
 
     def restart_simulation(self):
         self.done = False
@@ -76,6 +77,9 @@ def start_displaying(runner):
     running = True
     while running:
         clock.tick(60)
+
+        # runner.step_simulation()
+
         screen.blit(render_gridworld(runner.gridworld, WIDTH, HEIGHT - 80), (0, 80))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
