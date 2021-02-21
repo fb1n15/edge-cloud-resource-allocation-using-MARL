@@ -12,8 +12,6 @@ cd $PBS_O_WORKDIR
 
 ln -s $PWD $PBS_O_WORKDIR/$PBS_JOBID
 
-cd $PBS_O_WORKDIR
-
 jobnodes=`uniq -c ${PBS_NODEFILE} | awk -F. '{print $1 }' | awk '{print $2}' | paste -s -d " "`
 
 thishost=`uname -n | awk -F. '{print $1.}'`
@@ -37,7 +35,7 @@ do
         fi
 done
 
-export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/marl_disaster_relief/src"
+export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/git/marl_disaster_relief/src"
 singularity exec image.sif python src/marl-disaster.py train
 
 #rm $PBS_O_WORKDIR/$PBS_JOBID

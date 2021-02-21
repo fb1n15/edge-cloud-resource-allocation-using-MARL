@@ -17,13 +17,15 @@ def get_name():
 def run_same_policy():
     """Use the same policy for both agents"""
 
-    analysis = tune.run("PPO", name=get_name(),
-                        config=config,
-                        stop=stop,
-                        verbose=2,
-                        checkpoint_freq=100,
-                        checkpoint_at_end=True
-                        )
+    analysis = tune.run(
+        "PPO", name=get_name(),
+        local_dir="results/",
+        config=config,
+        stop=stop,
+        verbose=2,
+        checkpoint_freq=100,
+        checkpoint_at_end=True
+    )
 
     checkpoints = analysis.get_trial_checkpoints_paths(
         trial=analysis.get_best_trial("episode_reward_mean", mode="max"),
