@@ -109,7 +109,7 @@ class SimulationModel:
     def explore_cells(self, left, right, top, bottom):
         for x in range(left, right+1):
             for y in range(top, bottom+1):
-                if not self._explored_cells[y][x]:
+                if self.in_bounds(x, y) and not self._explored_cells[y][x]:
                     # If unexplored
                     self._explored_cells[y][x] = True
                     self._newly_explored += 1
