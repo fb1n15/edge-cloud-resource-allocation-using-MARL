@@ -110,21 +110,20 @@ class SimulationController:
         for loc in self.model.choose_of_block_type([Obstacle.Empty], num_survivors):
             self.model.set_at_cell(loc[0], loc[1], Obstacle.Survivor)
 
-    def get_observations(self) -> MultiAgentDict:
+    def get_observations(self, rew) -> MultiAgentDict:
         agent_positions = self.get_agent_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
             agent_obs = self.model.agent_scan(agent, agent_positions).flatten()
             obs[i] = [x.value for x in agent_obs]
+            rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
             assert len(agent_obs) == (self._sight * 2 + 1) ** 2
         return obs
 
     def all_agents_dead(self):
         return [agent.is_dead() for i, agent in enumerate(self.agents)]
 
-    def perform_actions(self, action_dict):
-        # Set all rewards at 0 to start with
-        rew = {i: 0 for i in range(len(self.agents))}
+    def perform_actions(self, action_dict, rew):
 
         self.step_simulation()
 
@@ -141,7 +140,6 @@ class SimulationController:
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
-                rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
         return rew
 
     def step_simulation(self):

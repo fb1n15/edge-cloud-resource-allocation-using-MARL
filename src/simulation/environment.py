@@ -28,14 +28,20 @@ class GridWorldEnv(MultiAgentEnv):
         self.action_space = Discrete(len(Agent().actions()))
         self.observation_space = Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1) ** 2,))
 
+    def _empty_reward_map(self):
+        return {i: 0 for i in range(len(self.controller.agents))}
+
     def reset(self) -> MultiAgentDict:
         self.controller.initialise()
-        return self.controller.get_observations()
+        # Discard observation based rewards for first iteration
+        return self.controller.get_observations(self._empty_reward_map())
 
     def step(self, action_dict: MultiAgentDict) -> Tuple[
         MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
-        rew = self.controller.perform_actions(action_dict)
-        obs = self.controller.get_observations()
+        # Set all rewards at 0 to start with
+        rew = self._empty_reward_map()
+        self.controller.perform_actions(action_dict, rew)
+        obs = self.controller.get_observations(rew)
         done = {"__all__": all(self.controller.all_agents_dead())}
 
         return obs, rew, done, {}

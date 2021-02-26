@@ -13,9 +13,9 @@ env_config = {
     "sight": 8,
     "battery": 200,
     "rewards": {
-        "rescue": 3,
-        "hit tree": 0,
-        "exploring": 0.1
+        "rescue": 1,
+        "hit tree": -0.1,
+        "exploring": 0.05
     },
     "battery costs": {
         "rotate left": 1,

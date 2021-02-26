@@ -101,9 +101,9 @@ class SimulationModel:
         return grid
 
     def agent_scan(self, agent, agent_positions):
-
-        area = self.get_area(*agent.get_sight_area(), agent_positions)
-
+        agent_sight = agent.get_sight_area()
+        area = self.get_area(*agent_sight, agent_positions)
+        self.explore_cells(*agent_sight)
         return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
 
     def explore_cells(self, left, right, top, bottom):
