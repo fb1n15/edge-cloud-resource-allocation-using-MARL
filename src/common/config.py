@@ -51,16 +51,17 @@ env_config = {
 }
 
 stop = {
-    "training_iteration": 5,
+    "training_iteration": 300,
     # "episode_reward_mean": 14,
 }
 
 config = {
     "env": GridWorldEnv,
     "framework": "torch",
-    "num_cpus_for_driver": 1,
-    "num_envs_per_worker": 1,
-    "num_workers": 7,
+    # "num_cpus_for_driver": 1,
+    # "num_envs_per_worker": 1,
+    "num_workers": 6,
+    "num_gpus": 1,
     # "num_cpus_per_worker": 1,
     # "model": {"fcnet_hiddens": [8, 8]},
     # "train_batch_size": int(4000/8),
@@ -69,8 +70,21 @@ config = {
     "lr": tune.grid_search([0.01, 0.001]),
     "env_config": env_config,
 
-    "exploration_config": {
-        "type": "Curiosity"
-    }
+    # "exploration_config": {
+    #     "type": "Curiosity",
+    #     "eta": 0.1,
+    #     "lr": 0.001,
+    #     # No actual feature net: map directly from observations to feature
+    #     # vector (linearly).
+    #     "feature_net_config": {
+    #         "fcnet_hiddens": [],
+    #         "fcnet_activation": "relu",
+    #     },
+    #     "sub_exploration": {
+    #         "type": "StochasticSampling",
+    #     },
+    #     "forward_net_activation": "relu",
+    #     "inverse_net_activation": "relu",
+    # }
 
 }

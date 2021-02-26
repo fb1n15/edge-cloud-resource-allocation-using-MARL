@@ -1,9 +1,7 @@
-# marl-disaster-relief
-Third year individual project
+# Multi-Agent Reinforcement Learning for Disaster Response
+A third year individual project.
 
-## Build Instructions for Iridis4
-
-
+## Build Instructions for Iridis 4
 
 ### Create docker image on docker hub
 
@@ -13,13 +11,13 @@ Third year individual project
 
 `docker push jparons74/marl-disaster:v2`
 
-### Install on Iridis
+### Run on Iridis 4 with singularity
 
 Create singularity container with 
 
 `module load singularity`
 
-`singularity build image.sif docker://jparons74/marl-disaster:v2`
+`singularity build image.sif docker://jparons74/marl-disaster:v4`
 
 
 Set python path to be the sources root of src/
@@ -33,3 +31,20 @@ Run with
 or
 
 `qsub run.sh -l nodes=2:ppn=16`
+
+## Build Instructions on Lycuim 5
+
+### First time setup
+
+`python3 -m venv venv`
+
+`source venv/bin/activate`
+
+`pip install --upgrade pip`
+
+`pip install requirements.txt`
+
+### Queue Job
+
+`sbatch -p lyceum run.sh`
+
