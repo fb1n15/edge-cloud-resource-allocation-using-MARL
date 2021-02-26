@@ -36,13 +36,15 @@ or
 
 ### First time setup
 
+`module load python`
+
 `python3 -m venv venv`
 
 `source venv/bin/activate`
 
 `pip install --upgrade pip`
 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 ### Queue Job
 

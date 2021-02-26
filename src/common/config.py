@@ -15,7 +15,7 @@ env_config = {
     "rewards": {
         "rescue": 1,
         "hit tree": 0,
-        "exploring": 0.01
+        "exploring": 0.1
     },
     "battery costs": {
         "rotate left": 1,
@@ -52,7 +52,7 @@ env_config = {
 }
 
 stop = {
-    "training_iteration": 1000,
+    "training_iteration": 100,
     # "episode_reward_mean": 14,
 }
 
