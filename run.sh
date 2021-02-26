@@ -1,44 +1,19 @@
 #!/bin/bash
-#PBS -l walltime=00:05:00
+#SBATCH --ntasks-per-node=7
+#SBATCH --nodes=1
+#SBATCH --partition=lycium
+#SBATCH --time=01:00:00
+#SBATCH --gres=gpu:1
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=jp6g18@soton.ac.uk
+#SBATCH --output=test-srun.out
 
-# Adapted from https://github.com/ray-project/ray/issues/10466
+echo "Starting Job"
 
-
-# Load conda environement
-module load singularity/3.2.0
-echo "starting"
-# Navigate to working dir
-cd $PBS_O_WORKDIR
-
-ln -s $PWD $PBS_O_WORKDIR/$PBS_JOBID
-
-jobnodes=`uniq -c ${PBS_NODEFILE} | awk -F. '{print $1 }' | awk '{print $2}' | paste -s -d " "`
-
-thishost=`uname -n | awk -F. '{print $1.}'`
-thishostip=`hostname -i`
-rayport=6379
-
-thishostNport="${thishostip}:${rayport}"
-echo "Allocate Nodes = <$jobnodes>"
-
-echo "set up ray cluster..."
-for n in `echo ${jobnodes}`
-do
-        if [[ ${n} == "${thishost}" ]]
-        then
-                echo "first allocate node - use as headnode ..."
-                singularity exec image.sif ray start --head
-                sleep 5
-        else
-                ssh ${n}  $PBS_O_WORKDIR/startWorkerNode.sh ${thishostNport}
-                sleep 10
-        fi
-done
-
-export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/git/marl_disaster_relief/src"
-singularity exec image.sif python src/marl-disaster.py train
-
-#rm $PBS_O_WORKDIR/$PBS_JOBID
-
+module load python/3.6.4
+module load cuda/10.2
+source venv/bin/activate
+export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
+python src/marl-disaster.py train
 
 echo "Finishing job"
