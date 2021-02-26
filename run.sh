@@ -1,12 +1,11 @@
 #!/bin/bash
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=56
 #SBATCH --nodes=1
 #SBATCH --partition=lycium
 #SBATCH --time=01:00:00
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jp6g18@soton.ac.uk
-#SBATCH --output=test-srun.out
 
 echo "Starting Job"
 

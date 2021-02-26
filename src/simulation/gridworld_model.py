@@ -25,6 +25,9 @@ class SimulationModel:
 
         self._burning_cells = {}
 
+        self._explored_cells = [[False for _ in range(width)] for _ in range(height)]
+        self._newly_explored = 0
+
     def get_burning_cells(self):
         return set(self._burning_cells.keys())
 
@@ -102,6 +105,20 @@ class SimulationModel:
         area = self.get_area(*agent.get_sight_area(), agent_positions)
 
         return np.rot90(area, k=-agent.get_rotation(), axes=(0, 1))
+
+    def explore_cells(self, left, right, top, bottom):
+        for x in range(left, right+1):
+            for y in range(top, bottom+1):
+                if not self._explored_cells[y][x]:
+                    # If unexplored
+                    self._explored_cells[y][x] = True
+                    self._newly_explored += 1
+
+    def get_newly_explored(self):
+        newly_explored = self._newly_explored
+        # Reset to 0
+        self._newly_explored = 0
+        return newly_explored
 
     def get_width(self):
         return self._width

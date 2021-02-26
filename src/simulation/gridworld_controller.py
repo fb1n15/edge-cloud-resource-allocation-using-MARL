@@ -123,10 +123,11 @@ class SimulationController:
         return [agent.is_dead() for i, agent in enumerate(self.agents)]
 
     def perform_actions(self, action_dict):
-        self.step_simulation()
-
         # Set all rewards at 0 to start with
         rew = {i: 0 for i in range(len(self.agents))}
+
+        self.step_simulation()
+
         for i, agent in enumerate(self.agents):
             # Perform selected action
             if i in action_dict.keys() and not agent.is_dead():
@@ -140,6 +141,7 @@ class SimulationController:
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
+                rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
         return rew
 
     def step_simulation(self):
