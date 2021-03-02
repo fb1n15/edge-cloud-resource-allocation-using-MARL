@@ -114,10 +114,14 @@ class SimulationController:
         agent_positions = self.get_agent_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
-            agent_obs = self.model.agent_scan(agent, agent_positions).flatten()
-            obs[i] = [x.value for x in agent_obs]
+            terrain, agents = self.model.agent_scan(agent, agent_positions)
+            obs[i] = {
+                "terrain": terrain,
+                "agents": agents
+            }
             rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
-            assert len(agent_obs) == (self._sight * 2 + 1) ** 2
+            assert terrain.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
+            assert agents.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
         return obs
 
     def all_agents_dead(self):

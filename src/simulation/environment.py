@@ -1,6 +1,7 @@
+from pprint import pprint
 from typing import Tuple
 
-from gym.spaces import Discrete, Box
+from gym.spaces import Discrete, Box, Dict
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
@@ -11,7 +12,7 @@ from simulation.obstacles import Obstacle
 
 class GridWorldEnv(MultiAgentEnv):
     """Logic for managing the simulation"""
-    VERSION = 2  # Increment each time there are non-backwards compatible changes made to simulation
+    VERSION = 3  # Increment each time there are non-backwards compatible changes made to simulation
 
     def __init__(self, config):
         self.controller = SimulationController(config["width"],
@@ -26,7 +27,10 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["autogen config"])
 
         self.action_space = Discrete(len(Agent().actions()))
-        self.observation_space = Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1) ** 2,))
+        self.observation_space = Dict({
+            "terrain": Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
+            "agents": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1)))
+        })
 
     def _empty_reward_map(self):
         return {i: 0 for i in range(len(self.controller.agents))}

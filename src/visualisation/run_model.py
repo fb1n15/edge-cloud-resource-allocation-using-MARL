@@ -74,6 +74,7 @@ def start_displaying(runner):
     t = threading.Thread(target=runner.step_simulation)
     t.start()
 
+
     running = True
     while running:
         clock.tick(60)

@@ -28,7 +28,7 @@ def load_params(params_path):
 
 def explore_checkpoints():
     experiments = []
-    default_path = os.path.expanduser("~/ray_results")
+    default_path = os.path.expanduser("results/")
     for experiment in subdirs(default_path):
         if not experiment.startswith("DroneRescue"):
             continue

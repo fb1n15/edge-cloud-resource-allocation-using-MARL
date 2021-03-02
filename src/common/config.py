@@ -5,17 +5,17 @@ from simulation.environment import GridWorldEnv
 
 env_config = {
     "version": GridWorldEnv.VERSION,
-    "width": 60,
-    "height": 60,
+    "width": 40,
+    "height": 40,
     "num_survivors": 25,
-    "num_agents": 5,
+    "num_agents": 2,
     "start_world": [[]],
-    "sight": 8,
+    "sight": 4,
     "battery": 200,
     "rewards": {
         "rescue": 1,
         "hit tree": 0,
-        "exploring": 0.1
+        "exploring": 0.01
     },
     "battery costs": {
         "rotate left": 1,
@@ -52,7 +52,7 @@ env_config = {
 }
 
 stop = {
-    "training_iteration": 100,
+    "training_iteration": 300,
     # "episode_reward_mean": 14,
 }
 
@@ -61,8 +61,8 @@ config = {
     "framework": "torch",
     "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
-    "num_workers": 6,
-    "num_gpus": 1,
+    "num_workers": 3,
+    "num_gpus": 0.5,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},
     # "train_batch_size": int(4000/8),
