@@ -64,8 +64,8 @@ class SimulationRunner:
     def get_rescued(self):
         return self.env.get_survivors_rescued()
 
-    def num_agents_dead(self):
-        return self.env.num_agents_dead()
+    def num_agents_crashed(self):
+        return self.env.num_agents_crashed()
 
 
 def start_displaying(runner):
@@ -111,7 +111,7 @@ def start_displaying(runner):
                 running = False
                 break
             menu.react(event)
-        hud = render_HUD(runner.get_rescued(), runner.get_time(), runner.num_agents_dead())
+        hud = render_HUD(runner.get_rescued(), runner.get_time(), runner.num_agents_crashed())
         screen.blit(hud, (WIDTH-hud.get_width(), 0))
         pygame.display.update()
 

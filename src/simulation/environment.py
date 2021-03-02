@@ -51,8 +51,8 @@ class GridWorldEnv(MultiAgentEnv):
 
         return obs, rew, done, {}
 
-    def num_agents_dead(self):
-        return self.controller.num_agents_dead()
+    def num_agents_crashed(self):
+        return self.controller.num_agents_crashed()
 
     def get_survivors_rescued(self):
         return self.controller.get_survivors_rescued()

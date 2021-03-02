@@ -65,4 +65,4 @@ class CustomCallbacks(DefaultCallbacks):
         assert len(base_env.get_unwrapped()) == 1
         env = base_env.get_unwrapped()[0]
         episode.custom_metrics["Survivors Rescued"] = env.get_survivors_rescued()
-        episode.custom_metrics["Agents Killed"] = env.num_agents_dead()
+        episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()

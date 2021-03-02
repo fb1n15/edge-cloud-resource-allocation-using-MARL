@@ -28,6 +28,7 @@ class SimulationController:
         self.survivors = []
 
         self.survivors_rescued = 0
+        self.agents_crashed = 0
 
     def initialise(self):
         self.agents = [Agent(rot=0,
@@ -47,6 +48,7 @@ class SimulationController:
         self.start_fires(self._fire_spread)
 
         self.survivors_rescued = 0
+        self.agents_crashed = 0
 
     def start_fires(self, fire_spread_config):
         # Find all trees
@@ -183,6 +185,9 @@ class SimulationController:
     def all_agents_dead(self):
         return self.num_agents_dead() == len(self.agents)
 
+    def num_agents_crashed(self):
+        return self.agents_crashed
+
     def perform_actions(self, action_dict, rew):
 
         self.step_simulation()
@@ -196,11 +201,15 @@ class SimulationController:
                     self.rescue_survivor(agent.get_x(), agent.get_y())
                 if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
                     rew[i] += self._reward_map["hit tree"]
-                    agent.kill()
+                    self.kill_agent(agent)
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
         return rew
+
+    def kill_agent(self, agent):
+        self.agents_crashed += 1
+        agent.kill()
 
     def step_simulation(self):
         self.spread_fire()

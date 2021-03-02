@@ -11,7 +11,7 @@ env_config = {
     "num_agents": 2,
     "start_world": [[]],
     "sight": 5,
-    "battery": 200,
+    "battery": 500,
     "rewards": {
         "rescue": 1,
         "hit tree": 0,
@@ -45,7 +45,7 @@ env_config = {
                 "threshold": 0.20
             },
             "hq": {
-                "size": 6,
+                "size": 5,
             },
         }
     }
