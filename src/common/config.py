@@ -8,7 +8,7 @@ env_config = {
     "width": 40,
     "height": 40,
     "num_survivors": 20,
-    "num_agents": 2,
+    "num_agents": 3,
     "start_world": [[]],
     "sight": 5,
     "battery": 500,
@@ -61,7 +61,7 @@ config = {
     "framework": "torch",
     "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
-    "num_workers": 13,
+    "num_workers": 11,#13
     "num_gpus": 1,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},
@@ -70,7 +70,9 @@ config = {
     # "sgd_minibatch_size": 128,
     "lr": tune.grid_search([0.001, 0.0003]),
     "env_config": env_config,
-    # "use_lstm": tune.grid_search([True, False])
+    "model": {
+        "use_lstm": tune.grid_search([True, False])
+    }
 
     # "exploration_config": {
     #     "type": "Curiosity",  # <- Use the Curiosity module for exploring.
