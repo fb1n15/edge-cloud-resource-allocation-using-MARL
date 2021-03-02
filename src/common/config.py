@@ -52,7 +52,7 @@ env_config = {
 }
 
 stop = {
-    "training_iteration": 300,
+    "training_iteration": 1000,
     # "episode_reward_mean": 14,
 }
 
@@ -61,7 +61,7 @@ config = {
     "framework": "torch",
     "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
-    "num_workers": 3,
+    "num_workers": 13,
     "num_gpus": 1,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},

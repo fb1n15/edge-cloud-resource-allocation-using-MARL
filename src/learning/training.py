@@ -22,7 +22,8 @@ def get_name():
 
 def run_same_policy():
     """Use the same policy for all agents"""
-
+    _config = config
+    _config["callbacks"] = CustomCallbacks
     analysis = tune.run(
         "PPO",
         name=get_name(),
@@ -35,7 +36,7 @@ def run_same_policy():
         stop=stop,
         verbose=3,
         checkpoint_freq=20,
-        checkpoint_at_end=True
+        checkpoint_at_end=True,
     )
 
     checkpoints = analysis.get_trial_checkpoints_paths(
@@ -56,15 +57,12 @@ if __name__ == "__main__":
     main()
 
 
-class MyCallbacks(DefaultCallbacks):
+class CustomCallbacks(DefaultCallbacks):
 
     def on_episode_end(self, *, worker: RolloutWorker, base_env: BaseEnv,
                        policies: Dict[str, Policy], episode: MultiAgentEpisode,
                        env_index: int, **kwargs):
-        print("episode {} (env-idx={}) ended with length {} and pole "
-              "angles {}".format(episode.episode_id, env_index, episode.length,
-                                 pole_angle))
-        env = base_env.get_unwrapped()
+        assert len(base_env.get_unwrapped()) == 1
+        env = base_env.get_unwrapped()[0]
         episode.custom_metrics["Survivors Rescued"] = env.get_survivors_rescued()
         episode.custom_metrics["Agents Killed"] = env.num_agents_dead()
-        episode.hist_data["pole_angles"] = episode.user_data["pole_angles"]

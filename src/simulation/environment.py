@@ -44,11 +44,12 @@ class GridWorldEnv(MultiAgentEnv):
     def step(self, action_dict: MultiAgentDict) -> Tuple[
         MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
         # Set all rewards at 0 to start with
-        rew, info = self.controller.perform_actions(action_dict, self._empty_reward_map())
+        rew = self._empty_reward_map()
+        self.controller.perform_actions(action_dict, rew)
         obs = self.controller.get_observations(rew)
         done = {"__all__": self.controller.all_agents_dead()}
 
-        return obs, rew, done, info
+        return obs, rew, done, {}
 
     def num_agents_dead(self):
         return self.controller.num_agents_dead()

@@ -185,7 +185,6 @@ class SimulationController:
 
     def perform_actions(self, action_dict, rew):
 
-        info = {}
         self.step_simulation()
 
         for i, agent in enumerate(self.agents):
@@ -198,14 +197,10 @@ class SimulationController:
                 if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
                     rew[i] += self._reward_map["hit tree"]
                     agent.kill()
-                    if "agents killed" not in info:
-                        info["agents killed"] = 1
-                    else:
-                        info["agents killed"] += 1
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
-        return rew, info
+        return rew
 
     def step_simulation(self):
         self.spread_fire()

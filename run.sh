@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks-per-node=28
 #SBATCH --nodes=1
 #SBATCH --partition=lycium
-#SBATCH --time=04:00:00
-#SBATCH --gres=gpu:4
+#SBATCH --time=12:00:00
+#SBATCH --gres=gpu:2
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jp6g18@soton.ac.uk
 
