@@ -5,9 +5,9 @@ from gym.spaces import Discrete, Box, Dict
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
-from simulation.agent import Agent
+from simulation.entities import Agent
 from simulation.gridworld_controller import SimulationController
-from simulation.obstacles import Obstacle
+from simulation.observables import Obstacle
 
 
 class GridWorldEnv(MultiAgentEnv):
@@ -29,7 +29,8 @@ class GridWorldEnv(MultiAgentEnv):
         self.action_space = Discrete(len(Agent().actions()))
         self.observation_space = Dict({
             "terrain": Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
-            "agents": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1)))
+            "agents": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
+            "survivors": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
         })
 
     def _empty_reward_map(self):
@@ -43,9 +44,14 @@ class GridWorldEnv(MultiAgentEnv):
     def step(self, action_dict: MultiAgentDict) -> Tuple[
         MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
         # Set all rewards at 0 to start with
-        rew = self._empty_reward_map()
-        self.controller.perform_actions(action_dict, rew)
+        rew, info = self.controller.perform_actions(action_dict, self._empty_reward_map())
         obs = self.controller.get_observations(rew)
-        done = {"__all__": all(self.controller.all_agents_dead())}
+        done = {"__all__": self.controller.all_agents_dead()}
 
-        return obs, rew, done, {}
+        return obs, rew, done, info
+
+    def num_agents_dead(self):
+        return self.controller.num_agents_dead()
+
+    def get_survivors_rescued(self):
+        return self.controller.get_survivors_rescued()

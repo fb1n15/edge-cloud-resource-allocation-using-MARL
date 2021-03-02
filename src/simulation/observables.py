@@ -8,17 +8,19 @@ class Obstacle(Enum):
     Road
     """
     TestObstacle = -1
-    Survivor = 0
-    Agent = 1
-    OutsideMap = 2
-    Empty = 3
-    Tree = 4
-    BurnedTree = 6
-    Rocks = 7
-    Road = 8
-    Wall = 9
-    HQ = 10
+    OutsideMap = 0
+    Empty = 1
+    Tree = 2
+    BurnedTree = 3
+    Rocks = 4
+    Road = 5
+    Wall = 6
+    HQ = 7
 
 
 def is_flammable(obstacle):
     return obstacle in (Obstacle.Tree, )
+
+
+def is_collidable(obstacle):
+    return obstacle in (Obstacle.Tree, Obstacle.BurnedTree, Obstacle.Rocks, Obstacle.Wall)

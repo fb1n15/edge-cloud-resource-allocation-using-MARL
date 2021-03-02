@@ -3,7 +3,7 @@ from random import randrange
 import numpy as np
 import noise
 
-from simulation.obstacles import Obstacle
+from simulation.observables import Obstacle
 
 
 class SimulationModel:
@@ -19,6 +19,7 @@ class SimulationModel:
             world = [[Obstacle.Empty for _ in range(width)] for _ in range(height)]
 
         self._world = world
+        self._entities = []
 
         self._width = width
         self._height = height
@@ -84,42 +85,6 @@ class SimulationModel:
                 x = center_x + x_offset
                 y = center_y + y_offset
                 self.set_at_cell(x, y, obstacle)
-
-    def get_area(self, left, right, top, bottom, agent_positions):
-        """
-        Gets a square area of the map.
-        The grid is
-        :param agent_positions:
-        :param left: The left of the area (inclusive)
-        :param right: Right of the area (inclusive)
-        :param top: The top of the area (inclusive)
-        :param bottom: Bottom of the area (inclusive)
-        :return: np array of the area in the map
-        """
-        terrain = np.array([[
-            self.get_at_cell(x, y).value
-            for x in range(left, right + 1)]
-            for y in range(top, bottom + 1)]
-        )
-
-        agents = np.array([[
-            1 if (x, y) in agent_positions else 0
-            for x in range(left, right + 1)]
-            for y in range(top, bottom + 1)]
-        )
-        return terrain, agents
-
-    @staticmethod
-    def _rotate_view(view, rot):
-        return np.rot90(view, k=rot, axes=(0, 1))
-
-    def agent_scan(self, agent, agent_positions):
-        agent_sight = agent.get_sight_area()
-        terrain, agents = self.get_area(*agent_sight, agent_positions)
-        self.explore_cells(*agent_sight)
-        return \
-            self._rotate_view(terrain, -agent.get_rotation()),\
-            self._rotate_view(agents, -agent.get_rotation())
 
     def explore_cells(self, left, right, top, bottom):
         for x in range(left, right+1):

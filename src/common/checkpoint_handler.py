@@ -28,7 +28,7 @@ def load_params(params_path):
 
 def explore_checkpoints():
     experiments = []
-    default_path = os.path.expanduser("results/")
+    default_path = "results/"
     for experiment in subdirs(default_path):
         if not experiment.startswith("DroneRescue"):
             continue
@@ -62,7 +62,7 @@ def explore_checkpoints():
                     "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
                     "config": config
                 })
-        print(experiment, valid)
+        print(experiment, valid, len(trials))
         if valid and len(trials) > 0:
             best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])
             experiments.append({

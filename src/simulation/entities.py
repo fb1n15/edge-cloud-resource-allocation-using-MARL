@@ -1,6 +1,23 @@
+from abc import ABC
 
-class Agent:
 
+class Entity(ABC):
+    def __init__(self, x, y):
+        self._x = x
+        self._y = y
+
+    def get_x(self):
+        return self._x
+
+    def get_y(self):
+        return self._y
+
+    def set_pos(self, x, y):
+        self._x = x
+        self._y = y
+
+
+class Agent(Entity):
     def __init__(self, x=0, y=0, rot=0, sight=0, battery=100, battery_costs=None):
         """
         :param x: x position relative to top left
@@ -8,10 +25,10 @@ class Agent:
         :param rot: rads clockwise from North
         :param sight: how far the agent can see
         """
+        super(Agent, self).__init__(x, y)
+
         if battery_costs is None:
             battery_costs = {}
-        self._x = x
-        self._y = y
         self._rot = rot
         self._sight = sight
         self._battery = battery
@@ -78,12 +95,11 @@ class Agent:
     def drain_battery(self, cost_type):
         self._battery -= self._battery_costs[cost_type]
 
-    def get_x(self):
-        return self._x
 
-    def get_y(self):
-        return self._y
+class Survivor(Entity):
+    def __init__(self, x, y, alive=True):
+        super(Survivor, self).__init__(x, y)
+        self.alive = alive
 
-    def set_pos(self, x, y):
-        self._x = x
-        self._y = y
+    def is_dead(self):
+        return not self.alive

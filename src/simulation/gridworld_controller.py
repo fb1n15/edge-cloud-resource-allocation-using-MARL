@@ -4,9 +4,9 @@ import noise
 import numpy as np
 from ray.rllib.utils.typing import MultiAgentDict
 
-from simulation.agent import Agent
+from simulation.entities import Agent, Survivor
 from simulation.gridworld_model import SimulationModel
-from simulation.obstacles import Obstacle, is_flammable
+from simulation.observables import Obstacle, is_flammable, is_collidable
 
 
 class SimulationController:
@@ -25,6 +25,9 @@ class SimulationController:
 
         self.agents = None
         self.model = None
+        self.survivors = []
+
+        self.survivors_rescued = 0
 
     def initialise(self):
         self.agents = [Agent(rot=0,
@@ -32,6 +35,7 @@ class SimulationController:
                              battery=self._battery,
                              battery_costs=self._battery_costs)
                        for i in range(self._num_agents)]
+        self.survivors = []
         self.model = SimulationModel(self._width, self._height)
 
         if self._autogen_config is not None:
@@ -41,6 +45,8 @@ class SimulationController:
         self.generate_agent_positions()
 
         self.start_fires(self._fire_spread)
+
+        self.survivors_rescued = 0
 
     def start_fires(self, fire_spread_config):
         # Find all trees
@@ -108,43 +114,98 @@ class SimulationController:
 
     def generate_survivors(self, num_survivors):
         for loc in self.model.choose_of_block_type([Obstacle.Empty], num_survivors):
-            self.model.set_at_cell(loc[0], loc[1], Obstacle.Survivor)
+            self.survivors.append(Survivor(loc[0], loc[1]))
+
+    def get_area(self, left, right, top, bottom, agent_positions, survivor_positions):
+        """
+        Gets a square area of the map.
+        The grid is
+        :param survivor_positions:
+        :param agent_positions:
+        :param left: The left of the area (inclusive)
+        :param right: Right of the area (inclusive)
+        :param top: The top of the area (inclusive)
+        :param bottom: Bottom of the area (inclusive)
+        :return: np array of the area in the map
+        """
+        terrain = np.array([[
+            self.model.get_at_cell(x, y).value
+            for x in range(left, right + 1)]
+            for y in range(top, bottom + 1)]
+        )
+
+        agents = np.array([[
+            1 if (x, y) in agent_positions else 0
+            for x in range(left, right + 1)]
+            for y in range(top, bottom + 1)]
+        )
+
+        survivors = np.array([[
+            1 if (x, y) in survivor_positions else 0
+            for x in range(left, right + 1)]
+            for y in range(top, bottom + 1)]
+        )
+        return terrain, agents, survivors
+
+    @staticmethod
+    def _rotate_view(view, rot):
+        return np.rot90(view, k=rot, axes=(0, 1))
+
+    def agent_scan(self, agent, agent_positions, survivor_positions):
+        agent_sight = agent.get_sight_area()
+        terrain, agents, survivors = self.get_area(*agent_sight, agent_positions, survivor_positions)
+        self.model.explore_cells(*agent_sight)
+        return \
+            self._rotate_view(terrain, -agent.get_rotation()),\
+            self._rotate_view(agents, -agent.get_rotation()),\
+            self._rotate_view(survivors, -agent.get_rotation()),
 
     def get_observations(self, rew) -> MultiAgentDict:
         agent_positions = self.get_agent_positions()
+        survivor_positions = self.get_survivor_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
-            terrain, agents = self.model.agent_scan(agent, agent_positions)
+            terrain, agents, survivors = self.agent_scan(agent, agent_positions, survivor_positions)
             obs[i] = {
                 "terrain": terrain,
-                "agents": agents
+                "agents": agents,
+                "survivors": survivors
             }
             rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
             assert terrain.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
             assert agents.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
+            assert survivors.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
         return obs
 
+    def num_agents_dead(self):
+        return [agent.is_dead() for i, agent in enumerate(self.agents)].count(True)
+
     def all_agents_dead(self):
-        return [agent.is_dead() for i, agent in enumerate(self.agents)]
+        return self.num_agents_dead() == len(self.agents)
 
     def perform_actions(self, action_dict, rew):
 
+        info = {}
         self.step_simulation()
 
         for i, agent in enumerate(self.agents):
             # Perform selected action
             if i in action_dict.keys() and not agent.is_dead():
                 agent.actions()[action_dict[i]]()
-                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.Survivor:
+                if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
                     rew[i] += self._reward_map["rescue"]
-                    self.model.set_at_cell(agent.get_x(), agent.get_y(), Obstacle.Empty)
-                if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.Tree:
+                    self.rescue_survivor(agent.get_x(), agent.get_y())
+                if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
                     rew[i] += self._reward_map["hit tree"]
                     agent.kill()
+                    if "agents killed" not in info:
+                        info["agents killed"] = 1
+                    else:
+                        info["agents killed"] += 1
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=
                 # If it goes outside map, punish it
-        return rew
+        return rew, info
 
     def step_simulation(self):
         self.spread_fire()
@@ -173,6 +234,24 @@ class SimulationController:
         for agent in self.agents:
             positions[(agent.get_x(), agent.get_y())] = agent
         return positions
+
+    def get_survivor_positions(self):
+        positions = {}
+        for survivor in self.survivors:
+            positions[(survivor.get_x(), survivor.get_y())] = survivor
+        return positions
+
+    def remove_survivor_at(self, x, y):
+        """Filter out any survivors on this cell"""
+        self.survivors = [survivor for survivor in self.survivors
+                          if survivor.get_x() != x and survivor.get_y() != y]
+
+    def get_survivors_rescued(self):
+        return self.survivors_rescued
+
+    def rescue_survivor(self, x, y):
+        self.remove_survivor_at(x, y)
+        self.survivors_rescued += 1
 
     def get_sight_range(self):
         return self._sight

@@ -7,10 +7,10 @@ env_config = {
     "version": GridWorldEnv.VERSION,
     "width": 40,
     "height": 40,
-    "num_survivors": 25,
+    "num_survivors": 20,
     "num_agents": 2,
     "start_world": [[]],
-    "sight": 4,
+    "sight": 5,
     "battery": 200,
     "rewards": {
         "rescue": 1,
@@ -62,14 +62,15 @@ config = {
     "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
     "num_workers": 3,
-    "num_gpus": 0.5,
+    "num_gpus": 1,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},
     # "train_batch_size": int(4000/8),
     # "rollout_fragment_length": int(200/8),
     # "sgd_minibatch_size": 128,
-    "lr": tune.grid_search([0.01, 0.001]),
+    "lr": tune.grid_search([0.001, 0.0003]),
     "env_config": env_config,
+    # "use_lstm": tune.grid_search([True, False])
 
     # "exploration_config": {
     #     "type": "Curiosity",  # <- Use the Curiosity module for exploring.
