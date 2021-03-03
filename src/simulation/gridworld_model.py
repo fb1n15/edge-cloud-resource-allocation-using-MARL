@@ -94,6 +94,9 @@ class SimulationModel:
                     self._explored_cells[y][x] = True
                     self._newly_explored += 1
 
+    def percentage_explored(self):
+        return sum(row.count(True) for row in self._explored_cells)/(self.get_width() * self.get_height())
+
     def get_newly_explored(self):
         newly_explored = self._newly_explored
         # Reset to 0

@@ -131,7 +131,7 @@ class SimulationController:
         :return: np array of the area in the map
         """
         terrain = np.array([[
-            self.model.get_at_cell(x, y).value
+            1 if is_collidable(self.model.get_at_cell(x, y)) else 0
             for x in range(left, right + 1)]
             for y in range(top, bottom + 1)]
         )
@@ -248,10 +248,13 @@ class SimulationController:
     def remove_survivor_at(self, x, y):
         """Filter out any survivors on this cell"""
         self.survivors = [survivor for survivor in self.survivors
-                          if survivor.get_x() != x and survivor.get_y() != y]
+                          if not (survivor.get_x() == x and survivor.get_y() == y)]
 
     def get_survivors_rescued(self):
         return self.survivors_rescued
+
+    def get_map_explored(self):
+        return self.model.percentage_explored()
 
     def rescue_survivor(self, x, y):
         self.remove_survivor_at(x, y)

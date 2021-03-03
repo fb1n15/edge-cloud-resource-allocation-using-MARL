@@ -59,20 +59,25 @@ stop = {
 config = {
     "env": GridWorldEnv,
     "framework": "torch",
-    "num_cpus_for_driver": 1,
+    # "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
-    "num_workers": 13,
-    "num_gpus": 1,
+    "num_workers": 3,
+    "num_gpus": 0.25,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},
     # "train_batch_size": int(4000/8),
     # "rollout_fragment_length": int(200/8),
     # "sgd_minibatch_size": 128,
-    "lr": tune.grid_search([0.001, 0.0003]),
+    "lr": tune.grid_search([0.001, 0.0005, 0.0001]),
     "env_config": env_config,
     "model": {
-        "use_lstm": tune.grid_search([True, False])
-    }
+        "use_lstm": tune.grid_search([False])
+    },
+
+    "exploration_config": {
+        "type": "StochasticSampling",
+        "random_timesteps": 100_000,  # timesteps at beginning, over which to act uniformly randomly
+    },
 
     # "exploration_config": {
     #     "type": "Curiosity",  # <- Use the Curiosity module for exploring.

@@ -28,7 +28,7 @@ class GridWorldEnv(MultiAgentEnv):
 
         self.action_space = Discrete(len(Agent().actions()))
         self.observation_space = Dict({
-            "terrain": Box(low=0, high=len(Obstacle), shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
+            "terrain": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
             "agents": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
             "survivors": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
         })
@@ -56,3 +56,6 @@ class GridWorldEnv(MultiAgentEnv):
 
     def get_survivors_rescued(self):
         return self.controller.get_survivors_rescued()
+
+    def get_map_explored(self):
+        return self.controller.get_map_explored()
