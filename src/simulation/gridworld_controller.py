@@ -185,7 +185,10 @@ class SimulationController:
         for i, agent in enumerate(self.agents):
             # Perform selected action
             if i in action_dict.keys() and not agent.is_dead():
-                agent.actions()[action_dict[i]]()
+                action_todo = action_dict[i]
+                # if random() < 0.25:
+                #     action_todo = randrange(len(agent.actions()))
+                agent.actions()[action_todo]()
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
                     rew[i] += self._reward_map["rescue"]
                     self.rescue_survivor(agent.get_x(), agent.get_y())

@@ -47,7 +47,8 @@ def explore_checkpoints():
             if environment is None:
                 environment = config["env_config"]
 
-            for i, checkpoint in enumerate(subdirs(os.path.join(default_path, experiment, trial))):
+            for checkpoint in subdirs(os.path.join(default_path, experiment, trial)):
+                i = int(checkpoint.split("_")[1])
                 checkpoints.append({
                     "name": checkpoint,
                     "episode_reward_mean": results[i]["episode_reward_mean"],

@@ -18,7 +18,7 @@ class SimulationRunner:
 
         # Create logger which doesn't do anything
         del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
-        experiment["best trial"]["config"]["explore"] = False
+        # experiment["best trial"]["config"]["explore"] = False
         self.agent = ppo.PPOTrainer(config=experiment["best trial"]["config"],
                                     env=GridWorldEnv)
         self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
