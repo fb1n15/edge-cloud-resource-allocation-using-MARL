@@ -27,11 +27,7 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["autogen config"])
 
         self.action_space = Discrete(len(Agent().actions()))
-        self.observation_space = Dict({
-            "terrain": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
-            "agents": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
-            "survivors": Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1))),
-        })
+        self.observation_space = Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1), 3))
 
     def _empty_reward_map(self):
         return {i: 0 for i in range(len(self.controller.agents))}

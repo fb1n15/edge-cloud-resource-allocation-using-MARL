@@ -118,7 +118,7 @@ class SimulationController:
         for loc in self.model.choose_of_block_type([Obstacle.Empty], num_survivors):
             self.survivors.append(Survivor(loc[0], loc[1]))
 
-    def get_area(self, left, right, top, bottom, agent_positions, survivor_positions):
+    def get_area(self, agent_positions, survivor_positions, left, right, top, bottom):
         """
         Gets a square area of the map.
         The grid is
@@ -153,30 +153,20 @@ class SimulationController:
     def _rotate_view(view, rot):
         return np.rot90(view, k=rot, axes=(0, 1))
 
-    def agent_scan(self, agent, agent_positions, survivor_positions):
+    def agent_scan(self, agent, survivor_positions, agent_positions):
         agent_sight = agent.get_sight_area()
-        terrain, agents, survivors = self.get_area(*agent_sight, agent_positions, survivor_positions)
+        terrain, agents, survivors = self.get_area(agent_positions, survivor_positions, *agent_sight)
         self.model.explore_cells(*agent_sight)
-        return \
-            self._rotate_view(terrain, -agent.get_rotation()),\
-            self._rotate_view(agents, -agent.get_rotation()),\
-            self._rotate_view(survivors, -agent.get_rotation()),
+        return self._rotate_view(np.dstack((terrain, agents, survivors)), agent.get_rotation())
 
     def get_observations(self, rew) -> MultiAgentDict:
         agent_positions = self.get_agent_positions()
         survivor_positions = self.get_survivor_positions()
         obs = {}
         for i, agent in enumerate(self.agents):
-            terrain, agents, survivors = self.agent_scan(agent, agent_positions, survivor_positions)
-            obs[i] = {
-                "terrain": terrain,
-                "agents": agents,
-                "survivors": survivors
-            }
+            obs[i] = self.agent_scan(agent, agent_positions, survivor_positions)
             rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
-            assert terrain.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
-            assert agents.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
-            assert survivors.shape == (self._sight * 2 + 1, self._sight * 2 + 1)
+            assert obs[i].shape == (self._sight * 2 + 1, self._sight * 2 + 1, 3)
         return obs
 
     def num_agents_dead(self):
