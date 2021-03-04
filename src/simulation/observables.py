@@ -23,4 +23,4 @@ def is_flammable(obstacle):
 
 
 def is_collidable(obstacle):
-    return obstacle in (Obstacle.Tree, Obstacle.BurnedTree, Obstacle.Rocks, Obstacle.Wall)
+    return obstacle in (Obstacle.Tree, Obstacle.BurnedTree, Obstacle.Rocks, Obstacle.Wall, Obstacle.OutsideMap)

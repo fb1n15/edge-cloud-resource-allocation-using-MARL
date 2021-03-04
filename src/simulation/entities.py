@@ -74,9 +74,9 @@ class Agent(Entity):
     def get_rotation(self):
         """
         0 -> Up
-        1 -> Left
+        1 -> Right
         2 -> Down
-        3 -> Right
+        3 -> Left
         """
         return self._rot
 
