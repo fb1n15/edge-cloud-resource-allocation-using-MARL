@@ -61,25 +61,23 @@ config = {
     "framework": "torch",
     # "num_cpus_for_driver": 1,
     # "num_envs_per_worker": 1,
-    "num_workers": 26,
-    "num_gpus": 2,
+    "num_workers": 9,
+    "num_gpus": 1,
     # "num_cpus_per_worker": 3,
     # "model": {"fcnet_hiddens": [8, 8]},
     # "train_batch_size": int(4000/8),
     # "rollout_fragment_length": int(200/8),
     # "sgd_minibatch_size": 128,
-    "lr": tune.grid_search([0.0005, 0.0001]),
+    "lr": tune.grid_search([0.00008, 0.0003]),
     "env_config": env_config,
-    # "model": {
-    #     "use_lstm": tune.grid_search([False])
-    # },
 
-    "lam": 0.95,
+    "lambda": 0.95,
     "gamma": 0.99,
 
     "model": {
         "dim": 11,
-        "conv_filters": [[16, [3, 3], 1], [32, [3, 3], 1], [512, [3, 3], 1]]
+        "conv_filters": [[16, [3, 3], 2], [32, [3, 3], 2], [512, [3, 3], 1]],
+        # "use_lstm": True
     },
 
     # "exploration_config": {
