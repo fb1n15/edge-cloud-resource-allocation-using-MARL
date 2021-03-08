@@ -4,9 +4,9 @@ import noise
 import numpy as np
 from ray.rllib.utils.typing import MultiAgentDict
 
-from simulation.entities import Agent, Survivor
-from simulation.gridworld_model import SimulationModel
-from simulation.observables import Obstacle, is_flammable, is_collidable
+from environments.gridworld_obstacles.simulation.entities import Agent, Survivor
+from environments.gridworld_obstacles.simulation.gridworld_model import SimulationModel
+from environments.gridworld_obstacles.simulation.observables import Obstacle, is_flammable, is_collidable
 
 
 class SimulationController:

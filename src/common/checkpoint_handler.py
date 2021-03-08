@@ -1,8 +1,6 @@
 import os
 import json
 
-from simulation.environment import GridWorldEnv
-
 
 def subdirs(path):
     """Yield directory names contained in directory"""
@@ -41,9 +39,9 @@ def explore_checkpoints():
             config = load_params(os.path.join(default_path, experiment, trial, "params.json"))
             if len(results) == 0:
                 break
-            if config["env_config"].get("version", -1) < GridWorldEnv.VERSION:
-                # If the config is using an old version of the simulation environment, don't include
-                valid = False
+            # if config["env_config"].get("version", -1) < GridWorldEnv.VERSION:
+            #     # If the config is using an old version of the simulation environment, don't include
+            #     valid = False
             if environment is None:
                 environment = config["env_config"]
 

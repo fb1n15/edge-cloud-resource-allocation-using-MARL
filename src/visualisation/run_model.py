@@ -1,11 +1,9 @@
-from time import sleep
-
 import pygame
 import ray
 import thorpy
 import threading
 
-from simulation.environment import GridWorldEnv
+from environments.gridworld_obstacles.simulation import GridWorldEnv
 from visualisation.gridworld_vis import render_gridworld, render_HUD
 import ray.rllib.agents.ppo as ppo
 

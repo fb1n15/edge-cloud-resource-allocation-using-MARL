@@ -1,13 +1,11 @@
-from pprint import pprint
 from typing import Tuple
 
-from gym.spaces import Discrete, Box, Dict
+from gym.spaces import Discrete, Box
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
-from simulation.entities import Agent
-from simulation.gridworld_controller import SimulationController
-from simulation.observables import Obstacle
+from environments.gridworld_obstacles.simulation.entities import Agent
+from environments.gridworld_obstacles.simulation.gridworld_controller import SimulationController
 
 
 class GridWorldEnv(MultiAgentEnv):

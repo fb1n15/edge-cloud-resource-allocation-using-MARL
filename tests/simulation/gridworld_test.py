@@ -1,8 +1,8 @@
 import pytest
 
-from simulation.entities import Agent
-from simulation.gridworld_model import SimulationModel
-from simulation.observables import Obstacle
+from environments.gridworld_obstacles.simulation import Agent
+from environments.gridworld_obstacles.simulation import SimulationModel
+from environments.gridworld_obstacles.simulation import Obstacle
 
 
 w = 5

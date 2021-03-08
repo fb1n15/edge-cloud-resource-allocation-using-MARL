@@ -1,9 +1,6 @@
-import random
-from random import randrange
 import numpy as np
-import noise
 
-from simulation.observables import Obstacle
+from environments.gridworld_obstacles.simulation.observables import Obstacle
 
 
 class SimulationModel:

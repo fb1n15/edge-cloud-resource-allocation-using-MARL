@@ -1,15 +1,15 @@
 import thorpy
 
-from visualisation import gridworld_vis
 import pygame
-from simulation.environment import GridWorldEnv
-from learning.config import gridworld_obstacles_env_config
+
+from environments import environments
+from visualisation import gridworld_vis
 from visualisation.run_model import WIDTH, HEIGHT
 
 
-def main():
+def main(env=environments["gridworld_obstacles"]):
     """This is for testing the map generation and graphics"""
-    env_controller = GridWorldEnv(gridworld_obstacles_env_config).controller
+    env_controller = env["env"](env["env_config"]).controller
     env_controller.initialise()
 
     pygame.init()
@@ -37,5 +37,5 @@ def main():
                 running = False
             menu.react(event)
 
-        screen.blit(gridworld_vis.render_gridworld(env_controller, WIDTH, HEIGHT - 80), (0, 80))
+        screen.blit(env["render_gridworld"](env_controller, WIDTH, HEIGHT - 80), (0, 80))
         pygame.display.update()

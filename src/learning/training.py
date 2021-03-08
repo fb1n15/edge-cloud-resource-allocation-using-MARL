@@ -8,7 +8,8 @@ from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.evaluation import MultiAgentEpisode
 from ray.tune.schedulers import PopulationBasedTraining
 
-from learning.config import stop, config, performance_configs, environments
+from environments import environments
+from learning.config import stop, config, performance_configs
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
@@ -29,7 +30,8 @@ def run_same_policy(trainer="ppo", pbt=True, platform="laptop", env="gridworld_o
     _config = config["common"]
     _config = merge_dicts(_config, config[trainer]["config"])
     _config = merge_dicts(_config, performance_configs[platform])
-    _config = merge_dicts(_config, environments[env])
+    _config["env_config"] = environments[env]["env_config"]
+    _config["env"] = environments[env]["env"]
 
     # Add callbacks for custom metrics
     _config["callbacks"] = CustomCallbacks
