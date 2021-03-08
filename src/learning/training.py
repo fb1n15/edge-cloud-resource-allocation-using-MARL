@@ -6,8 +6,9 @@ from datetime import datetime
 from ray.rllib import RolloutWorker, BaseEnv, Policy, SampleBatch
 from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.evaluation import MultiAgentEpisode
+from ray.tune.schedulers import PopulationBasedTraining
 
-from common.config import stop, config
+from common.config import stop, config, mutations_config
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
@@ -22,6 +23,13 @@ def get_name():
 
 def run_same_policy():
     """Use the same policy for all agents"""
+    scheduler = PopulationBasedTraining(
+        time_attr="training_iteration",
+        perturbation_interval=5,
+        hyperparam_mutations=mutations_config,
+        metric="episode_reward_mean",
+        mode="max")
+
     _config = config
     _config["callbacks"] = CustomCallbacks
     analysis = tune.run(
@@ -31,12 +39,14 @@ def run_same_policy():
         # restore=r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue 2021-03-02 "
         #         r"13-07-52-039234\PPO_GridWorldEnv_4b97a_00001_1_lr=0.001_2021-03-02_13-29-07\checkpoint_100"
         #         r"\checkpoint-100",
+        scheduler=scheduler,
         local_dir="results/",
         config=config,
         stop=stop,
         verbose=3,
         checkpoint_freq=20,
         checkpoint_at_end=True,
+        num_samples=20,
     )
 
     checkpoints = analysis.get_trial_checkpoints_paths(
