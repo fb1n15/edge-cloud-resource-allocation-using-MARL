@@ -37,5 +37,5 @@ def main(env=environments["gridworld_obstacles"]):
                 running = False
             menu.react(event)
 
-        screen.blit(env["render_gridworld"](env_controller, WIDTH, HEIGHT - 80), (0, 80))
+        screen.blit(env["render"](env_controller, WIDTH, HEIGHT - 80), (0, 80))
         pygame.display.update()
