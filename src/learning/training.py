@@ -24,8 +24,15 @@ def get_name():
     return f"DroneRescue {time}"
 
 
-def run_same_policy(trainer="ppo", pbt=True, platform="laptop", env="gridworld_obstacles"):
-    """Use the same policy for all agents"""
+def train(trainer="ppo", pbt=True, platform="laptop", env="gridworld_obstacles"):
+    """
+
+    :param trainer: "ppo"
+    :param pbt: True/False for population based training
+    :param platform: "laptop" or "iridis"
+    :param env: "gridworld_obstacles"
+    :return: Analysis
+    """
 
     _config = config["common"]
     _config = merge_dicts(_config, config[trainer]["config"])
@@ -61,17 +68,17 @@ def run_same_policy(trainer="ppo", pbt=True, platform="laptop", env="gridworld_o
         num_samples=20,
     )
 
-    checkpoints = analysis.get_trial_checkpoints_paths(
-        trial=analysis.get_best_trial("episode_reward_mean", mode="max"),
-        metric="episode_reward_mean")
+    # checkpoints = analysis.get_trial_checkpoints_paths(
+    #     trial=analysis.get_best_trial("episode_reward_mean", mode="max"),
+    #     metric="episode_reward_mean")
 
-    return checkpoints
+    return analysis
 
 
 def main(restore=None):
     # TODO add restore checkpoint option
     ray.init()
-    checkpoints = run_same_policy()
+    checkpoints = train()
     print(checkpoints)
 
 
