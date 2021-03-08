@@ -3,8 +3,8 @@ import ray
 import thorpy
 import threading
 
-from environments.gridworld_obstacles.simulation import GridWorldEnv
-from visualisation.gridworld_vis import render_gridworld, render_HUD
+from environments import environments
+from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
 
 WIDTH = 640
@@ -12,15 +12,15 @@ HEIGHT = 720
 
 
 class SimulationRunner:
-    def __init__(self, experiment):
+    def __init__(self, experiment, env):
 
         # Create logger which doesn't do anything
         del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
         # experiment["best trial"]["config"]["explore"] = False
         self.agent = ppo.PPOTrainer(config=experiment["best trial"]["config"],
-                                    env=GridWorldEnv)
+                                    env=env["env"])
         self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
-        self.env = GridWorldEnv(experiment["environment"])
+        self.env = env["env"](experiment["environment"])
 
         self.gridworld = self.env.controller
 
@@ -68,7 +68,7 @@ class SimulationRunner:
         return self.env.num_agents_crashed()
 
 
-def start_displaying(runner):
+def start_displaying(runner, env):
     MENU_HEIGHT = 80
 
     pygame.init()
@@ -106,7 +106,7 @@ def start_displaying(runner):
     while running:
         clock.tick(60)
 
-        screen.blit(render_gridworld(runner.gridworld, WIDTH, HEIGHT - MENU_HEIGHT), (0, MENU_HEIGHT))
+        screen.blit(env["render"](runner.gridworld, WIDTH, HEIGHT - MENU_HEIGHT), (0, MENU_HEIGHT))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -120,7 +120,7 @@ def start_displaying(runner):
     runner.running = False
 
 
-def main(experiment):
+def main(experiment, env=environments["gridworld_obstacles"]):
     ray.init()
-    runner = SimulationRunner(experiment)
-    start_displaying(runner)
+    runner = SimulationRunner(experiment, env)
+    start_displaying(runner, env)

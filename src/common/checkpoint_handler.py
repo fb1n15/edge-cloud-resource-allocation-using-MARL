@@ -46,12 +46,16 @@ def explore_checkpoints():
                 environment = config["env_config"]
 
             for checkpoint in subdirs(os.path.join(default_path, experiment, trial)):
-                i = int(checkpoint.split("_")[1])
-                checkpoints.append({
-                    "name": checkpoint,
-                    "episode_reward_mean": results[i]["episode_reward_mean"],
-                    "path": os.path.join(default_path, experiment, trial, checkpoint, checkpoint.replace("_", "-"))
-                })
+                try:
+                    i = int(checkpoint.split("_")[1])
+                    checkpoints.append({
+                        "name": checkpoint,
+                        "episode_reward_mean": results[i]["episode_reward_mean"],
+                        "path": os.path.join(default_path, experiment, trial, checkpoint, checkpoint.replace("_", "-"))
+                    })
+                except (IndexError, ValueError):
+                    # Just ignore invalid checkpoints
+                    pass
                 # Check that all the environments are the same for each checkpoint in a trial
                 # assert results[i]["config"]["env_config"] == environment
             if len(checkpoints) > 0:
@@ -61,7 +65,6 @@ def explore_checkpoints():
                     "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
                     "config": config
                 })
-        print(experiment, valid, len(trials))
         if valid and len(trials) > 0:
             best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])
             experiments.append({
