@@ -52,8 +52,9 @@ env_config = {
 }
 
 stop = {
-    "training_iteration": 1000,
-    # "episode_reward_mean": 14,
+    # "training_iteration": 1000,
+    "episode_reward_mean": 19,
+    "timesteps_total": 5_000_000
 }
 
 config = {
@@ -64,7 +65,7 @@ config = {
     # Performance config
     # "num_cpus_for_driver": 1,
     "num_envs_per_worker": 1,
-    "num_workers": 9,
+    "num_workers": 13,
     "num_gpus": 1,
 
     # Model config
