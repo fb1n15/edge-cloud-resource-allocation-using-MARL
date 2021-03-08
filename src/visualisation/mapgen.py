@@ -3,13 +3,13 @@ import thorpy
 from visualisation import gridworld_vis
 import pygame
 from simulation.environment import GridWorldEnv
-from common.config import env_config
+from learning.config import gridworld_obstacles_env_config
 from visualisation.run_model import WIDTH, HEIGHT
 
 
 def main():
     """This is for testing the map generation and graphics"""
-    env_controller = GridWorldEnv(env_config).controller
+    env_controller = GridWorldEnv(gridworld_obstacles_env_config).controller
     env_controller.initialise()
 
     pygame.init()

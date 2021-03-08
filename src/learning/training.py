@@ -3,15 +3,17 @@ from typing import Dict
 import ray
 from datetime import datetime
 
-from ray.rllib import RolloutWorker, BaseEnv, Policy, SampleBatch
+from ray.rllib import RolloutWorker, BaseEnv, Policy
 from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.evaluation import MultiAgentEpisode
 from ray.tune.schedulers import PopulationBasedTraining
 
-from common.config import stop, config, mutations_config
+from learning.config import stop, config, performance_configs, environments
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
+
+from common.utils import merge_dicts
 
 torch, nn = try_import_torch()
 
@@ -21,17 +23,25 @@ def get_name():
     return f"DroneRescue {time}"
 
 
-def run_same_policy():
+def run_same_policy(trainer="ppo", pbt=True, platform="laptop", env="gridworld_obstacles"):
     """Use the same policy for all agents"""
+
+    _config = config["common"]
+    _config = merge_dicts(_config, config[trainer]["config"])
+    _config = merge_dicts(_config, performance_configs[platform])
+    _config = merge_dicts(_config, environments[env])
+
+    # Add callbacks for custom metrics
+    _config["callbacks"] = CustomCallbacks
+
+    # Use population base trainer if option given
     scheduler = PopulationBasedTraining(
         time_attr="training_iteration",
         perturbation_interval=5,
-        hyperparam_mutations=mutations_config,
+        hyperparam_mutations=config[trainer]["mutations_config"],
         metric="episode_reward_mean",
-        mode="max")
+        mode="max") if pbt else None
 
-    _config = config
-    _config["callbacks"] = CustomCallbacks
     analysis = tune.run(
         "PPO",
         name=get_name(),
@@ -41,7 +51,7 @@ def run_same_policy():
         #         r"\checkpoint-100",
         scheduler=scheduler,
         local_dir="results/",
-        config=config,
+        config=_config,
         stop=stop,
         verbose=3,
         checkpoint_freq=20,
