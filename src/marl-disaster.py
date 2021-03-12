@@ -1,14 +1,16 @@
 """
 Run this with marl-disaster.py <train/run/mapgen>
 -r/--restore | restore training from checkpoint
-
+-p <laptop/iridis>
 """
+import argparse
 from abc import ABC, abstractmethod
 import sys
 from getopt import getopt
 
 
 from common.checkpoint_handler import explore_checkpoints
+from common.config_file_handler import load_yaml
 
 
 class ExperimentChooser(ABC):
@@ -52,20 +54,21 @@ class CLIPromptExperimentChooser(ExperimentChooser):
         return self.experiments[choice]
 
 
-def main(argv):
-    if len(argv) <= 1:
-        raise Exception("Must specify train/run")
-    opts, args = getopt(argv[2:], "r", ["restore="])
-    restore = None
-    for opt, arg in opts:
-        if opt in ("-r", "--restore"):
-            restore = arg
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('run_option', choices=['train', 'run', 'mapgen'])
+    # parser.add_argument('--restore', action='store_true')
+    parser.add_argument('--config', type=str, help='File containing the config')
+    args = parser.parse_args()
 
-    if argv[1] == "train":
+    restore = False
+    config = load_yaml(args.config)
+
+    if args.run_option == "train":
         from learning import training
-        training.main(restore=restore)
+        training.main(config)
 
-    elif argv[1] == "run":
+    elif args.run_option == "run":
         from visualisation import run_model
         if restore is not None:
             raise Exception("Cannot restore for run, only train")
@@ -73,7 +76,7 @@ def main(argv):
         chooser = CLIPromptExperimentChooser(experiments)
         run_model.main(chooser.select_experiment())
 
-    elif argv[1] == "mapgen":
+    elif args.run_option == "mapgen":
         if restore is not None:
             raise Exception("Cannot restore for run, only train")
         from visualisation import mapgen
@@ -81,4 +84,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()

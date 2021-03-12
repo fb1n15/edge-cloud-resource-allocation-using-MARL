@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import Dict
 
 import ray
@@ -8,60 +9,55 @@ from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.evaluation import MultiAgentEpisode
 from ray.tune.schedulers import PopulationBasedTraining
 
-from environments import environments
-from learning.config import stop, config, performance_configs
+from environments import environment_map
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
-from common.utils import merge_dicts
-
 torch, nn = try_import_torch()
 
 
-def get_name():
+def format_name(name):
     time = str(datetime.now()).replace(":", "-").replace(".", "-")
-    return f"DroneRescue {time}"
+    return f"{name} {time}"
 
 
-def train(trainer="ppo", pbt=True, platform="laptop", env="gridworld_obstacles"):
+def train(config):
+    """
+    :param config:
+    :return: Analysis object
     """
 
-    :param trainer: "ppo"
-    :param pbt: True/False for population based training
-    :param platform: "laptop" or "iridis"
-    :param env: "gridworld_obstacles"
-    :return: Analysis
-    """
+    # _config = config["common"]
+    # _config = merge_dicts(_config, config[trainer]["config"])
+    # _config = merge_dicts(_config, performance_configs[platform])
+    # _config["env_config"] = environments[env]["env_config"]
+    # _config["env"] = environments[env]["env"]
+    pprint(config)
 
-    _config = config["common"]
-    _config = merge_dicts(_config, config[trainer]["config"])
-    _config = merge_dicts(_config, performance_configs[platform])
-    _config["env_config"] = environments[env]["env_config"]
-    _config["env"] = environments[env]["env"]
+    trainer_config = config["trainer-config"]
+    trainer_config["env_config"] = config["env-config"]
+    trainer_config["env"] = environment_map(config["env"])["env"]
 
     # Add callbacks for custom metrics
-    _config["callbacks"] = CustomCallbacks
+    trainer_config["callbacks"] = CustomCallbacks
 
-    # Use population base trainer if option given
-    scheduler = PopulationBasedTraining(
-        time_attr="training_iteration",
-        perturbation_interval=5,
-        hyperparam_mutations=config[trainer]["mutations_config"],
-        metric="episode_reward_mean",
-        mode="max") if pbt else None
+    scheduler = None
+    if "scheduler" in config:
+        if config["scheduler"] == "pbt":
+            scheduler = PopulationBasedTraining(**config["scheduler-config"])
 
     analysis = tune.run(
         "PPO",
-        name=get_name(),
+        name=config["name"],
         # name="DroneRescue 2021-03-02 13-07-52-039234",
         # restore=r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue 2021-03-02 "
         #         r"13-07-52-039234\PPO_GridWorldEnv_4b97a_00001_1_lr=0.001_2021-03-02_13-29-07\checkpoint_100"
         #         r"\checkpoint-100",
         scheduler=scheduler,
+        config=trainer_config,
+        stop=config["stop"],
         local_dir="results/",
-        config=_config,
-        stop=stop,
         verbose=3,
         checkpoint_freq=20,
         checkpoint_at_end=True,
@@ -75,15 +71,10 @@ def train(trainer="ppo", pbt=True, platform="laptop", env="gridworld_obstacles")
     return analysis
 
 
-def main(restore=None):
-    # TODO add restore checkpoint option
+def main(config):
     ray.init()
-    checkpoints = train()
-    print(checkpoints)
-
-
-if __name__ == "__main__":
-    main()
+    analysis = train(config)
+    print(analysis)
 
 
 class CustomCallbacks(DefaultCallbacks):
