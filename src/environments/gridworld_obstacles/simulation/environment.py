@@ -24,11 +24,16 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["fire spread"],
                                                config["autogen config"])
 
-        self.action_space = Discrete(len(Agent().actions()))
-        self.observation_space = Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1), 3))
+    @staticmethod
+    def get_action_space():
+        return Discrete(len(Agent("dummy").actions()))
+
+    @staticmethod
+    def get_observation_space(config):
+        return Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1), 3))
 
     def _empty_reward_map(self):
-        return {i: 0 for i in range(len(self.controller.agents))}
+        return {agent.id: 0 for agent in self.controller.agents}
 
     def reset(self) -> MultiAgentDict:
         self.controller.initialise()

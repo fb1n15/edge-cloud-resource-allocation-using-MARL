@@ -31,7 +31,8 @@ class SimulationController:
         self.agents_crashed = 0
 
     def initialise(self):
-        self.agents = [Agent(rot=0,
+        self.agents = [Agent("drone_"+str(i),
+                             rot=0,
                              sight=self._sight,
                              battery=self._battery,
                              battery_costs=self._battery_costs)
@@ -163,10 +164,10 @@ class SimulationController:
         agent_positions = self.get_agent_positions()
         survivor_positions = self.get_survivor_positions()
         obs = {}
-        for i, agent in enumerate(self.agents):
-            obs[i] = self.agent_scan(agent, agent_positions, survivor_positions)
-            rew[i] += self.model.get_newly_explored() * self._reward_map["exploring"]
-            assert obs[i].shape == (self._sight * 2 + 1, self._sight * 2 + 1, 3)
+        for agent in self.agents:
+            obs[agent.id] = self.agent_scan(agent, agent_positions, survivor_positions)
+            rew[agent.id] += self.model.get_newly_explored() * self._reward_map["exploring"]
+            assert obs[agent.id].shape == (self._sight * 2 + 1, self._sight * 2 + 1, 3)
         return obs
 
     def num_agents_dead(self):
@@ -182,18 +183,18 @@ class SimulationController:
 
         self.step_simulation()
 
-        for i, agent in enumerate(self.agents):
+        for agent in self.agents:
             # Perform selected action
-            if i in action_dict.keys() and not agent.is_dead():
-                action_todo = action_dict[i]
+            if agent.id in action_dict.keys() and not agent.is_dead():
+                action_todo = action_dict[agent.id]
                 # if random() < 0.25:
                 #     action_todo = randrange(len(agent.actions()))
                 agent.actions()[action_todo]()
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
-                    rew[i] += self._reward_map["rescue"]
+                    rew[agent.id] += self._reward_map["rescue"]
                     self.rescue_survivor(agent.get_x(), agent.get_y())
                 if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
-                    rew[i] += self._reward_map["hit tree"]
+                    rew[agent.id] += self._reward_map["hit tree"]
                     self.kill_agent(agent)
                 # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                 # rew[i] -=

@@ -18,7 +18,7 @@ class Entity(ABC):
 
 
 class Agent(Entity):
-    def __init__(self, x=0, y=0, rot=0, sight=0, battery=100, battery_costs=None):
+    def __init__(self, _id, x=0, y=0, rot=0, sight=0, battery=100, battery_costs=None):
         """
         :param x: x position relative to top left
         :param y: y position relative to top left
@@ -26,6 +26,8 @@ class Agent(Entity):
         :param sight: how far the agent can see
         """
         super(Agent, self).__init__(x, y)
+
+        self.id = _id
 
         if battery_costs is None:
             battery_costs = {}
