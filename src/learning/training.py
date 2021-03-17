@@ -9,6 +9,8 @@ from ray.rllib import RolloutWorker, BaseEnv, Policy
 from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.env import GroupAgentsWrapper
 from ray.rllib.evaluation import MultiAgentEpisode
+from ray.rllib.models import ModelCatalog
+# from ray.rllib.models.torch.visionnet import VisionNetwork
 from ray.tune import register_env
 from ray.tune.schedulers import PopulationBasedTraining
 
@@ -16,6 +18,8 @@ from environments import environment_map
 
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
+
+from models.custom_model import CustomVisionNetwork
 
 torch, nn = try_import_torch()
 
@@ -54,8 +58,16 @@ def train(config):
         }
 
         # Register the environment with Ray, and use this in the config
-        register_env(config["env"], lambda env_cfg: env.with_agent_groups(env(env_cfg), grouping))
+        register_env(config["env"], lambda env_cfg: env(env_cfg).with_agent_groups(grouping, obs_space=obs_space, act_space=act_space))
         trainer_config["env"] = config["env"]
+        # trainer_config["env"] = env
+
+        # trainer_config["multiagent"] = {
+        #     "policies": {
+        #         "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+        #     },
+        #     "policy_mapping_fn": lambda agent_id: "default"
+        # }
 
         trainer_config["multiagent"] = {
             "policies": {
@@ -63,6 +75,8 @@ def train(config):
             },
             "policy_mapping_fn": lambda agent_id: "default"
         }
+
+    ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks

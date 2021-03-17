@@ -5,7 +5,7 @@ env-config:
   width: 40
   height: 40
   num_survivors: 20
-  num_agents: 3
+  num_agents: 4
   start_world: [ [ ] ]
   sight: 5
   battery: 500
@@ -44,24 +44,35 @@ trainer: QMIX
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 10
+  num_workers: 3
   num_gpus: 1
 
   # Model config
   model:
+    custom_model: "CustomVisionNetwork"
     dim: 11
     conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
+
+#    custom_model_config:
+#      dim: 11
+#      conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
     use_lstm: false
     # To further customize the LSTM auto-wrapper
-    "lstm_cell_size": 64
+#    "lstm_cell_size": 64
 
   # Trainer parameters
   lr: 0.00001
-#  lambda:
-#    uniform: [0.9, 1]
+  exploration_config:
+    # The Exploration class to use.
+    "type": EpsilonGreedy
+    # Config for the Exploration class' constructor:
+    "initial_epsilon": 1.0
+    "final_epsilon": 0.02
+    "epsilon_timesteps": 25000
+#  lambda: 0.9
 #  gamma: 0.99
 #  rollout_fragment_length: 100
-#  train_batch_size: 5000
+  train_batch_size: 50
 #  sgd_minibatch_size: 500
 #  entropy_coeff: 0.01
 

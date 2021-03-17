@@ -51,9 +51,9 @@ trainer-config:
   model:
     dim: 11
     conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
-    use_lstm: true
+#    use_lstm: true
     # To further customize the LSTM auto-wrapper
-    "lstm_cell_size": 64
+#    "lstm_cell_size": 64
 
   # Trainer parameters
   lr:
@@ -87,8 +87,10 @@ scheduler-config:
     train_batch_size: [ 4000, 5000 ]
     sgd_minibatch_size: [ 128, 500 ]
 
-    observation_filter: [ MeanStdFilter, NoFilter ]
+    observation_filter: [ NoFilter ]
 
 stop:
-  episode_reward_mean: 18
-  timesteps_total: 2_000_000
+  timesteps_total: 1_000_000
+
+grouping: all_same
+
