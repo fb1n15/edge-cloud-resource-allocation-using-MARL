@@ -100,7 +100,7 @@ def train(config):
 
     analysis = tune.run(
         config["trainer"],
-        name=config["name"],
+        name="DroneRescue "+config["name"],
         # name="DroneRescue 2021-03-02 13-07-52-039234",
         # restore=r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue 2021-03-02 "
         #         r"13-07-52-039234\PPO_GridWorldEnv_4b97a_00001_1_lr=0.001_2021-03-02_13-29-07\checkpoint_100"

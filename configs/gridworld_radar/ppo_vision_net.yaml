@@ -1,4 +1,4 @@
-name: gridworld_radar_vision_net_ppo
+name: DroneRescue gridworld_radar_vision_net_ppo
 
 env: gridworld_radar_vision_net
 env-config:
@@ -91,7 +91,6 @@ scheduler-config:
     observation_filter: [ MeanStdFilter, NoFilter ]
 
 stop:
-  episode_reward_mean: 18
-  timesteps_total: 2_000_000
+  timesteps_total: 1_000_000
 
 grouping: radar-rescue

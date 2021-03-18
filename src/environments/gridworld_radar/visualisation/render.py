@@ -1,3 +1,4 @@
+from environments.gridworld_radar.simulation.entities import RadarDrone, RescueDrone
 from environments.gridworld_radar.simulation.gridworld_controller import SimulationController
 from environments.gridworld_radar.simulation.observables import Obstacle
 
@@ -20,6 +21,10 @@ def render_gridworld(gridworld_controller: SimulationController, width, height):
     surface.fill((255, 255, 255))
     for y in range(gridworld_width):
         for x in range(gridworld_height):
+            agent = None
+            if (x, y) in agent_positions:
+                agent = agent_positions[(x, y)]
+
             cell = gridworld.get_at_cell(x, y)
             if cell == Obstacle.OutsideMap:
                 colour = (0, 0, 0)
@@ -45,14 +50,21 @@ def render_gridworld(gridworld_controller: SimulationController, width, height):
             pygame.draw.rect(surface, colour, rect)
             pygame.draw.rect(surface, (200, 200, 200), rect_outline, width=1)
 
-            if (x, y) in agent_positions:
+            if agent is not None:
                 border_size = 1
-                pygame.draw.circle(
-                    surface, (20, 20, 20), (int((x+0.5)*block_width), int((y+0.5)*block_height)), agent_rad)
-                pygame.draw.circle(
-                    surface, (100, 100, 255), (int((x+0.5)*block_width), int((y+0.5)*block_height)),
-                    agent_rad-border_size)
-                rotation = agent_positions[(x, y)].get_rotation()
+                if isinstance(agent, RadarDrone):
+                    pygame.draw.circle(
+                        surface, (20, 20, 20), (int((x+0.5)*block_width), int((y+0.5)*block_height)), agent_rad)
+                    pygame.draw.circle(
+                        surface, (100, 100, 255), (int((x+0.5)*block_width), int((y+0.5)*block_height)),
+                        agent_rad-border_size)
+                elif isinstance(agent, RescueDrone):
+                    pygame.draw.circle(
+                        surface, (20, 20, 20), (int((x+0.5)*block_width), int((y+0.5)*block_height)), agent_rad)
+                    pygame.draw.circle(
+                        surface, (200, 200, 100), (int((x+0.5)*block_width), int((y+0.5)*block_height)),
+                        agent_rad-border_size)
+                rotation = agent.get_rotation()
                 offset = {
                     0: (block_width/2, 0),
                     1: (block_width, block_height/2),

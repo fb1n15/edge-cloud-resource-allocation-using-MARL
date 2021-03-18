@@ -3,7 +3,14 @@ import ray
 import thorpy
 import threading
 
-from environments import environments
+from gym.spaces import Tuple
+from ray.rllib.models import ModelCatalog
+from ray.tune import register_env
+from ray.tune.schedulers import PopulationBasedTraining
+
+from environments import environment_map
+from learning.training import CustomCallbacks
+from models.custom_model import CustomVisionNetwork
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
 
@@ -11,15 +18,92 @@ WIDTH = 640
 HEIGHT = 720
 
 
+def training_config(config):
+    trainer_config = config["trainer-config"]
+    trainer_config["env_config"] = config["env-config"]
+
+    # Choose environment, with groupings
+    env = environment_map(config["env"])["env"]
+    if "grouping" not in config:
+        trainer_config["env"] = env
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+            },
+            "policy_mapping_fn": lambda agent_id: "default"
+        }
+
+    elif config["grouping"] == "all_same":
+        obs_space = Tuple(
+            [env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
+        act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
+        grouping = {
+            "group_1": ["drone_" + str(i) for i in range(config["env-config"]["num_agents"])],
+        }
+
+        # Register the environment with Ray, and use this in the config
+        register_env(config["env"],
+                     lambda env_cfg: env(env_cfg).with_agent_groups(grouping, obs_space=obs_space, act_space=act_space))
+        trainer_config["env"] = config["env"]
+        # trainer_config["env"] = env
+
+        # trainer_config["multiagent"] = {
+        #     "policies": {
+        #         "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+        #     },
+        #     "policy_mapping_fn": lambda agent_id: "default"
+        # }
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "default": (None, obs_space, act_space, {}),
+            },
+            "policy_mapping_fn": lambda agent_id: "default"
+        }
+
+    elif config["grouping"] == "radar-rescue":
+        trainer_config["env"] = env
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "radar": (
+                None, env.get_observation_space(config["env-config"], "radar"), env.get_action_space("radar"), {}),
+                "rescue": (
+                None, env.get_observation_space(config["env-config"], "rescue"), env.get_action_space("rescue"), {}),
+            },
+            "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
+        }
+
+    ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+
+    # Add callbacks for custom metrics
+    trainer_config["callbacks"] = CustomCallbacks
+
+    # Add scheduler, as specified by config
+    scheduler = None
+    if "scheduler" in config:
+        if config["scheduler"] == "pbt":
+            scheduler = PopulationBasedTraining(**config["scheduler-config"])
+    return trainer_config
+
+
 class SimulationRunner:
-    def __init__(self, experiment, env):
+    def __init__(self, experiment, env, config):
 
         # Create logger which doesn't do anything
         del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
         # experiment["best trial"]["config"]["explore"] = False
-        self.agent = ppo.PPOTrainer(config=experiment["best trial"]["config"],
+        # TODO remove sampled stuff from config
+        trainer_config = {"env_config": training_config(config)["env_config"],
+                          "multiagent": training_config(config)["multiagent"],
+                          "model": training_config(config)["model"],
+                          "framework": "torch"}
+        self.agent = ppo.PPOTrainer(config=trainer_config,
                                     env=env["env"])
-        self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
+        path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_a5965_00000_0_lambda=0.90145,lr=0.00066214_2021-03-18_01-02-44\checkpoint_000020\checkpoint-20"
+        self.agent.restore(path)  # Restore the last checkpoint
+        # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
         self.env = env["env"](experiment["environment"])
 
         self.gridworld = self.env.controller
@@ -31,6 +115,9 @@ class SimulationRunner:
 
         self.speed_callback = None
         self.timestep = 0
+
+        policy_map = self.agent.workers.local_worker().policy_map
+        self.model_state = {p: m.get_initial_state() for p, m in policy_map.items()}
 
     def set_speed_callback(self, callback):
         self.speed_callback = callback
@@ -46,7 +133,11 @@ class SimulationRunner:
                 raise Exception("speed callback not set")
             action = {}
             for agent_id, agent_obs in self.obs.items():
-                action[agent_id] = self.agent.compute_action(agent_obs)
+                action[agent_id], self.model_state[agent_id], _ = self.agent.compute_action(
+                    observation=agent_obs,
+                    policy_id=agent_id.split("_")[0],
+                    state=self.model_state[agent_id.split("_")[0]]
+                )
             self.obs, self.reward, self.done, self.info = self.env.step(action)
             if self.done["__all__"]:
                 self.restart_simulation()
@@ -120,7 +211,8 @@ def start_displaying(runner, env):
     runner.running = False
 
 
-def main(experiment, env=environments["gridworld_obstacles"]):
+def main(experiment, config):
     ray.init()
-    runner = SimulationRunner(experiment, env)
+    env = environment_map(config["env"])
+    runner = SimulationRunner(experiment, env, config)
     start_displaying(runner, env)
