@@ -11,9 +11,10 @@ env-config:
   sight: 5
   battery: 500
   rewards:
-    rescue: 1
+    rescue: 10
     hit tree: 0
-    exploring: 0.01
+    exploring: 0
+    mark agent: 1
   battery costs:
     rotate left: 1
     rotate right: 1

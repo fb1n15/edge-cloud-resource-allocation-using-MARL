@@ -34,25 +34,25 @@ class SimulationController:
     def initialise(self):
         self.agents = []
         self.agents += [
-                          RadarDrone(
-                              "radar_" + str(i),
-                              self,
-                              rot=0,
-                              sight=self._sight,
-                              battery=self._battery,
-                              battery_costs=self._battery_costs)
-                          for i in range(self._num_radar_drones)
-                      ]
+            RadarDrone(
+                "radar_" + str(i),
+                self,
+                rot=0,
+                sight=self._sight,
+                battery=self._battery,
+                battery_costs=self._battery_costs)
+            for i in range(self._num_radar_drones)
+        ]
         self.agents += [
-                          RescueDrone(
-                              "rescue_" + str(i),
-                              self,
-                              rot=0,
-                              sight=self._sight,
-                              battery=self._battery,
-                              battery_costs=self._battery_costs)
-                          for i in range(self._num_rescue_drones)
-                      ]
+            RescueDrone(
+                "rescue_" + str(i),
+                self,
+                rot=0,
+                sight=self._sight,
+                battery=self._battery,
+                battery_costs=self._battery_costs)
+            for i in range(self._num_rescue_drones)
+        ]
 
         self.survivors = []
         self.model = SimulationModel(self._width, self._height)
@@ -215,15 +215,32 @@ class SimulationController:
             # Perform selected action
             if agent.id in action_dict.keys() and not agent.is_dead():
                 action_todo = action_dict[agent.id]
+
+                # Marking
+                if action_todo == 3:
+                    if not self.is_marked(agent.get_x(), agent.get_y()) \
+                            and (agent.get_x(), agent.get_y()) not in self.get_survivor_positions():
+                        # If it's not already marked
+                        rew[agent.id] += self._reward_map["mark agent"]
+
                 agent.actions()[action_todo]()
+
+                # Rescue
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
                     if isinstance(agent, RescueDrone):
                         # Only rescue drones can rescue survivors
                         rew[agent.id] += self._reward_map["rescue"]
                         self.rescue_survivor(agent.get_x(), agent.get_y())
+
+                # Collisions
                 if isinstance(agent, RescueDrone):
                     # Only rescue drones need to worry about obstacles
                     if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
+                        rew[agent.id] += self._reward_map["hit tree"]
+                        self.kill_agent(agent)
+                else:
+                    # Radar drones collide with the outside wall
+                    if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
                         rew[agent.id] += self._reward_map["hit tree"]
                         self.kill_agent(agent)
         return rew
