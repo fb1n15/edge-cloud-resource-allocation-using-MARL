@@ -50,6 +50,23 @@ def render_gridworld(gridworld_controller: SimulationController, width, height):
             pygame.draw.rect(surface, colour, rect)
             pygame.draw.rect(surface, (200, 200, 200), rect_outline, width=1)
 
+            if gridworld_controller.is_marked(x, y):
+                # Draw marks
+                pygame.draw.line(
+                    surface,
+                    (0, 0, 0),
+                    (x*block_width, y*block_height),
+                    (x*block_width+block_width, y*block_height+block_height),
+                    2
+                )
+                pygame.draw.line(
+                    surface,
+                    (0, 0, 0),
+                    (x*block_width+block_width, y*block_height),
+                    (x*block_width, y*block_height+block_height),
+                    2
+                )
+
             if agent is not None:
                 border_size = 1
                 if isinstance(agent, RadarDrone):

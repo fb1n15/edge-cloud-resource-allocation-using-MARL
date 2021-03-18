@@ -283,3 +283,6 @@ class SimulationController:
 
     def get_sight_range(self):
         return self._sight
+
+    def is_marked(self, x, y):
+        return self.model.is_marked(x, y)

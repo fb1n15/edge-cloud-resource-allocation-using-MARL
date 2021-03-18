@@ -2,8 +2,8 @@ name: DroneRescue gridworld_radar_vision_net_ppo
 
 env: gridworld_radar_vision_net
 env-config:
-  width: 40
-  height: 40
+  width: 50
+  height: 50
   num_survivors: 20
   num_radar_drones: 2
   num_rescue_drones: 2
@@ -52,9 +52,9 @@ trainer-config:
   model:
     dim: 11
     conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
-    use_lstm: true
+#    use_lstm: true
     # To further customize the LSTM auto-wrapper
-    "lstm_cell_size": 64
+#    "lstm_cell_size": 64
 
   # Trainer parameters
   lr:
