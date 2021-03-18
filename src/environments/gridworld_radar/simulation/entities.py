@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class Entity(ABC):
@@ -18,7 +18,7 @@ class Entity(ABC):
 
 
 class Agent(Entity):
-    def __init__(self, _id, x=0, y=0, rot=0, sight=0, battery=100, battery_costs=None):
+    def __init__(self, _id, controller=None, x=0, y=0, rot=0, sight=0, battery=100, battery_costs=None):
         """
         :param x: x position relative to top left
         :param y: y position relative to top left
@@ -36,6 +36,7 @@ class Agent(Entity):
         self._battery = battery
         self._battery_costs = battery_costs
         self._dead = False
+        self._controller = controller
 
     def rotate_left(self):
         """
@@ -85,9 +86,6 @@ class Agent(Entity):
     def get_sight_dist(self):
         return self._sight
 
-    def actions(self):
-        return [self.rotate_left, self.rotate_right, self.advance]
-
     def is_dead(self):
         return self._battery <= 0 or self._dead
 
@@ -96,6 +94,25 @@ class Agent(Entity):
 
     def drain_battery(self, cost_type):
         self._battery -= self._battery_costs[cost_type]
+
+    @abstractmethod
+    def actions(self):
+        """The actions this agent can take"""
+
+
+class RadarDrone(Agent):
+
+    def mark(self):
+        self._controller.model.mark_cell(self._x, self._y)
+
+    def actions(self):
+        return [self.rotate_left, self.rotate_right, self.advance, self.mark]
+
+
+class RescueDrone(Agent):
+
+    def actions(self):
+        return [self.rotate_left, self.rotate_right, self.advance]
 
 
 class Survivor(Entity):

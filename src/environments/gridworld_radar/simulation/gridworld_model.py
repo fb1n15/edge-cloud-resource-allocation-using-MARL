@@ -25,6 +25,7 @@ class SimulationModel:
 
         self._explored_cells = [[False for _ in range(width)] for _ in range(height)]
         self._newly_explored = 0
+        self._marked_cells = [[False for _ in range(width)] for _ in range(height)]
 
     def get_burning_cells(self):
         return set(self._burning_cells.keys())
@@ -105,3 +106,10 @@ class SimulationModel:
 
     def get_height(self):
         return self._height
+
+    def mark_cell(self, x, y):
+        if self.in_bounds(x, y):
+            self._marked_cells[y][x] = True
+
+    def is_marked(self, x, y):
+        return self._marked_cells[y][x] if self.in_bounds(x, y) else False

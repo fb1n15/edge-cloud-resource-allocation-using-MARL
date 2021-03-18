@@ -6,6 +6,7 @@ from ray.rllib.utils.typing import MultiAgentDict
 
 from environments.gridworld_radar.simulation.entities import Agent
 from environments.gridworld_radar.simulation.gridworld_controller import SimulationController
+from environments.gridworld_radar.simulation.entities import RescueDrone, RadarDrone
 
 
 class GridWorldEnv(MultiAgentEnv):
@@ -16,7 +17,8 @@ class GridWorldEnv(MultiAgentEnv):
         self.controller = SimulationController(config["width"],
                                                config["height"],
                                                config["num_survivors"],
-                                               config["num_agents"],
+                                               config["num_radar_drones"],
+                                               config["num_rescue_drones"],
                                                config["sight"],
                                                config["battery"],
                                                config["rewards"],
@@ -25,11 +27,15 @@ class GridWorldEnv(MultiAgentEnv):
                                                config["autogen config"])
 
     @staticmethod
-    def get_action_space():
-        return Discrete(len(Agent("dummy").actions()))
+    def get_action_space(drone_type):
+        if drone_type == "rescue":
+            return Discrete(len(RescueDrone("dummy").actions()))
+        else:
+            return Discrete(len(RadarDrone("dummy").actions()))
 
     @staticmethod
-    def get_observation_space(config):
+    def get_observation_space(config, drone_type):
+        # Observation spaces the same for radar and rescue
         return Box(low=0, high=1, shape=((config["sight"] * 2 + 1), (config["sight"] * 2 + 1), 3))
 
     def _empty_reward_map(self):

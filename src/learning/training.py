@@ -76,6 +76,17 @@ def train(config):
             "policy_mapping_fn": lambda agent_id: "default"
         }
 
+    elif config["grouping"] == "radar-rescue":
+        trainer_config["env"] = env
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "radar": (None, env.get_observation_space(config["env-config"], "radar"), env.get_action_space("radar"), {}),
+                "rescue": (None, env.get_observation_space(config["env-config"], "rescue"), env.get_action_space("rescue"), {}),
+            },
+            "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
+        }
+
     ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
 
     # Add callbacks for custom metrics

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from environments.gridworld_radar.simulation.entities import RadarDrone
+
 
 class Obstacle(Enum):
     """Obstacles
