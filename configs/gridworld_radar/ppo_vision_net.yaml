@@ -14,11 +14,13 @@ env-config:
     rescue: 10
     hit tree: 0
     exploring: 0
-    mark agent: 1
+    mark agent: 2
+    miss mark agent: -0.5
   battery costs:
     rotate left: 1
     rotate right: 1
     advance: 2
+    mark: 10
   fire spread:
     starting points: 0
     covariance: [ [ 3, 0 ], [ 0, 3 ] ]

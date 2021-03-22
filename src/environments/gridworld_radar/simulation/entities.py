@@ -104,6 +104,7 @@ class RadarDrone(Agent):
 
     def mark(self):
         self._controller.model.mark_cell(self._x, self._y)
+        self.drain_battery("mark")
 
     def actions(self):
         return [self.rotate_left, self.rotate_right, self.advance, self.mark]

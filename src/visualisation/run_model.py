@@ -101,7 +101,7 @@ class SimulationRunner:
                           "framework": "torch"}
         self.agent = ppo.PPOTrainer(config=trainer_config,
                                     env=env["env"])
-        path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_a5965_00000_0_lambda=0.90145,lr=0.00066214_2021-03-18_01-02-44\checkpoint_000020\checkpoint-20"
+        path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_1f388_00000_0_lambda=0.90113,lr=0.00018404_2021-03-18_10-10-10\checkpoint_000200\checkpoint-200"
         self.agent.restore(path)  # Restore the last checkpoint
         # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
         self.env = env["env"](experiment["environment"])
@@ -133,10 +133,12 @@ class SimulationRunner:
                 raise Exception("speed callback not set")
             action = {}
             for agent_id, agent_obs in self.obs.items():
-                action[agent_id], self.model_state[agent_id], _ = self.agent.compute_action(
+                policy_id = agent_id.split("_")[0]
+                action[agent_id], self.model_state[policy_id], _ = self.agent.compute_action(
                     observation=agent_obs,
-                    policy_id=agent_id.split("_")[0],
-                    state=self.model_state[agent_id.split("_")[0]]
+                    policy_id=policy_id,
+                    state=self.model_state[policy_id],
+                    full_fetch=True
                 )
             self.obs, self.reward, self.done, self.info = self.env.step(action)
             if self.done["__all__"]:

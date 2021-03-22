@@ -218,10 +218,12 @@ class SimulationController:
 
                 # Marking
                 if action_todo == 3:
-                    if not self.is_marked(agent.get_x(), agent.get_y()) \
-                            and (agent.get_x(), agent.get_y()) not in self.get_survivor_positions():
-                        # If it's not already marked
-                        rew[agent.id] += self._reward_map["mark agent"]
+                    if not self.is_marked(agent.get_x(), agent.get_y()):
+                        if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
+                            # If it's not already marked
+                            rew[agent.id] += self._reward_map["mark agent"]
+                        # else:
+
 
                 agent.actions()[action_todo]()
 
