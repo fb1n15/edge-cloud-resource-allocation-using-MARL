@@ -29,13 +29,8 @@ def format_name(name):
     return f"{name} {time}"
 
 
-def train(config):
-    """
-    :param config:
-    :return: Analysis object
-    """
-
-    trainer_config = config["trainer-config"]
+def get_trainer_config(config):
+    trainer_config = config[["trainer-config"]]
     trainer_config["env_config"] = config["env-config"]
 
     # Choose environment, with groupings
@@ -91,6 +86,17 @@ def train(config):
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks
+
+    return trainer_config
+
+
+def train(config):
+    """
+    :param config:
+    :return: Analysis object
+    """
+
+    trainer_config = get_trainer_config(config)
 
     # Add scheduler, as specified by config
     scheduler = None

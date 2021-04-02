@@ -9,7 +9,7 @@ from ray.tune import register_env
 from ray.tune.schedulers import PopulationBasedTraining
 
 from environments import environment_map
-from learning.training import CustomCallbacks
+from learning.training import CustomCallbacks, get_trainer_config
 from models.custom_model import CustomVisionNetwork
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
@@ -80,11 +80,6 @@ def training_config(config):
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks
 
-    # Add scheduler, as specified by config
-    scheduler = None
-    if "scheduler" in config:
-        if config["scheduler"] == "pbt":
-            scheduler = PopulationBasedTraining(**config["scheduler-config"])
     return trainer_config
 
 
@@ -92,16 +87,18 @@ class SimulationRunner:
     def __init__(self, experiment, env, config):
 
         # Create logger which doesn't do anything
-        del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
+        # del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
         # experiment["best trial"]["config"]["explore"] = False
-        # TODO remove sampled stuff from config
-        trainer_config = {"env_config": training_config(config)["env_config"],
-                          "multiagent": training_config(config)["multiagent"],
-                          "model": training_config(config)["model"],
-                          "framework": "torch"}
+        # # TODO remove sampled stuff from config
+        # trainer_config = {"env_config": training_config(config)["env_config"],
+        #                   "multiagent": training_config(config)["multiagent"],
+        #                   "model": training_config(config)["model"],
+        #                   "framework": "torch",
+        #                   "explore": False}
+        trainer_config = get_trainer_config(config)
         self.agent = ppo.PPOTrainer(config=trainer_config,
                                     env=env["env"])
-        path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_1f388_00000_0_lambda=0.90113,lr=0.00018404_2021-03-18_10-10-10\checkpoint_000200\checkpoint-200"
+        path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_e712e_00000_0_lambda=0.9112,lr=2.8076e-05_2021-03-22_17-34-49\checkpoint_000200\checkpoint-200"
         self.agent.restore(path)  # Restore the last checkpoint
         # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
         self.env = env["env"](experiment["environment"])
