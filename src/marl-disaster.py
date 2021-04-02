@@ -1,7 +1,6 @@
 """
 Run this with marl-disaster.py <train/run/mapgen>
 -r/--restore | restore training from checkpoint
--p <laptop/iridis>
 """
 import argparse
 from abc import ABC, abstractmethod
