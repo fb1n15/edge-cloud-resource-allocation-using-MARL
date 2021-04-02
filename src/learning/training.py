@@ -30,7 +30,7 @@ def format_name(name):
 
 
 def get_trainer_config(config):
-    trainer_config = config[["trainer-config"]]
+    trainer_config = config["trainer-config"]
     trainer_config["env_config"] = config["env-config"]
 
     # Choose environment, with groupings
@@ -103,7 +103,7 @@ def train(config):
     if "scheduler" in config:
         if config["scheduler"] == "pbt":
             scheduler = PopulationBasedTraining(**config["scheduler-config"])
-
+    print("here")
     analysis = tune.run(
         config["trainer"],
         name="DroneRescue "+config["name"],
