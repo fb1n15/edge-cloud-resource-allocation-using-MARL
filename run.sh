@@ -9,7 +9,7 @@
 
 case $SLURM_ARRAY_TASK_ID in
   1)
-    CONFIG_FILE=configs/gridworld_obstacles/experiments/ppo_vision_net_independent.yaml
+    CONFIG_FILE="configs/gridworld_obstacles/experiments/ppo_vision_net_independent.yaml"
     ;;
 esac
 
