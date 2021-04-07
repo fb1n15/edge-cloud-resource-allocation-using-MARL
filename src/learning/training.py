@@ -19,6 +19,7 @@ from environments import environment_map
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
+from models.convolutional_model import ConvolutionalModel
 from models.custom_model import CustomVisionNetwork
 
 torch, nn = try_import_torch()
@@ -46,6 +47,7 @@ def get_trainer_config(config):
         }
 
     elif config["grouping"] == "all_same":
+        print(env)
         obs_space = Tuple([env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
         act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
         grouping = {
@@ -83,6 +85,7 @@ def get_trainer_config(config):
         }
 
     ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+    ModelCatalog.register_custom_model("ConvolutionalModel", ConvolutionalModel)
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks

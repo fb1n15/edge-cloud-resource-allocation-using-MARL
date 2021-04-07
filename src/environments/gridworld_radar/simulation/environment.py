@@ -4,12 +4,12 @@ from gym.spaces import Discrete, Box
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
-from environments.gridworld_radar.simulation.entities import Agent
+from environments.gridworld_radar.visualisation.render import render_gridworld
 from environments.gridworld_radar.simulation.gridworld_controller import SimulationController
 from environments.gridworld_radar.simulation.entities import RescueDrone, RadarDrone
 
 
-class GridWorldEnv(MultiAgentEnv):
+class GridWorldRadarRescueEnv(MultiAgentEnv):
     """Logic for managing the simulation"""
     VERSION = 3  # Increment each time there are non-backwards compatible changes made to simulation
 
@@ -64,3 +64,7 @@ class GridWorldEnv(MultiAgentEnv):
 
     def get_map_explored(self):
         return self.controller.get_map_explored()
+
+    @staticmethod
+    def render_method():
+        return render_gridworld

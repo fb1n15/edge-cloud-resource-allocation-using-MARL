@@ -189,6 +189,7 @@ class SimulationController:
                 action_todo = action_dict[agent.id]
                 # if random() < 0.25:
                 #     action_todo = randrange(len(agent.actions()))
+                # print(action_todo)
                 agent.actions()[action_todo]()
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
                     rew[agent.id] += self._reward_map["rescue"]
