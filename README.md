@@ -66,7 +66,7 @@ or
 
 `pip install -r requirements.txt`
 
-`pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp38-cp38-win_amd64.whl`
+`pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-manylinux2014_x86_64.whl`
 
 ### Queue Job
 
@@ -74,7 +74,11 @@ or
 
 ### Set up tensorboard
 
+(Optional) Use tmux: `module load tmux` then `tmux`
+
 `tensorboard --logdir="results/<experiment>"`
+
+
 
 or
 
