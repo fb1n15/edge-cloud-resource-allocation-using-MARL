@@ -50,11 +50,9 @@ trainer-config:
   # Model config
   model:
     custom_model: CentralisedModel
-#    dim: 11
-#    conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
 
   # Trainer parameters
-  lr: 0.00005
+  lr: 0.00008
   lambda: 1.0
   entropy_coeff: 0.0
   rollout_fragment_length: 200
