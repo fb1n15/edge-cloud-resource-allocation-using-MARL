@@ -10,7 +10,6 @@ from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.env import GroupAgentsWrapper
 from ray.rllib.evaluation import MultiAgentEpisode
 from ray.rllib.models import ModelCatalog
-# from ray.rllib.models.torch.visionnet import VisionNetwork
 from ray.tune import register_env
 from ray.tune.schedulers import PopulationBasedTraining
 
@@ -20,7 +19,6 @@ from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
 from models.convolutional_model import ConvolutionalModel
-from models.custom_model import CustomVisionNetwork
 
 torch, nn = try_import_torch()
 
@@ -84,7 +82,7 @@ def get_trainer_config(config):
             "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
         }
 
-    ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+    # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
     ModelCatalog.register_custom_model("ConvolutionalModel", ConvolutionalModel)
 
     # Add callbacks for custom metrics

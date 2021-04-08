@@ -4,13 +4,10 @@ import thorpy
 import threading
 
 from gym.spaces import Tuple
-from ray.rllib.models import ModelCatalog
 from ray.tune import register_env
-from ray.tune.schedulers import PopulationBasedTraining
 
 from environments import environment_map
 from learning.training import CustomCallbacks, get_trainer_config
-from models.custom_model import CustomVisionNetwork
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
 
@@ -75,7 +72,7 @@ def training_config(config):
             "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
         }
 
-    ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+    # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks

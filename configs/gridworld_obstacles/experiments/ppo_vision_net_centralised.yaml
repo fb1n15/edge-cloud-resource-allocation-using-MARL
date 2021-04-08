@@ -49,6 +49,7 @@ trainer-config:
 
   # Model config
   model:
+#    custom_model: ConvolutionalModel
     dim: 11
     conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
 
