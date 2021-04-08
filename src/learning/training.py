@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Dict
 
 import ray
@@ -18,7 +17,8 @@ from environments import environment_map
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
-from models.convolutional_model import ConvolutionalModel
+from learning.models.centralised_model import CentralisedModel
+from learning.models.convolutional_model import ConvolutionalModel
 
 torch, nn = try_import_torch()
 
@@ -70,6 +70,32 @@ def get_trainer_config(config):
             },
             "policy_mapping_fn": lambda agent_id: "default"
         }
+    elif config["grouping"] == "centralised":
+        print(env)
+        obs_space = Tuple([env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
+        act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
+        grouping = {
+            "group_1": ["drone_"+str(i) for i in range(config["env-config"]["num_agents"])],
+        }
+
+        # Register the environment with Ray, and use this in the config
+        register_env(config["env"], lambda env_cfg: env(env_cfg).with_agent_groups(grouping, obs_space=obs_space, act_space=act_space))
+        trainer_config["env"] = config["env"]
+        # trainer_config["env"] = env
+
+        # trainer_config["multiagent"] = {
+        #     "policies": {
+        #         "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+        #     },
+        #     "policy_mapping_fn": lambda agent_id: "default"
+        # }
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "default": (None, obs_space, act_space, {}),
+            },
+            "policy_mapping_fn": lambda agent_id: "default"
+        }
 
     elif config["grouping"] == "radar-rescue":
         trainer_config["env"] = env
@@ -84,6 +110,7 @@ def get_trainer_config(config):
 
     # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
     ModelCatalog.register_custom_model("ConvolutionalModel", ConvolutionalModel)
+    ModelCatalog.register_custom_model("CentralisedModel", CentralisedModel)
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks

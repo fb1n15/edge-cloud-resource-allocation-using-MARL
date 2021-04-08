@@ -32,17 +32,6 @@ class ConvolutionalModel(TorchModelV2, nn.Module):
         )
 
         self._value_branch = nn.Sequential(
-            nn.ZeroPad2d(padding=(1, 1, 1, 1)),
-            nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, stride=2),
-            nn.ReLU(),
-
-            nn.ZeroPad2d(padding=(0, 1, 0, 1)),
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=2),
-            nn.ReLU(),
-
-            nn.Conv2d(in_channels=32, out_channels=self.cnn_outputs, kernel_size=3, stride=1),
-            nn.ReLU(),
-
             nn.Conv2d(in_channels=self.cnn_outputs, out_channels=1, kernel_size=1, stride=1),
         )
 
@@ -55,8 +44,8 @@ class ConvolutionalModel(TorchModelV2, nn.Module):
     def forward(self, input_dict, hidden_state, seq_lens):
         self._features = input_dict["obs"].float().permute(0, 3, 1, 2)
 
-        x = self.model(self._features)
-        x = self._logits(x)
+        self._features = self.model(self._features)
+        x = self._logits(self._features)
 
         logits = x.squeeze(3)
         logits = logits.squeeze(2)
