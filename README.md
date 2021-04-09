@@ -78,8 +78,8 @@ or
 
 `tensorboard --logdir="results/<experiment>"`
 
-
-
 or
 
 `tensorboard dev upload --logdir "results/<experiment>" --name "MARL Disaster Response" --description "Training drones in a gridworld disaster simulation environment"`
+
+(`ctrl-b d` to exit tmux window)
