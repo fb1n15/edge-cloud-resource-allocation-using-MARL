@@ -65,3 +65,5 @@ trainer-config:
 
 stop:
   timesteps_total: 1_000_000
+
+samples: 5

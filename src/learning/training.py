@@ -144,7 +144,7 @@ def train(config):
         config=trainer_config,
         stop=config["stop"],
         local_dir="results/",
-        verbose=3,
+        verbose=1,
         checkpoint_freq=20,
         checkpoint_at_end=True,
         num_samples=config.get("samples", 1),
