@@ -1,4 +1,4 @@
-name: scaling_up_independent_ppo_fc
+name: scaling_up_centralised_ppo_convolutional
 
 env: gridworld_obstacles_vision_net
 env-config:
