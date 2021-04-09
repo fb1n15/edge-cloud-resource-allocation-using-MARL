@@ -19,7 +19,7 @@ from ray.rllib.utils.framework import try_import_torch
 
 from learning.models.centralised_model import CentralisedModel
 from learning.models.convolutional_model import ConvolutionalModel
-from learning.models.fully_connected_model import FCModel
+from learning.models.fc_model import FCModel
 
 torch, nn = try_import_torch()
 
@@ -144,7 +144,7 @@ def train(config):
         config=trainer_config,
         stop=config["stop"],
         local_dir="results/",
-        verbose=1,
+        verbose=3,
         checkpoint_freq=20,
         checkpoint_at_end=True,
         num_samples=config.get("samples", 1),

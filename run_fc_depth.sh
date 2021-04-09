@@ -8,24 +8,20 @@
 #SBATCH --mail-user=jp6g18@soton.ac.uk
 
 case $SLURM_ARRAY_TASK_ID in
-  1)
-    CONFIG_FILE="configs/gridworld_obstacles/experiments/ppo_vision_net_independent.yaml"
-    ;;
-
 # Depth experiment
-  2)
+  1)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth1.yaml"
     ;;
-  3)
+  2)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth2.yaml"
     ;;
-  4)
+  3)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth3.yaml"
     ;;
-  5)
+  4)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth4.yaml"
     ;;
-  6)
+  5)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth5.yaml"
     ;;
 esac
