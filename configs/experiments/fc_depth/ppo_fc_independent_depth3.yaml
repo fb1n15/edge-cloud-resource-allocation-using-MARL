@@ -1,4 +1,4 @@
-name: gridworld_obstacles_independent_ppo_fc
+name: gridworld_obstacles_independent_ppo_fc_depth3
 
 env: gridworld_obstacles_vision_net
 env-config:
@@ -52,9 +52,7 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers:
-        gridsearch:
-          - [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256]]
+      layers: [256, 256, 256]
 
   # Trainer parameters
   lr: 0.00008

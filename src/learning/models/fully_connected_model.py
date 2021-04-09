@@ -19,13 +19,19 @@ class FCModel(TorchModelV2, nn.Module):
         # Calculate flattened obs size
         obs_size = _get_size(obs_space)
 
-        model_outputs = 256
+        model_outputs = obs_size
 
-        print("obs_size", obs_size)
+        layers = []
+
+        for layer_dim in model_config["custom_model_config"]["layers"]:
+            layers.append(nn.Sequential(
+                nn.Linear(in_features=model_outputs, out_features=layer_dim),
+                nn.ReLU(),
+            ))
+            model_outputs = layer_dim
 
         self.model = nn.Sequential(
-            nn.Linear(in_features=obs_size, out_features=model_outputs),
-            nn.ReLU(),
+            *layers
         )
 
         self._value_branch = nn.Sequential(

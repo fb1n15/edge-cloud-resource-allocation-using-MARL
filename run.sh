@@ -1,15 +1,18 @@
 #!/bin/bash
-#SBATCH --ntasks-per-node=28
+#SBATCH --ntasks-per-node=56
 #SBATCH --nodes=1
 #SBATCH --partition=lycium
-#SBATCH --time=12:00:00
-#SBATCH --gres=gpu:2
+#SBATCH --time=48:00:00
+#SBATCH --gres=gpu:4
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jp6g18@soton.ac.uk
 
 case $SLURM_ARRAY_TASK_ID in
   1)
     CONFIG_FILE="configs/gridworld_obstacles/experiments/ppo_vision_net_independent.yaml"
+    ;;
+  2)
+    CONFIG_FILE="configs/gridworld_obstacles/experiments/ppo_fc_independent.yaml"
     ;;
 esac
 
