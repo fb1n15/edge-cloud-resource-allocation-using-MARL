@@ -1,0 +1,74 @@
+name: DroneRescue gridworld_radar_vision_net_ppo
+
+env: gridworld_radar_vision_net
+env-config:
+  width: 50
+  height: 50
+  num_survivors: 20
+  num_radar_drones: 2
+  num_rescue_drones: 2
+  start_world: [ [ ] ]
+  sight: 5
+  battery: 500
+  rewards:
+    rescue: 10
+    hit tree: 0
+    exploring: 0
+    mark agent: 2
+    miss mark agent: -0.5
+  battery costs:
+    rotate left: 1
+    rotate right: 1
+    advance: 2
+    mark: 10
+  fire spread:
+    starting points: 0
+    covariance: [ [ 3, 0 ], [ 0, 3 ] ]
+    rate: 0.1
+  autogen config:
+    forest fire:
+      chance: 1
+      trees:
+        scale: 20.0
+        octaves: 8
+        persistence: 0.5
+        lacunarity: 2.0
+        threshold: 0.07
+      rocks:
+        scale: 6.0
+        octaves: 10
+        persistence: 0.5
+        lacunarity: 5.0
+        threshold: 0.20
+      hq:
+        size: 5
+
+
+trainer: PPO
+trainer-config:
+  framework: torch
+  num_envs_per_worker: 1
+  num_workers: 10
+  num_gpus: 1
+
+  # Model config
+  model:
+    dim: 11
+    conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
+#    use_lstm: true
+    # To further customize the LSTM auto-wrapper
+#    "lstm_cell_size": 64
+
+  # Trainer parameters
+  lr: 0.00003
+  lambda: 0.91
+  gamma: 0.99
+  rollout_fragment_length: 100
+  train_batch_size: 5000
+  sgd_minibatch_size: 500
+  entropy_coeff: 0.01
+
+stop:
+  timesteps_total: 1_000_000
+
+grouping: radar-rescue

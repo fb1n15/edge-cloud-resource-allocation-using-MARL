@@ -1,7 +1,6 @@
 """
 Run this with marl-disaster.py <train/run/mapgen>
 -r/--restore | restore training from checkpoint
--p <laptop/iridis>
 """
 import argparse
 from abc import ABC, abstractmethod
@@ -70,14 +69,15 @@ def main():
 
     elif args.run_option == "run":
         from visualisation import run_model
-        if restore is not None:
+        if restore:
             raise Exception("Cannot restore for run, only train")
         experiments = explore_checkpoints()
         chooser = CLIPromptExperimentChooser(experiments)
-        run_model.main(chooser.select_experiment())
+
+        run_model.main(chooser.select_experiment(), config)
 
     elif args.run_option == "mapgen":
-        if restore is not None:
+        if restore:
             raise Exception("Cannot restore for run, only train")
         from visualisation import mapgen
         mapgen.main()

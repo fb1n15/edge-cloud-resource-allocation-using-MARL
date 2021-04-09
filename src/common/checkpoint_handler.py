@@ -65,6 +65,7 @@ def explore_checkpoints():
                     "best checkpoint": max(checkpoints, key=lambda c: c["episode_reward_mean"]),
                     "config": config
                 })
+        print(experiment, valid)
         if valid and len(trials) > 0:
             best_trial = max(trials, key=lambda t: t["best checkpoint"]["episode_reward_mean"])
             experiments.append({

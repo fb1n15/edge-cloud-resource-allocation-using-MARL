@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Dict
 
 import ray
@@ -10,7 +9,6 @@ from ray.rllib.agents.callbacks import DefaultCallbacks
 from ray.rllib.env import GroupAgentsWrapper
 from ray.rllib.evaluation import MultiAgentEpisode
 from ray.rllib.models import ModelCatalog
-# from ray.rllib.models.torch.visionnet import VisionNetwork
 from ray.tune import register_env
 from ray.tune.schedulers import PopulationBasedTraining
 
@@ -19,7 +17,9 @@ from environments import environment_map
 from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
-from models.custom_model import CustomVisionNetwork
+from learning.models.centralised_model import CentralisedModel
+from learning.models.convolutional_model import ConvolutionalModel
+from learning.models.fully_connected_model import FCModel
 
 torch, nn = try_import_torch()
 
@@ -29,12 +29,7 @@ def format_name(name):
     return f"{name} {time}"
 
 
-def train(config):
-    """
-    :param config:
-    :return: Analysis object
-    """
-
+def get_trainer_config(config):
     trainer_config = config["trainer-config"]
     trainer_config["env_config"] = config["env-config"]
 
@@ -51,6 +46,33 @@ def train(config):
         }
 
     elif config["grouping"] == "all_same":
+        print(env)
+        obs_space = Tuple([env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
+        act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
+        grouping = {
+            "group_1": ["drone_"+str(i) for i in range(config["env-config"]["num_agents"])],
+        }
+
+        # Register the environment with Ray, and use this in the config
+        register_env(config["env"], lambda env_cfg: env(env_cfg).with_agent_groups(grouping, obs_space=obs_space, act_space=act_space))
+        trainer_config["env"] = config["env"]
+        # trainer_config["env"] = env
+
+        # trainer_config["multiagent"] = {
+        #     "policies": {
+        #         "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+        #     },
+        #     "policy_mapping_fn": lambda agent_id: "default"
+        # }
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "default": (None, obs_space, act_space, {}),
+            },
+            "policy_mapping_fn": lambda agent_id: "default"
+        }
+    elif config["grouping"] == "centralised":
+        print(env)
         obs_space = Tuple([env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
         act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
         grouping = {
@@ -76,17 +98,41 @@ def train(config):
             "policy_mapping_fn": lambda agent_id: "default"
         }
 
-    ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+    elif config["grouping"] == "radar-rescue":
+        trainer_config["env"] = env
+
+        trainer_config["multiagent"] = {
+            "policies": {
+                "radar": (None, env.get_observation_space(config["env-config"], "radar"), env.get_action_space("radar"), {}),
+                "rescue": (None, env.get_observation_space(config["env-config"], "rescue"), env.get_action_space("rescue"), {}),
+            },
+            "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
+        }
+
+    # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
+    ModelCatalog.register_custom_model("ConvolutionalModel", ConvolutionalModel)
+    ModelCatalog.register_custom_model("CentralisedModel", CentralisedModel)
+    ModelCatalog.register_custom_model("FCModel", FCModel)
 
     # Add callbacks for custom metrics
     trainer_config["callbacks"] = CustomCallbacks
+
+    return trainer_config
+
+
+def train(config):
+    """
+    :param config:
+    :return: Analysis object
+    """
+
+    trainer_config = get_trainer_config(config)
 
     # Add scheduler, as specified by config
     scheduler = None
     if "scheduler" in config:
         if config["scheduler"] == "pbt":
             scheduler = PopulationBasedTraining(**config["scheduler-config"])
-
     analysis = tune.run(
         config["trainer"],
         name=config["name"],
@@ -98,7 +144,7 @@ def train(config):
         config=trainer_config,
         stop=config["stop"],
         local_dir="results/",
-        verbose=3,
+        verbose=1,
         checkpoint_freq=20,
         checkpoint_at_end=True,
         num_samples=config.get("samples", 1),

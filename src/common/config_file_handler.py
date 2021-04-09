@@ -21,6 +21,8 @@ def do_tune_wrap(d):
                 return tune.uniform(*value)
             elif key == "choice":
                 return tune.choice([*value])
+            elif key == "gridsearch":
+                return tune.choice([*value])
             else:
                 r[key] = do_tune_wrap(value)
         return r

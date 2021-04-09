@@ -4,18 +4,19 @@ import noise
 import numpy as np
 from ray.rllib.utils.typing import MultiAgentDict
 
-from environments.gridworld_obstacles.simulation.entities import Agent, Survivor
-from environments.gridworld_obstacles.simulation.gridworld_model import SimulationModel
-from environments.gridworld_obstacles.simulation.observables import Obstacle, is_flammable, is_collidable
+from environments.gridworld_radar.simulation.entities import Agent, Survivor, RadarDrone, RescueDrone
+from environments.gridworld_radar.simulation.gridworld_model import SimulationModel
+from environments.gridworld_radar.simulation.observables import Obstacle, is_flammable, is_collidable
 
 
 class SimulationController:
-    def __init__(self, width, height, num_survivors, num_agents,
+    def __init__(self, width, height, num_survivors, num_radar_drones, num_rescue_drones,
                  sight, battery, reward_map, battery_costs, fire_spread, autogen_config):
         self._width = width
         self._height = height
         self._num_survivors = num_survivors
-        self._num_agents = num_agents
+        self._num_radar_drones = num_radar_drones
+        self._num_rescue_drones = num_rescue_drones
         self._sight = sight
         self._battery = battery
         self._reward_map = reward_map
@@ -31,12 +32,28 @@ class SimulationController:
         self.agents_crashed = 0
 
     def initialise(self):
-        self.agents = [Agent("drone_"+str(i),
-                             rot=0,
-                             sight=self._sight,
-                             battery=self._battery,
-                             battery_costs=self._battery_costs)
-                       for i in range(self._num_agents)]
+        self.agents = []
+        self.agents += [
+            RadarDrone(
+                "radar_" + str(i),
+                self,
+                rot=0,
+                sight=self._sight,
+                battery=self._battery,
+                battery_costs=self._battery_costs)
+            for i in range(self._num_radar_drones)
+        ]
+        self.agents += [
+            RescueDrone(
+                "rescue_" + str(i),
+                self,
+                rot=0,
+                sight=self._sight,
+                battery=self._battery,
+                battery_costs=self._battery_costs)
+            for i in range(self._num_rescue_drones)
+        ]
+
         self.survivors = []
         self.model = SimulationModel(self._width, self._height)
 
@@ -148,7 +165,13 @@ class SimulationController:
             for x in range(left, right + 1)]
             for y in range(top, bottom + 1)]
         )
-        return terrain, agents, survivors
+
+        marked = np.array([[
+            1 if self.model.is_marked(x, y) else 0
+            for x in range(left, right + 1)]
+            for y in range(top, bottom + 1)]
+        )
+        return terrain, agents, survivors, marked
 
     @staticmethod
     def _rotate_view(view, rot):
@@ -156,9 +179,12 @@ class SimulationController:
 
     def agent_scan(self, agent, survivor_positions, agent_positions):
         agent_sight = agent.get_sight_area()
-        terrain, agents, survivors = self.get_area(agent_positions, survivor_positions, *agent_sight)
-        self.model.explore_cells(*agent_sight)
-        return self._rotate_view(np.dstack((terrain, agents, survivors)), agent.get_rotation())
+        terrain, agents, survivors, marked = self.get_area(agent_positions, survivor_positions, *agent_sight)
+        if isinstance(agent, RadarDrone):
+            self.model.explore_cells(*agent_sight)
+            return self._rotate_view(np.dstack((terrain, agents, survivors)), agent.get_rotation())
+        elif isinstance(agent, RescueDrone):
+            return self._rotate_view(np.dstack((terrain, agents, marked)), agent.get_rotation())
 
     def get_observations(self, rew) -> MultiAgentDict:
         agent_positions = self.get_agent_positions()
@@ -166,7 +192,9 @@ class SimulationController:
         obs = {}
         for agent in self.agents:
             obs[agent.id] = self.agent_scan(agent, agent_positions, survivor_positions)
-            rew[agent.id] += self.model.get_newly_explored() * self._reward_map["exploring"]
+            if isinstance(agent, RadarDrone):
+                # Only give rewards to radar drones for exploring
+                rew[agent.id] += self.model.get_newly_explored() * self._reward_map["exploring"]
             assert obs[agent.id].shape == (self._sight * 2 + 1, self._sight * 2 + 1, 3)
         return obs
 
@@ -187,19 +215,36 @@ class SimulationController:
             # Perform selected action
             if agent.id in action_dict.keys() and not agent.is_dead():
                 action_todo = action_dict[agent.id]
-                # if random() < 0.25:
-                #     action_todo = randrange(len(agent.actions()))
-                # print(action_todo)
+
+                # Marking
+                if action_todo == 3:
+                    if not self.is_marked(agent.get_x(), agent.get_y()):
+                        if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
+                            # If it's not already marked
+                            rew[agent.id] += self._reward_map["mark agent"]
+                        # else:
+
+
                 agent.actions()[action_todo]()
+
+                # Rescue
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
-                    rew[agent.id] += self._reward_map["rescue"]
-                    self.rescue_survivor(agent.get_x(), agent.get_y())
-                if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
-                    rew[agent.id] += self._reward_map["hit tree"]
-                    self.kill_agent(agent)
-                # if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
-                # rew[i] -=
-                # If it goes outside map, punish it
+                    if isinstance(agent, RescueDrone):
+                        # Only rescue drones can rescue survivors
+                        rew[agent.id] += self._reward_map["rescue"]
+                        self.rescue_survivor(agent.get_x(), agent.get_y())
+
+                # Collisions
+                if isinstance(agent, RescueDrone):
+                    # Only rescue drones need to worry about obstacles
+                    if is_collidable(self.model.get_at_cell(agent.get_x(), agent.get_y())):
+                        rew[agent.id] += self._reward_map["hit tree"]
+                        self.kill_agent(agent)
+                else:
+                    # Radar drones collide with the outside wall
+                    if self.model.get_at_cell(agent.get_x(), agent.get_y()) == Obstacle.OutsideMap:
+                        rew[agent.id] += self._reward_map["hit tree"]
+                        self.kill_agent(agent)
         return rew
 
     def kill_agent(self, agent):
@@ -257,3 +302,6 @@ class SimulationController:
 
     def get_sight_range(self):
         return self._sight
+
+    def is_marked(self, x, y):
+        return self.model.is_marked(x, y)
