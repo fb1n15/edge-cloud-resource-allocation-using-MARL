@@ -15,7 +15,7 @@ case $SLURM_ARRAY_TASK_ID in
   2)
     CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_independent.yaml"
     ;;
-  2)
+  3)
     CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised.yaml"
     ;;
 esac
