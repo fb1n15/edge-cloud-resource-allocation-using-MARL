@@ -19,13 +19,13 @@ case $SLURM_ARRAY_TASK_ID in
     CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/1agents.yaml"
     ;;
   4)
-    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/1agents.yaml"
+    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/2agents.yaml"
     ;;
   5)
-    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/1agents.yaml"
+    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/4agents.yaml"
     ;;
   6)
-    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/1agents.yaml"
+    CONFIG_FILE="configs/experiments/scaling_up/ppo_convolutional_centralised/8agents.yaml"
     ;;
   7)
     CONFIG_FILE="configs/experiments/scaling_up/qmix/1agents.yaml"
