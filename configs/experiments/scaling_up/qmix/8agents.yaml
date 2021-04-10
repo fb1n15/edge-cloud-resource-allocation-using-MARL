@@ -1,12 +1,11 @@
-name: scaling_up_centralised_ppo_convolutional
+name: scaling_up_qmix
 
 env: gridworld_obstacles_vision_net
 env-config:
   width: 100
   height: 100
   num_survivors: 100
-  num_agents:
-    gridsearch: [1, 2, 4, 8]
+  num_agents: 8
   start_world: [ [ ] ]
   sight: 5
   battery: 1000
@@ -41,7 +40,7 @@ env-config:
         size: 6
 
 
-trainer: PPO
+trainer: QMIX
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
@@ -49,19 +48,16 @@ trainer-config:
   num_gpus: 0.25
 
   # Model config
-  model:
-    custom_model: CentralisedModel
 
   # Trainer parameters
   lr: 0.00008
-  lambda: 1.0
-  entropy_coeff: 0.0
   rollout_fragment_length: 200
   train_batch_size: 4000
-  sgd_minibatch_size: 128
 
 
 stop:
   timesteps_total: 500_000
 
 samples: 4
+
+grouping: all_same
