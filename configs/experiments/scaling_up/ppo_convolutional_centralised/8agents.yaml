@@ -44,8 +44,8 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 6
-  num_gpus: 0.5
+  num_workers: 10
+  num_gpus: 1
 
   # Model config
   model:
