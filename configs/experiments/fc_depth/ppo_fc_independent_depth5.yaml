@@ -1,4 +1,4 @@
-name: gridworld_obstacles_independent_ppo_fc_depth4
+name: gridworld_obstacles_independent_ppo_fc_depth5
 
 env: gridworld_obstacles_vision_net
 env-config:

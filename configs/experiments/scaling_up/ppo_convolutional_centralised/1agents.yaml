@@ -1,4 +1,4 @@
-name: scaling_up_centralised_ppo_convolutional
+name: scaling_up_centralised_ppo_convolutional_1agent
 
 env: gridworld_obstacles_vision_net
 env-config:
@@ -44,7 +44,7 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 10
+  num_workers: 8
   num_gpus: 1
 
   # Model config
@@ -63,6 +63,6 @@ trainer-config:
 stop:
   timesteps_total: 500_000
 
-samples: 4
+samples: 10
 
 grouping: all_same

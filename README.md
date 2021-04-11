@@ -70,7 +70,7 @@ or
 
 ### Queue Job
 
-`sbatch --array=<config_indices> -p lyceum run.sh`
+`sbatch --array=<config_indices> -p lyceum run_<experiment_name>.sh`
 
 ### Set up tensorboard
 
