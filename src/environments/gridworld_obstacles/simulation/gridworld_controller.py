@@ -9,9 +9,17 @@ from environments.gridworld_obstacles.simulation.gridworld_model import Simulati
 from environments.gridworld_obstacles.simulation.observables import Obstacle, is_flammable, is_collidable
 
 
+def simulate_event(p: float) -> bool:
+    """
+    @:param p probability of event
+    @:return whether event occurred or not
+    Simulate event occurring with probability p (0-1)"""
+    return random() < p
+
+
 class SimulationController:
     def __init__(self, width, height, num_survivors, num_agents,
-                 sight, battery, reward_map, battery_costs, fire_spread, autogen_config):
+                 sight, battery, reward_map, battery_costs, fire_spread, autogen_config, probs=None):
         self._width = width
         self._height = height
         self._num_survivors = num_survivors
@@ -22,6 +30,7 @@ class SimulationController:
         self._battery_costs = battery_costs
         self._fire_spread = fire_spread
         self._autogen_config = autogen_config
+        self._probs = probs
 
         self.agents = None
         self.model = None
@@ -50,6 +59,9 @@ class SimulationController:
 
         self.survivors_rescued = 0
         self.agents_crashed = 0
+
+    def get_prob(self, v):
+        return self._probs.get(v, 1.)
 
     def start_fires(self, fire_spread_config):
         # Find all trees
@@ -131,20 +143,27 @@ class SimulationController:
         :param bottom: Bottom of the area (inclusive)
         :return: np array of the area in the map
         """
+        def obs_randomise(b: bool) -> int:
+            # Return 1 for True or 0 for false, with a random chance of "noise" interfering with observation
+            if simulate_event(self.get_prob("obs")):
+                return b
+            else:
+                return randrange(0, 2)
+
         terrain = np.array([[
-            1 if is_collidable(self.model.get_at_cell(x, y)) else 0
+            obs_randomise(is_collidable(self.model.get_at_cell(x, y)))
             for x in range(left, right + 1)]
             for y in range(top, bottom + 1)]
         )
 
         agents = np.array([[
-            1 if (x, y) in agent_positions else 0
+            obs_randomise((x, y) in agent_positions)
             for x in range(left, right + 1)]
             for y in range(top, bottom + 1)]
         )
 
         survivors = np.array([[
-            1 if (x, y) in survivor_positions else 0
+            obs_randomise((x, y) in survivor_positions)
             for x in range(left, right + 1)]
             for y in range(top, bottom + 1)]
         )
@@ -187,8 +206,9 @@ class SimulationController:
             # Perform selected action
             if agent.id in action_dict.keys() and not agent.is_dead():
                 action_todo = action_dict[agent.id]
-                # if random() < 0.25:
-                #     action_todo = randrange(len(agent.actions()))
+                # Add randomness to the actions the agent takes
+                if random() > self.get_prob("action"):
+                    action_todo = randrange(len(agent.actions()))
                 # print(action_todo)
                 agent.actions()[action_todo]()
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
@@ -213,7 +233,7 @@ class SimulationController:
         total_samples = [[0 for _ in range(self.model.get_width())] for _ in range(self.model.get_height())]
         # Choose some of the currently burning trees, to spread
         for pos in self.model.get_burning_cells():
-            if random() < self._fire_spread["rate"]:
+            if simulate_event(self._fire_spread["rate"]):
                 new_samples = np.random.multivariate_normal(
                     pos,
                     self._fire_spread["covariance"],

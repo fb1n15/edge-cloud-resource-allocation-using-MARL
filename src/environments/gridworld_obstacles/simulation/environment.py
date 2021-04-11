@@ -23,7 +23,8 @@ class GridWorldObstaclesEnv(MultiAgentEnv):
                                                config["rewards"],
                                                config["battery costs"],
                                                config["fire spread"],
-                                               config["autogen config"])
+                                               config["autogen config"],
+                                               config.get("probabilities"))
 
     @staticmethod
     def get_action_space():

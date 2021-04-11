@@ -23,6 +23,8 @@ def do_tune_wrap(d):
                 return tune.choice([*value])
             elif key == "gridsearch":
                 return tune.choice([*value])
+            elif key == "match_param":
+                return tune.sample_from(lambda spec: spec.config.get(value))
             else:
                 r[key] = do_tune_wrap(value)
         return r
