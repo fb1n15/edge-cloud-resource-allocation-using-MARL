@@ -1,4 +1,4 @@
-name: scaling_up_independent_ppo_fc
+name: uncertainty_action_qmix
 
 env: gridworld_obstacles_vision_net
 env-config:
@@ -38,19 +38,18 @@ env-config:
         threshold: 0.20
       hq:
         size: 6
-  probs:
+  noise:
     action:
-      gridsearch: [1, 0.8, 0.6, 0.4, 0.2]
-    obs:
-      match_param: action
+      gridsearch: [ 0, 0.2, 0.4, 0.6, 0.8, 1]
+    obs: 0
 
 
 trainer: QMIX
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 6
-  num_gpus: 0.5
+  num_workers: 14
+  num_gpus: 1
 
   # Model config
   model:

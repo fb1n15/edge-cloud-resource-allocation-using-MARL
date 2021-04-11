@@ -10,16 +10,16 @@
 case $SLURM_ARRAY_TASK_ID in
 # Scaling up experiment
   1)
-    CONFIG_FILE="configs/experiments/uncertainty/qmix.yaml"
+    CONFIG_FILE="configs/experiments/uncertainty_action/qmix.yaml"
     ;;
   2)
-    CONFIG_FILE="configs/experiments/uncertainty/ppo_fc_independent.yaml"
+    CONFIG_FILE="configs/experiments/uncertainty_action/ppo_fc_independent.yaml"
     ;;
   3)
-    CONFIG_FILE="configs/experiments/uncertainty/ppo_convolutional_independent.yaml"
+    CONFIG_FILE="configs/experiments/uncertainty_action/ppo_convolutional_independent.yaml"
     ;;
   4)
-    CONFIG_FILE="configs/experiments/uncertainty/ppo_convolutional_centralised.yaml"
+    CONFIG_FILE="configs/experiments/uncertainty_action/ppo_convolutional_centralised.yaml"
     ;;
 esac
 

@@ -1,4 +1,4 @@
-name: scaling_up_independent_ppo_fc
+name: uncertainty_obs_ppo_convolutional_centralised
 
 env: gridworld_obstacles_vision_net
 env-config:
@@ -38,25 +38,22 @@ env-config:
         threshold: 0.20
       hq:
         size: 6
-  probs:
-    action:
-      gridsearch: [1, 0.8, 0.6, 0.4, 0.2]
+  noise:
+    action: 0
     obs:
-      match_param: action
+      gridsearch: [0, 0.2, 0.4, 0.6, 0.8, 1]
 
 
 trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 6
-  num_gpus: 0.5
+  num_workers: 14
+  num_gpus: 1
 
   # Model config
   model:
-    custom_model: FCModel
-    custom_model_config:
-      layers: [256]
+    custom_model: CentralisedModel
 
   # Trainer parameters
   lr: 0.00008
@@ -71,3 +68,5 @@ stop:
   timesteps_total: 1_000_000
 
 samples: 25
+
+grouping: all_same

@@ -9,7 +9,7 @@ from environments.gridworld_obstacles.simulation.gridworld_model import Simulati
 from environments.gridworld_obstacles.simulation.observables import Obstacle, is_flammable, is_collidable
 
 
-def simulate_event(p: float) -> bool:
+def simulate_event_occurs(p: float) -> bool:
     """
     @:param p probability of event
     @:return whether event occurred or not
@@ -19,7 +19,9 @@ def simulate_event(p: float) -> bool:
 
 class SimulationController:
     def __init__(self, width, height, num_survivors, num_agents,
-                 sight, battery, reward_map, battery_costs, fire_spread, autogen_config, probs=None):
+                 sight, battery, reward_map, battery_costs, fire_spread, autogen_config, noise=None):
+        if noise is None:
+            noise = {}
         self._width = width
         self._height = height
         self._num_survivors = num_survivors
@@ -30,7 +32,7 @@ class SimulationController:
         self._battery_costs = battery_costs
         self._fire_spread = fire_spread
         self._autogen_config = autogen_config
-        self._probs = probs
+        self.noise = noise
 
         self.agents = None
         self.model = None
@@ -60,8 +62,8 @@ class SimulationController:
         self.survivors_rescued = 0
         self.agents_crashed = 0
 
-    def get_prob(self, v):
-        return self._probs.get(v, 1.)
+    def get_noise(self, v):
+        return self.noise.get(v, 0.)
 
     def start_fires(self, fire_spread_config):
         # Find all trees
@@ -145,7 +147,7 @@ class SimulationController:
         """
         def obs_randomise(b: bool) -> int:
             # Return 1 for True or 0 for false, with a random chance of "noise" interfering with observation
-            if simulate_event(self.get_prob("obs")):
+            if simulate_event_occurs(self.get_noise("obs")):
                 return b
             else:
                 return randrange(0, 2)
@@ -207,9 +209,8 @@ class SimulationController:
             if agent.id in action_dict.keys() and not agent.is_dead():
                 action_todo = action_dict[agent.id]
                 # Add randomness to the actions the agent takes
-                if random() > self.get_prob("action"):
+                if simulate_event_occurs(self.get_noise("action")):
                     action_todo = randrange(len(agent.actions()))
-                # print(action_todo)
                 agent.actions()[action_todo]()
                 if (agent.get_x(), agent.get_y()) in self.get_survivor_positions():
                     rew[agent.id] += self._reward_map["rescue"]
@@ -233,7 +234,7 @@ class SimulationController:
         total_samples = [[0 for _ in range(self.model.get_width())] for _ in range(self.model.get_height())]
         # Choose some of the currently burning trees, to spread
         for pos in self.model.get_burning_cells():
-            if simulate_event(self._fire_spread["rate"]):
+            if simulate_event_occurs(self._fire_spread["rate"]):
                 new_samples = np.random.multivariate_normal(
                     pos,
                     self._fire_spread["covariance"],

@@ -24,7 +24,7 @@ class GridWorldObstaclesEnv(MultiAgentEnv):
                                                config["battery costs"],
                                                config["fire spread"],
                                                config["autogen config"],
-                                               config.get("probabilities"))
+                                               config.get("noise"))
 
     @staticmethod
     def get_action_space():
