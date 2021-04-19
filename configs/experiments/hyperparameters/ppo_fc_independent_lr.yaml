@@ -1,4 +1,4 @@
-name: uncertainty_action_ppo_fc_independent
+name: lr_ppo_fc_independent
 
 env: gridworld_obstacles_vision_net
 env-config:
