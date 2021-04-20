@@ -14,7 +14,12 @@ def simulate_event_occurs(p: float) -> bool:
     @:param p probability of event
     @:return whether event occurred or not
     Simulate event occurring with probability p (0-1)"""
-    return random() < p
+    if p == 0:
+        return False
+    elif p == 1:
+        return True
+    else:
+        return random() < p
 
 
 class SimulationController:
@@ -148,9 +153,9 @@ class SimulationController:
         def obs_randomise(b: bool) -> int:
             # Return 1 for True or 0 for false, with a random chance of "noise" interfering with observation
             if simulate_event_occurs(self.get_noise("obs")):
-                return b
-            else:
                 return randrange(0, 2)
+            else:
+                return b
 
         terrain = np.array([[
             obs_randomise(is_collidable(self.model.get_at_cell(x, y)))

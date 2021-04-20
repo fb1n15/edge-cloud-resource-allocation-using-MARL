@@ -38,9 +38,6 @@ env-config:
         threshold: 0.20
       hq:
         size: 6
-  noise:
-    action: 0
-    obs: 0
 
 
 trainer: PPO
@@ -58,7 +55,7 @@ trainer-config:
 
   # Trainer parameters
   lr:
-    gridsearch: [0.01, 0.001, 0.0001, 0.00001, 0.000001]
+    gridsearch: [0.001, 0.0001, 0.00001, 0.000001]
   lambda: 1.0
   entropy_coeff: 0.0
   rollout_fragment_length: 200
