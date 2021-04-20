@@ -39,9 +39,8 @@ env-config:
       hq:
         size: 6
   noise:
-    action: 0
     obs:
-      gridsearch: [ 0, 0.2, 0.4, 0.6, 0.8, 1 ]
+      gridsearch: [ 0.7, 0.9 ]
 
 
 trainer: PPO
@@ -67,4 +66,4 @@ trainer-config:
 stop:
   timesteps_total: 1_000_000
 
-samples: 25
+samples: 10
