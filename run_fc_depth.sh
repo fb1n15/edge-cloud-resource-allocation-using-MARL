@@ -24,6 +24,9 @@ case $SLURM_ARRAY_TASK_ID in
   5)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth5.yaml"
     ;;
+  6)
+    CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_lr_depth2.yaml"
+    ;;
 esac
 
 echo "Starting Job"
