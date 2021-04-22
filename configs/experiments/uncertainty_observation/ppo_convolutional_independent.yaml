@@ -40,7 +40,7 @@ env-config:
         size: 6
   noise:
     obs:
-      gridsearch: [ 0.7, 0.9 ]
+      gridsearch: [ 0.3, 0.1 ]
 
 
 trainer: PPO
