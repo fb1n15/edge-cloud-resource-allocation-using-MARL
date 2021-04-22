@@ -12,7 +12,7 @@ case $SLURM_ARRAY_TASK_ID in
   1)
     CONFIG_FILE="configs/experiments/hyperparameters/ppo_fc_independent_lr.yaml"
     ;;
-  1)
+  2)
     CONFIG_FILE="configs/experiments/hyperparameters/ppo_fc_independent_gamma.yaml"
     ;;
 esac
