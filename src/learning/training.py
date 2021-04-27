@@ -18,6 +18,7 @@ from ray import tune
 from ray.rllib.utils.framework import try_import_torch
 
 from learning.models.centralised_model import CentralisedModel
+from learning.models.centralised_model2 import CentralisedModelFC
 from learning.models.convolutional_model import ConvolutionalModel
 from learning.models.fc_model import FCModel
 
@@ -112,6 +113,7 @@ def get_trainer_config(config):
     # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
     ModelCatalog.register_custom_model("ConvolutionalModel", ConvolutionalModel)
     ModelCatalog.register_custom_model("CentralisedModel", CentralisedModel)
+    ModelCatalog.register_custom_model("CentralisedModelFC", CentralisedModelFC)
     ModelCatalog.register_custom_model("FCModel", FCModel)
 
     # Add callbacks for custom metrics
