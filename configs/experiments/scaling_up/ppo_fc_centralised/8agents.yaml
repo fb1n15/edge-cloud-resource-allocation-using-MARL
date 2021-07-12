@@ -1,18 +1,18 @@
-name: gridworld_obstacles_vision_net_ppo
+name: scaling_up_centralised_ppo_convolutional_8agent
 
 env: gridworld_obstacles_vision_net
 env-config:
-  width: 40
-  height: 40
-  num_survivors: 20
-  num_agents: 3
+  width: 100
+  height: 100
+  num_survivors: 100
+  num_agents: 8
   start_world: [ [ ] ]
   sight: 5
-  battery: 500
+  battery: 1000
   rewards:
     rescue: 1
     hit tree: 0
-    exploring: 0.01
+    exploring: 0.001
   battery costs:
     rotate left: 1
     rotate right: 1
@@ -37,7 +37,7 @@ env-config:
         lacunarity: 5.0
         threshold: 0.20
       hq:
-        size: 5
+        size: 6
 
 
 trainer: PPO
@@ -49,7 +49,7 @@ trainer-config:
 
   # Model config
   model:
-    custom_model: ConvolutionalModel
+    custom_model: CentralisedModelFC
 
   # Trainer parameters
   lr: 0.00008
@@ -61,4 +61,8 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 500_000
+
+samples: 4
+
+grouping: all_same

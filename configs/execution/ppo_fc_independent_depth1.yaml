@@ -1,4 +1,4 @@
-name: gridworld_obstacles_independent_ppo_fc
+name: gridworld_obstacles_independent_ppo_fc_depth1
 
 env: gridworld_obstacles_vision_net
 env-config:
@@ -44,15 +44,14 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 10
+  num_workers: 2
   num_gpus: 1
 
   # Model config
   model:
-    custom_model: ConvolutionalModel
-#    custom_model_config:
-#      layers: [256]
-    use_lstm: true
+    custom_model: FCModel
+    custom_model_config:
+      layers: [256]
 
   # Trainer parameters
   lr: 0.00008
@@ -65,3 +64,5 @@ trainer-config:
 
 stop:
   timesteps_total: 1_000_000
+
+samples: 8

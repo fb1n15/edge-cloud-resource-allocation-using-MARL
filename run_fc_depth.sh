@@ -5,7 +5,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --gres=gpu:1
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=jp6g18@soton.ac.uk
+#SBATCH --mail-user=fan_bi@icloud.com
 
 case $SLURM_ARRAY_TASK_ID in
 # Depth experiment

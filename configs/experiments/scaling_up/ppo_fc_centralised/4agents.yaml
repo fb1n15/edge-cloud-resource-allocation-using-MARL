@@ -1,18 +1,18 @@
-name: gridworld_obstacles_independent_ppo_fc
+name: scaling_up_centralised_ppo_convolutional_4agent
 
 env: gridworld_obstacles_vision_net
 env-config:
-  width: 40
-  height: 40
-  num_survivors: 20
-  num_agents: 3
+  width: 100
+  height: 100
+  num_survivors: 100
+  num_agents: 4
   start_world: [ [ ] ]
   sight: 5
-  battery: 500
+  battery: 1000
   rewards:
     rescue: 1
     hit tree: 0
-    exploring: 0.01
+    exploring: 0.001
   battery costs:
     rotate left: 1
     rotate right: 1
@@ -37,24 +37,19 @@ env-config:
         lacunarity: 5.0
         threshold: 0.20
       hq:
-        size: 5
+        size: 6
 
 
 trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 2
-  num_gpus: 0.25
-  samples: 5
+  num_workers: 10
+  num_gpus: 1
 
   # Model config
   model:
-    custom_model: FCModel
-    custom_model_config:
-      layers:
-        gridsearch:
-          - [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256]]
+    custom_model: CentralisedModelFC
 
   # Trainer parameters
   lr: 0.00008
@@ -66,4 +61,8 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 500_000
+
+samples: 4
+
+grouping: all_same

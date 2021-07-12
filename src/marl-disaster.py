@@ -58,29 +58,33 @@ def main():
     parser.add_argument('run_option', choices=['train', 'run', 'mapgen'])
     # parser.add_argument('--restore', action='store_true')
     parser.add_argument('--config', type=str, help='File containing the config')
+    parser.add_argument('--checkpoint', type=str, help='Path to the checkpoint to run')
     args = parser.parse_args()
 
     restore = False
     config = load_yaml(args.config)
 
+    # train the model
     if args.run_option == "train":
         from learning import training
         training.main(config)
 
+    # execute the model
     elif args.run_option == "run":
         from visualisation import run_model
         if restore:
             raise Exception("Cannot restore for run, only train")
-        experiments = explore_checkpoints()
-        chooser = CLIPromptExperimentChooser(experiments)
+        # experiments = explore_checkpoints()
+        # chooser = CLIPromptExperimentChooser(experiments)
+        # choice = chooser.select_experiment()
 
-        run_model.main(chooser.select_experiment(), config)
+        run_model.main(args.checkpoint, config)
 
     elif args.run_option == "mapgen":
         if restore:
             raise Exception("Cannot restore for run, only train")
         from visualisation import mapgen
-        mapgen.main()
+        mapgen.main(config)
 
 
 if __name__ == "__main__":

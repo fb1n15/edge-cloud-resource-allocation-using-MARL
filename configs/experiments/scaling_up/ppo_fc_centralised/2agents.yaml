@@ -1,26 +1,22 @@
-name: DroneRescue gridworld_radar_vision_net_ppo
+name: scaling_up_centralised_ppo_convolutional_2agent
 
-env: gridworld_radar_vision_net
+env: gridworld_obstacles_vision_net
 env-config:
-  width: 50
-  height: 50
-  num_survivors: 20
-  num_radar_drones: 2
-  num_rescue_drones: 2
+  width: 100
+  height: 100
+  num_survivors: 100
+  num_agents: 2
   start_world: [ [ ] ]
   sight: 5
-  battery: 500
+  battery: 1000
   rewards:
-    rescue: 10
+    rescue: 1
     hit tree: 0
-    exploring: 0
-    mark agent: 2
-    miss mark agent: -0.5
+    exploring: 0.001
   battery costs:
     rotate left: 1
     rotate right: 1
     advance: 2
-    mark: 10
   fire spread:
     starting points: 0
     covariance: [ [ 3, 0 ], [ 0, 3 ] ]
@@ -41,7 +37,7 @@ env-config:
         lacunarity: 5.0
         threshold: 0.20
       hq:
-        size: 5
+        size: 6
 
 
 trainer: PPO
@@ -53,22 +49,20 @@ trainer-config:
 
   # Model config
   model:
-    dim: 11
-    conv_filters: [ [ 16, [ 3, 3 ], 2 ], [ 32, [ 3, 3 ], 2 ], [ 512, [ 3, 3 ], 1 ] ]
-#    use_lstm: true
-    # To further customize the LSTM auto-wrapper
-#    "lstm_cell_size": 64
+    custom_model: CentralisedModelFC
 
   # Trainer parameters
-  lr: 0.00003
-  lambda: 0.91
-  gamma: 0.99
-  rollout_fragment_length: 100
-  train_batch_size: 5000
-  sgd_minibatch_size: 500
-  entropy_coeff: 0.01
+  lr: 0.00008
+  lambda: 1.0
+  entropy_coeff: 0.0
+  rollout_fragment_length: 200
+  train_batch_size: 4000
+  sgd_minibatch_size: 128
+
 
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 500_000
 
-grouping: radar-rescue
+samples: 4
+
+grouping: all_same

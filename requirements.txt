@@ -60,7 +60,7 @@ pytest==6.2.2
 python-dateutil==2.8.1
 pytz==2020.5
 PyYAML==5.4.1
-ray @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp38-cp38-win_amd64.whl
+ray @ https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-manylinux2014_x86_64.whl
 redis==3.5.3
 requests==2.25.1
 rsa==4.7
