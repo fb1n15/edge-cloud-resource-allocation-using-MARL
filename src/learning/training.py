@@ -36,12 +36,14 @@ def get_trainer_config(config):
 
     # Choose environment, with groupings
     env = environment_map(config["env"])["env"]
+    print()
+    print(env)
     if "grouping" not in config:
         trainer_config["env"] = env
 
         trainer_config["multiagent"] = {
             "policies": {
-                "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
+                "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(config["env-config"]), {}),
             },
             "policy_mapping_fn": lambda agent_id: "default"
         }
@@ -135,6 +137,7 @@ def train(config):
     if "scheduler" in config:
         if config["scheduler"] == "pbt":
             scheduler = PopulationBasedTraining(**config["scheduler-config"])
+    print("start training")
     analysis = tune.run(
         config["trainer"],
         name=config["name"],
@@ -149,6 +152,7 @@ def train(config):
         verbose=3,
         checkpoint_at_end=True,
         num_samples=config.get("samples", 1),
+        fail_fast='raise'
     )
 
     return analysis

@@ -9,6 +9,14 @@ from environments.gridworld_obstacles.simulation.gridworld_controller import \
     SimulationController
 from environments.gridworld_obstacles.visualisation.render import \
     render_gridworld
+import copy
+
+import gym
+import numpy as np
+import pandas as pd
+from gym import spaces
+
+from common.generate_simulation_data import generate_synthetic_data_edge_cloud
 
 
 def argmax_earliest(utility_arr, bid_start_time_arr):
@@ -64,7 +72,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             resource_coefficient=0.2,
             forgiveness_factor=30,
             allow_negative_reward=False,
-            alpha=1.0, lam=1e2, verbose=True):
+            alpha=1.0, lam=1e2):
         """
         Initialization function for the environment.
         Args:
@@ -84,6 +92,7 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         avg_resource_capacity = config["avg_resource_capacity"]
         avg_unit_cost = config["avg_unit_cost"]
+        verbose = config["verbose"]
         self.avg_resource_capacity = avg_resource_capacity
         self.avg_unit_cost = avg_unit_cost
         self.max_steps = max_steps
@@ -237,7 +246,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.idle_resource_capacities = copy.deepcopy(
             self.full_resource_capacities)
 
-        self.state = []
+        self.state = {}
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
             agent_state = np.concatenate((task_info, future_occup),
@@ -252,15 +261,15 @@ class EdgeCloudEnv(MultiAgentEnv):
         n_tasks = 20
         if self.verbose:
             print(df_tasks)
-        social_welfare, number_of_allocated_tasks, allocation_scheme = \
-            online_myopic(df_tasks, df_nodes, n_time, n_tasks, n_nodes)
-        if self.verbose:
-            print("social welfare:", social_welfare)
-            print("number of allocated tasks:", number_of_allocated_tasks)
-            print(f"allocation_scheme:")
-            print(allocation_scheme)
+        # social_welfare, number_of_allocated_tasks, allocation_scheme = \
+        #     online_myopic(df_tasks, df_nodes, n_time, n_tasks, n_nodes)
+        # if self.verbose:
+        #     print("social welfare:", social_welfare)
+        #     print("number of allocated tasks:", number_of_allocated_tasks)
+        #     print(f"allocation_scheme:")
+        #     print(allocation_scheme)
 
-        return self.state, social_welfare
+        return self.state
 
     def step(self, actions):
         """
@@ -441,7 +450,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         # info part is None for now
         return self.state, self.rewards, done, sw_increase
 
-    def render_method(self):
+    def render(self):
         print(f"current time slot = {self.current_time_slot}")
         print(f"next task ID = {self.current_task_id}")
         print(f"winner of last reverse_auction = {self.winner_id}")
@@ -451,6 +460,18 @@ class EdgeCloudEnv(MultiAgentEnv):
         print(f"Total social welfare = {self.total_social_welfare}")
         print(f"Next global observation = {self.state}")
         print()
+
+    @staticmethod
+    def render_method():
+        return None
+
+    @staticmethod
+    def get_observation_space(config):
+        return spaces.Box(low=0, high=1, shape=(config["obs_length"],), dtype=np.float16)
+
+    @staticmethod
+    def get_action_space(config):
+        return spaces.Discrete(config["n_actions"])
 
     def update_resource_occupency(self, winner_index, winner_usage_time,
             winner_relative_start_time):
@@ -541,7 +562,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             sw_increase = 0
         else:
             # which FN wins this task
-            winner_index = self.argmax_earliest(utility_arr=utility_arr,
+            winner_index = argmax_earliest(utility_arr=utility_arr,
                 bid_start_time_arr=bid_start_time_arr)
             winner_usage_time = bid_usage_time_arr[
                 winner_index]  # no. of time steps for this task

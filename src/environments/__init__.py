@@ -1,6 +1,8 @@
-from environments.gridworld_obstacles.simulation.environment import GridWorldObstaclesEnv
-from environments.gridworld_radar.simulation.environment import GridWorldRadarRescueEnv
-from environments.gridworld_radar.simulation.environment import EdgeCloudEnv
+from environments.gridworld_obstacles.simulation.environment import \
+    GridWorldObstaclesEnv
+from environments.gridworld_radar.simulation.environment import \
+    GridWorldRadarRescueEnv
+from environments.edge_cloud.simulation.environment import EdgeCloudEnv
 
 
 def environment_map(name):
