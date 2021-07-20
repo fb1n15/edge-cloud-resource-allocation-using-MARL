@@ -152,7 +152,7 @@ def train(config):
         verbose=3,
         checkpoint_at_end=True,
         num_samples=config.get("samples", 1),
-        fail_fast='raise'
+        # fail_fast='raise'
     )
 
     return analysis
@@ -175,6 +175,8 @@ class CustomCallbacks(DefaultCallbacks):
             # If the environment is using a group wrapper (for Q-Mix)
             # Access the inner environment
             env = env.env
-        episode.custom_metrics["Survivors Rescued"] = env.get_survivors_rescued()
-        episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()
-        episode.custom_metrics["Map Explored"] = env.get_map_explored()
+        # episode.custom_metrics["Survivors Rescued"] = env.get_survivors_rescued()
+        # episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()
+        # episode.custom_metrics["Map Explored"] = env.get_map_explored()
+        episode.custom_metrics["Social Welfare"] = env.get_total_sw()
+

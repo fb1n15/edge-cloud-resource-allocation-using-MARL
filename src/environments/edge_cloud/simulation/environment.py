@@ -65,8 +65,8 @@ class EdgeCloudEnv(MultiAgentEnv):
     VERSION = 1  # Increment each time there are non-backwards compatible changes made to simulation
 
     def __init__(self, config,
-            seed=0, n_nodes=6, n_timesteps=20, n_tasks=40,
-            max_steps=20, n_actions=1,
+            seed=0, n_timesteps=20, n_tasks=40,
+            max_steps=20,
             p_high_value_tasks=0.1, high_value_slackness=0,
             low_value_slackness=0, resource_ratio=3, valuation_ratio=10,
             resource_coefficient=0.2,
@@ -102,8 +102,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.n_tasks = n_tasks
         self.n_timesteps = n_timesteps
         self.seed = seed
-        self.n_nodes = n_nodes
-        self.n_actions = n_actions
+        self.n_nodes = config['n_nodes']
+        self.n_actions = config['n_actions']
         self.p_high_value_tasks = p_high_value_tasks
         self.high_value_slackness = high_value_slackness
         self.low_value_slackness = low_value_slackness
@@ -157,7 +157,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             self.full_resource_capacities)
 
         # 10 discrete actions for each agent
-        self.action_space = [spaces.Discrete(n_actions) for _ in
+        self.action_space = [spaces.Discrete(self.n_actions) for _ in
             range(self.n_nodes)]
 
         # observation is the occupancy of future 10 time steps (because the relative deadline of all tasks <= 10)
@@ -251,16 +251,18 @@ class EdgeCloudEnv(MultiAgentEnv):
             future_occup = self.future_occup[i].flatten(order="F")
             agent_state = np.concatenate((task_info, future_occup),
                 axis=None)
+            self.state[f'node_{i}'] = agent_state
 
-            self.state.append(agent_state)
-
-        # get the social welfare of Online Myopic
-        if self.verbose:
-            print("running Online Myopic")
+        # # get the social welfare of Online Myopic
+        # if self.verbose:
+        #     print("running Online Myopic")
         df_tasks = df_tasks[:20]
         n_tasks = 20
         if self.verbose:
+            print("tasks information")
             print(df_tasks)
+            print("nodes information")
+            print(df_nodes)
         # social_welfare, number_of_allocated_tasks, allocation_scheme = \
         #     online_myopic(df_tasks, df_nodes, n_time, n_tasks, n_nodes)
         # if self.verbose:
@@ -301,7 +303,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         start_time_list = []  # start time according to the planned allocation
         relative_start_time_list = []  # relative start time according to the current task
         # calculate the maximum usage time and earliest start time for each agent
-        for node_id, action in enumerate(actions):
+        for node_id, (node_name, action) in enumerate(actions.items()):
             max_usage_time, relative_start_time = self.find_max_usage_time(
                 node_id)
             # if node_id==0:
@@ -368,8 +370,11 @@ class EdgeCloudEnv(MultiAgentEnv):
         # self.next_time_slot + 1: (self.next_time_slot + 11)],
         #     self.full_resource_capacities[:, :,
         #     self.next_time_slot + 1: (self.next_time_slot + 11)])
-        # print(self.idle_resource_capacities[5])
-        # print(self.full_resource_capacities[5])
+        # print("idle resource capacities:")
+        # print(self.idle_resource_capacities)
+        # print("full resource capacities: ")
+        # print(self.full_resource_capacities)
+
         self.future_occup = (
                 1 - np.divide(self.idle_resource_capacities[:, :,
         self.next_time_slot + 1: (self.next_time_slot + 11)],
@@ -404,29 +409,32 @@ class EdgeCloudEnv(MultiAgentEnv):
             print(self.current_task)
 
         # update the global observation (state)
-        self.state = []  # observation is a list of ndarrays
+        self.state = {}  # observation is a list of ndarrays
         # a list in case different nodes have different rewards
-        self.rewards = []
+        self.rewards = {}
         self.current_task_id += 1
         # reward is the penalty of the value lost
-        self.rewards.append(sw_increase - self.current_task_value)
-        # find if this is the last task of the episode
-        if self.current_task_id >= self.max_steps:
-            done = True
-            # no new observation at the end of the the episode
-            task_info = None
-            self.state = None
-        else:  # not the last step of the episode
-            done = False
-            # const = np.array([1])
-            task_info = self.df_tasks_normalised.iloc[
-                self.current_task_id].to_numpy()
-            for i in range(self.n_nodes):
-                future_occup = self.future_occup[i].flatten(order="F")
-                agent_state = np.concatenate((task_info, future_occup),
-                    axis=None)
+        # every node has the same reward
+        equal_reward =sw_increase - self.current_task_value
+        for i in range(self.n_nodes):
+            self.rewards[f'node_{i}'] = equal_reward
 
-                self.state.append(agent_state)
+        # find if this is the last task of the episode
+        if self.current_task_id >= self.max_steps -1:
+            dones = {'__all__': True}
+        else:  # not the last step of the episode
+            dones = {'__all__': False}
+            # const = np.array([1])
+
+        task_info = self.df_tasks_normalised.iloc[
+            self.current_task_id].to_numpy()
+        # generate the next observation
+        for i in range(self.n_nodes):
+            future_occup = self.future_occup[i].flatten(order="F")
+            agent_state = np.concatenate((task_info, future_occup),
+                axis=None)
+
+            self.state[f'node_{i}'] = agent_state
 
             # calculate rewards (may need to be changed to list of rewards in the future)
         self.sw_increase = sw_increase
@@ -442,13 +450,14 @@ class EdgeCloudEnv(MultiAgentEnv):
             print("next global observation")
             print(self.state)
             print(f"rewards for agents = {self.rewards}")
-            print(f"Is the episode over? {done}")
+            print(f"Is the episode over? {dones}")
             print("\n\n")
 
         # update the total social welfare
         self.total_social_welfare += sw_increase
+        infos = {'node_0': f'social welfare increase = {sw_increase}'}
         # info part is None for now
-        return self.state, self.rewards, done, sw_increase
+        return self.state, self.rewards, dones, infos
 
     def render(self):
         print(f"current time slot = {self.current_time_slot}")
@@ -461,13 +470,17 @@ class EdgeCloudEnv(MultiAgentEnv):
         print(f"Next global observation = {self.state}")
         print()
 
+    def get_total_sw(self):
+        return self.total_social_welfare
+
     @staticmethod
     def render_method():
         return None
 
     @staticmethod
     def get_observation_space(config):
-        return spaces.Box(low=0, high=1, shape=(config["obs_length"],), dtype=np.float16)
+        return spaces.Box(low=0, high=1, shape=(config["obs_length"],),
+            dtype=np.float16)
 
     @staticmethod
     def get_action_space(config):

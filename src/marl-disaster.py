@@ -59,10 +59,10 @@ def main():
     # parser.add_argument('--restore', action='store_true')
     parser.add_argument('--config', type=str, help='File containing the config')
     parser.add_argument('--checkpoint', type=str, help='Path to the checkpoint to run')
-    args = parser.parse_args()
+    args = parser.parse_args() # get all arguments
 
     restore = False
-    config = load_yaml(args.config)
+    config = load_yaml(args.config) # the dictionary of configurations
 
     # train the model
     if args.run_option == "train":
