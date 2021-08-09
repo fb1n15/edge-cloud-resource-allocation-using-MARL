@@ -13,7 +13,7 @@ case $SLURM_ARRAY_TASK_ID in
     CONFIG_FILE="configs/experiments/hyperparameters/ppo_fc_independent_lr.yaml"
     ;;
   2)
-    CONFIG_FILE="configs/experiments/hyperparameters/ppo_fc_independent_gamma.yaml"
+    CONFIG_FILE="/mainfs/home/fb1n15/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/ppo_fc_centralised_critic_lr.yaml"
     ;;
 esac
 

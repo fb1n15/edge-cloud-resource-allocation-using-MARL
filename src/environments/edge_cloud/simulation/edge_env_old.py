@@ -25,7 +25,7 @@ class EdgeEnv(gym.Env):
         Initialization function for the environment.
         Args:
 
-            seed: seed for generating simulation data
+            seed: seed_value for generating simulation data
             n_timesteps The number of timestamps.
             allow_negative_reward: Flag for allowing negative rewards for the bad allocation of tasks.
             forgiveness_factor: Tolerance to sequential bad allocation of tasks.

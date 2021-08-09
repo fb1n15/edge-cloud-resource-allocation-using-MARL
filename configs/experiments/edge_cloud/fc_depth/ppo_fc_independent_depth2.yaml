@@ -1,50 +1,22 @@
-name: gridworld_obstacles_independent_ppo_fc_depth2
+name: edge_cloud_independent_ppo_fc_depth2
 
-env: gridworld_obstacles_vision_net
+env: edge_cloud
+
 env-config:
-  width: 40
-  height: 40
-  num_survivors: 20
-  num_agents: 3
-  start_world: [ [ ] ]
-  sight: 5
-  battery: 500
-  rewards:
-    rescue: 1
-    hit tree: 0
-    exploring: 0.01
-  battery costs:
-    rotate left: 1
-    rotate right: 1
-    advance: 2
-  fire spread:
-    starting points: 0
-    covariance: [ [ 3, 0 ], [ 0, 3 ] ]
-    rate: 0.1
-  autogen config:
-    forest fire:
-      chance: 1
-      trees:
-        scale: 20.0
-        octaves: 8
-        persistence: 0.5
-        lacunarity: 2.0
-        threshold: 0.07
-      rocks:
-        scale: 6.0
-        octaves: 10
-        persistence: 0.5
-        lacunarity: 5.0
-        threshold: 0.20
-      hq:
-        size: 5
+  n_nodes: 3
+  avg_resource_capacity: {0: [ 5, 5, 5 ], 1:[3, 3, 3], 2:[3, 3, 3]}
+  avg_unit_cost: {0: [2, 2, 2], 1:[3, 3, 3], 2: [3,3,3]}
+#  verbose: True
+  verbose: False
+  obs_length: 37
+  n_actions: 2
 
 
 trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 2
+  num_workers: 19
   num_gpus: 1
 
   # Model config
@@ -54,15 +26,16 @@ trainer-config:
       layers: [256, 256]
 
   # Trainer parameters
-  lr: 0.00008
+  lr:
+    gridsearch: [0.01, 0.001, 0.0001, 0.00001]
   lambda: 1.0
   entropy_coeff: 0.0
   rollout_fragment_length: 200
-  train_batch_size: 4000
+  train_batch_size: 1000
   sgd_minibatch_size: 128
 
 
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 200_000
 
-samples: 8
+samples: 2

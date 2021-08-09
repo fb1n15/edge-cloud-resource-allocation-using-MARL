@@ -1,5 +1,5 @@
 """
-Run this with marl-disaster.py <train/run/mapgen>
+Run this with marl.py <train/run/mapgen>
 -r/--restore | restore training from checkpoint
 """
 import argparse

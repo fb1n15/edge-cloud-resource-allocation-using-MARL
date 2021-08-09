@@ -8,7 +8,7 @@ torch, nn = try_import_torch()
 
 
 class CentralisedModelFC(TorchModelV2, nn.Module):
-    """Model for centralised control"""
+    """Model for centralised control (not using convolutional layers?)"""
     def __init__(self, obs_space, action_space, num_outputs, model_config,
                  name):
         TorchModelV2.__init__(self, obs_space, action_space, num_outputs,
@@ -23,9 +23,10 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
         layers = []
 
         for layer_dim in model_config["custom_model_config"]["layers"]:
+        # for layer_dim in [256, 256]:
             layers.append(nn.Sequential(
-                nn.Linear(in_features=model_outputs, out_features=layer_dim),
-                nn.ReLU(),
+            nn.Linear(in_features=model_outputs, out_features=layer_dim),
+            nn.ReLU(),
             ))
             model_outputs = layer_dim
 

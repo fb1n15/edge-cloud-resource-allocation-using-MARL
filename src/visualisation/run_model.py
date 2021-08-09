@@ -93,12 +93,16 @@ class SimulationRunner:
         #                   "framework": "torch",
         #                   "explore": False}
         self.env = env(config["env-config"])
+        # https://docs.ray.io/en/latest/rllib-training.html#accessing-policy-state
+        # accessing model state
         trainer_config = get_trainer_config(config)
         self.agent = ppo.PPOTrainer(config=trainer_config,
                                     env=env)
-        # path = r"C:\Users\Jack\PycharmProjects\marl-disaster-relief\src\results\DroneRescue DroneRescue gridworld_radar_vision_net_ppo\PPO_GridWorldEnv_e712e_00000_0_lambda=0.9112,lr=2.8076e-05_2021-03-22_17-34-49\checkpoint_000200\checkpoint-200"
+
         self.agent.restore(experiment)  # Restore the last checkpoint
         # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
+
+
 
         self.gridworld = self.env.controller
 

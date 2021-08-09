@@ -1,4 +1,7 @@
 name: edge_cloud_independent_ppo_fc_depth2
+# https://docs.ray.io/en/master/rllib-algorithms.html
+# rllib algorithms and their configs
+# common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
 
 env: edge_cloud
 
@@ -16,26 +19,31 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
+  # number of workers for collecting samples with.
   num_workers: 19
   num_gpus: 1
 
   # Model config
   model:
-    custom_model: CentralisedModelFC
+    custom_model: FCModel
     custom_model_config:
       layers: [256, 256]
 
   # Trainer parameters
   lr:
-    gridsearch: [0.01, 0.001, 0.0001, 0.00001]
+    gridsearch: [0.00001, 0.001, 0.0001]
   lambda: 1.0
   entropy_coeff: 0.0
-  rollout_fragment_length: 200
-  train_batch_size: 1000
+  rollout_fragment_length: 220
+  # The size of each SGD epoch = Size of Training Set
+  train_batch_size: 4000
+  # The minibatch size within each epoch.
+  # This number of samples will be worked through before updating the model's
+  #    internal parameters.
   sgd_minibatch_size: 128
 
 
 stop:
   timesteps_total: 200_000
 
-samples: 2
+samples: 6

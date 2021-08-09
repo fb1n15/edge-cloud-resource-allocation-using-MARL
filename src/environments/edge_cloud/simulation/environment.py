@@ -62,28 +62,33 @@ def argmax_earliest(utility_arr, bid_start_time_arr):
 
 class EdgeCloudEnv(MultiAgentEnv):
     """Our edge cloud resource allocation environment"""
-    VERSION = 1  # Increment each time there are non-backwards compatible changes made to simulation
+    VERSION = 1  # Increment each time there are non-backwards compatible changes made
+    # to simulation
 
     def __init__(self, config,
-            seed=0, n_timesteps=20, n_tasks=40,
-            max_steps=20,
-            p_high_value_tasks=0.1, high_value_slackness=0,
-            low_value_slackness=0, resource_ratio=3, valuation_ratio=10,
-            resource_coefficient=0.2,
-            forgiveness_factor=30,
-            allow_negative_reward=False,
-            alpha=1.0, lam=1e2):
+                 seed=0, n_timesteps=20, n_tasks=40,
+                 max_steps=20,
+                 p_high_value_tasks=0.1, high_value_slackness=0,
+                 low_value_slackness=0, resource_ratio=3, valuation_ratio=10,
+                 resource_coefficient=0.2,
+                 forgiveness_factor=30,
+                 allow_negative_reward=False,
+                 alpha=1.0, lam=1e2):
         """
         Initialization function for the environment.
         Args:
 
-            seed: seed for generating simulation data
+            seed: seed_value for generating simulation data
             n_timesteps The number of timestamps.
-            allow_negative_reward: Flag for allowing negative rewards for the bad allocation of tasks.
+            allow_negative_reward: Flag for allowing negative rewards for the bad
+            allocation of tasks.
             forgiveness_factor: Tolerance to sequential bad allocation of tasks.
-            alpha: Percentage of the total rewards influenced by the prioritisation of high valuation tasks.
-            lam: Speed of increase in the rewards generated from the prioritisation of high valuation tasks.
-            not_verbose: A boolean as a flag to print information about the node allocation.
+            alpha: Percentage of the total rewards influenced by the prioritisation of
+            high valuation tasks.
+            lam: Speed of increase in the rewards generated from the prioritisation of
+            high valuation tasks.
+            not_verbose: A boolean as a flag to print information about the node
+            allocation.
 
         """
 
@@ -101,7 +106,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                 resource_coefficient * n_tasks / n_timesteps)
         self.n_tasks = n_tasks
         self.n_timesteps = n_timesteps
-        self.seed = seed
+        self.seed_value = seed
         self.n_nodes = config['n_nodes']
         self.n_actions = config['n_actions']
         self.p_high_value_tasks = p_high_value_tasks
@@ -117,7 +122,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             columns=['node_id', 'start_time', 'end_time'])
 
         (df_tasks, df_nodes, n_time, n_tasks,
-        n_nodes) = self.data_for_next_episode()
+         n_nodes) = self.data_for_next_episode()
 
         self.allocated_tasks = []  # [(task_info, action)]
 
@@ -151,39 +156,45 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.action_history = []
 
         self.allocation_map = dict((node, []) for node in range(
-            self.n_nodes))  # A dict with the shape {node: [(task, start_index, stop_index),]}
+            self.n_nodes))  # A dict with the shape {node: [(task, start_index,
+        # stop_index),]}
 
         self.idle_resource_capacities = copy.deepcopy(
             self.full_resource_capacities)
 
         # 10 discrete actions for each agent
         self.action_space = [spaces.Discrete(self.n_actions) for _ in
-            range(self.n_nodes)]
+                             range(self.n_nodes)]
 
-        # observation is the occupancy of future 10 time steps (because the relative deadline of all tasks <= 10)
+        # observation is the occupancy of future 10 time steps (because the relative
+        # deadline of all tasks <= 10)
         # this is the global observation, will modify to local observations in the future
         self.observation_space = [spaces.Box(low=0, high=1,
-            shape=(37,), dtype=np.float16) for _ in range(self.n_nodes)]
+                                             shape=(37,), dtype=np.float16) for _ in
+                                  range(self.n_nodes)]
 
         self._episode_ended = False
         # an upper bound of the social welfare
         self.total_possible_reward = sum(
             df_tasks.valuation_coefficient * df_tasks.usage_time)
 
+    def seed(self, seed_value):
+        self.seed_value = seed_value
+
     def data_for_next_episode(self):
         df_tasks, df_nodes, n_time, n_tasks, n_nodes = \
             generate_synthetic_data_edge_cloud(self.avg_resource_capacity,
-                self.avg_unit_cost, n_tasks=self.n_tasks,
-                n_time=self.n_timesteps,
-                seed=self.seed, n_nodes=self.n_nodes,
-                p_high_value_tasks=self.p_high_value_tasks,
-                high_value_slackness_lower_limit=self.high_value_slackness,
-                high_value_slackness_upper_limit=self.high_value_slackness,
-                low_value_slackness_lower_limit=self.low_value_slackness,
-                low_value_slackness_upper_limit=self.low_value_slackness,
-                resource_demand_high=self.resource_ratio,
-                vc_ratio=self.valuation_ratio,
-                k_resource=self.resource_coefficient)
+                                               self.avg_unit_cost, n_tasks=self.n_tasks,
+                                               n_time=self.n_timesteps,
+                                               seed=self.seed_value, n_nodes=self.n_nodes,
+                                               p_high_value_tasks=self.p_high_value_tasks,
+                                               high_value_slackness_lower_limit=self.high_value_slackness,
+                                               high_value_slackness_upper_limit=self.high_value_slackness,
+                                               low_value_slackness_lower_limit=self.low_value_slackness,
+                                               low_value_slackness_upper_limit=self.low_value_slackness,
+                                               resource_demand_high=self.resource_ratio,
+                                               vc_ratio=self.valuation_ratio,
+                                               k_resource=self.resource_coefficient)
         return df_tasks, df_nodes, n_time, n_tasks, n_nodes
 
     def reset(self):
@@ -201,7 +212,7 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # generate new tasks for next episode
         (df_tasks, df_nodes, n_time, n_tasks,
-        n_nodes) = self.data_for_next_episode()
+         n_nodes) = self.data_for_next_episode()
         self.df_tasks = df_tasks
         self.df_nodes = df_nodes
         self.current_task = df_tasks.iloc[0]
@@ -220,7 +231,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.df_tasks_normalised = (self.df_tasks_relative - 0) / (
                 self.df_tasks_relative.max() - 0)
 
-        self.seed += 1  # may need to make this random in training
+        self.seed_value += 1  # may need to make this random in training
 
         # current timeslot is where the start time of current task in
         self.current_time_slot = int(self.df_tasks.loc[0, "arrive_time"])
@@ -250,7 +261,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
             agent_state = np.concatenate((task_info, future_occup),
-                axis=None)
+                                         axis=None)
             self.state[f'node_{i}'] = agent_state
 
         # # get the social welfare of Online Myopic
@@ -277,7 +288,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         """
         Step function for the environment.
         Args:
-            actions: a list of bid actions from all agents (e.g., 0.5 means bid 0.5 VC of the current task)
+            actions: a list of bid actions from all agents (e.g., 0.5 means bid 0.5 VC
+            of the current task)
 
         Returns:
             observation (object): next observation?
@@ -331,9 +343,10 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # find the winner
         (winner_index, winner_usage_time, winner_utility, max_utility,
-        sw_increase) = self.reverse_auction(bids_list, max_usage_time_list,
-            start_time_list,
-            verbose=self.verbose, auction_type=self.auction_type)
+         sw_increase) = self.reverse_auction(bids_list, max_usage_time_list,
+                                             start_time_list,
+                                             verbose=self.verbose,
+                                             auction_type=self.auction_type)
 
         self.winner_id = winner_index
 
@@ -351,11 +364,11 @@ class EdgeCloudEnv(MultiAgentEnv):
                     winner_start_time, winner_finish_time]
             else:  # the task is rejected
                 self.allocation_scheme.loc[self.current_task_id] = [None, None,
-                    None]
+                                                                    None]
 
             # modify the occupancy of resources
             self.update_resource_occupency(winner_index, winner_usage_time,
-                winner_relative_start_time)
+                                           winner_relative_start_time)
 
             if self.verbose:
                 print(f"allocation scheme:")
@@ -377,16 +390,16 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         self.future_occup = (
                 1 - np.divide(self.idle_resource_capacities[:, :,
-        self.next_time_slot + 1: (self.next_time_slot + 11)],
-            self.full_resource_capacities[:, :,
-            self.next_time_slot + 1: (self.next_time_slot + 11)]))
+                              self.next_time_slot + 1: (self.next_time_slot + 11)],
+                              self.full_resource_capacities[:, :,
+                              self.next_time_slot + 1: (self.next_time_slot + 11)]))
 
         future_occup_len = len(self.future_occup[0][0])
         if future_occup_len < 10:
             # self.future_occup.resize((6, 3, 10))
             z = np.zeros((self.n_nodes, 3, 10 - future_occup_len))
             self.future_occup = np.concatenate((self.future_occup, z),
-                axis=2)
+                                               axis=2)
             # for i in range(self.n_nodes):
             #     for j in range(3):
             #         print(f"Eco = {self.future_occup[i][j]}")
@@ -415,12 +428,15 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.current_task_id += 1
         # reward is the penalty of the value lost
         # every node has the same reward
-        equal_reward =sw_increase - self.current_task_value
+        #     # reward is the lost value
+        #     equal_reward =sw_increase - self.current_task_value
+        # reward is the SW increase
+        equal_reward = sw_increase
         for i in range(self.n_nodes):
             self.rewards[f'node_{i}'] = equal_reward
 
         # find if this is the last task of the episode
-        if self.current_task_id >= self.max_steps -1:
+        if self.current_task_id >= self.max_steps - 1:
             dones = {'__all__': True}
         else:  # not the last step of the episode
             dones = {'__all__': False}
@@ -432,7 +448,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
             agent_state = np.concatenate((task_info, future_occup),
-                axis=None)
+                                         axis=None)
 
             self.state[f'node_{i}'] = agent_state
 
@@ -480,14 +496,14 @@ class EdgeCloudEnv(MultiAgentEnv):
     @staticmethod
     def get_observation_space(config):
         return spaces.Box(low=0, high=1, shape=(config["obs_length"],),
-            dtype=np.float16)
+                          dtype=np.float16)
 
     @staticmethod
     def get_action_space(config):
         return spaces.Discrete(config["n_actions"])
 
     def update_resource_occupency(self, winner_index, winner_usage_time,
-            winner_relative_start_time):
+                                  winner_relative_start_time):
         """update idle resource capacities according to the reverse_auction result"""
         for i in range(winner_usage_time):
             self.idle_resource_capacities[winner_index][0][
@@ -505,7 +521,8 @@ class EdgeCloudEnv(MultiAgentEnv):
 
                 Returns:
                     max_time_length: maximum time steps this task can run on this agent
-                    start_time: the start time of the task according to its allocation scheme
+                    start_time: the start time of the task according to its allocation
+                    scheme
                 """
         # calculate idle resource capacity of future 10 time steps
         resource_capacity = self.resource_capacity_dict[node_id]
@@ -518,14 +535,15 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         max_time_length = 0
 
-        # Try time length from the requested number of time steps till it is possible to allocate
+        # Try time length from the requested number of time steps till it is possible
+        # to allocate
         for time_length in reversed(
                 range(1, int(self.current_task["usage_time"] + 1))):
             for start_time in range(int(self.current_task['start_time'] -
                                         self.current_task['arrive_time']),
-                    int(self.current_task['deadline'] -
-                        self.current_task['arrive_time'] -
-                        time_length + 2)):
+                                    int(self.current_task['deadline'] -
+                                        self.current_task['arrive_time'] -
+                                        time_length + 2)):
 
                 # print(f"time length: {n_time}, start time: {start_time}")
                 # print(f"remaining resource: {remaining_resource}")
@@ -550,8 +568,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         return max_time_length, start_time
 
     def reverse_auction(self, bid_price_arr, bid_usage_time_arr,
-            bid_start_time_arr,
-            verbose=False, auction_type="first-price"):
+                        bid_start_time_arr,
+                        verbose=False, auction_type="first-price"):
         """Decides the reverse_auction result of this task
 
         Args:
@@ -566,7 +584,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         valuation_coefficient = self.df_tasks.loc[
             self.current_task_id, "valuation_coefficient"]
         utility_arr = np.multiply(bid_usage_time_arr,
-            (valuation_coefficient - bid_price_arr))
+                                  (valuation_coefficient - bid_price_arr))
         max_utility = np.amax(utility_arr)  # maximum utility for this task
         if max_utility <= 0:  # if bidding prices are all too high
             winner_index = None
@@ -576,7 +594,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         else:
             # which FN wins this task
             winner_index = argmax_earliest(utility_arr=utility_arr,
-                bid_start_time_arr=bid_start_time_arr)
+                                           bid_start_time_arr=bid_start_time_arr)
             winner_usage_time = bid_usage_time_arr[
                 winner_index]  # no. of time steps for this task
             winner_cost = (self.df_nodes.loc[winner_index, 'CPU_cost'] *
@@ -594,13 +612,14 @@ class EdgeCloudEnv(MultiAgentEnv):
                     winner_index] - winner_cost)
             elif auction_type == "second-price":
                 bids = {'prices': bid_price_arr,
-                    'times': bid_usage_time_arr}
+                        'times': bid_usage_time_arr}
                 df_bids = pd.DataFrame(bids, columns=['prices', 'times'])
                 df_bids = df_bids.sort_values('prices')
                 second_price = bid_price_arr[winner_index]
                 for i in range(self.n_nodes):
                     if df_bids.iloc[i, 0] > second_price and df_bids.iloc[
-                        i, 1] > 0:  # if the price is greater than winner's and the usage time is not zero
+                        i, 1] > 0:  # if the price is greater than winner's and the
+                        # usage time is not zero
                         second_price = df_bids.iloc[i, 0]
                         break
                 winner_revenue = (
