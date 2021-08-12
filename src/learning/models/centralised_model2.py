@@ -8,7 +8,8 @@ torch, nn = try_import_torch()
 
 
 class CentralisedModelFC(TorchModelV2, nn.Module):
-    """Model for centralised control (not using convolutional layers?)"""
+    """Model for centralised control"""
+
     def __init__(self, obs_space, action_space, num_outputs, model_config,
                  name):
         TorchModelV2.__init__(self, obs_space, action_space, num_outputs,
@@ -19,36 +20,53 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
         n_agents = obs_space.shape[0] // (WIDTH * HEIGHT * DEPTH)
         obs_size = _get_size(obs_space)
 
+        print(f"number of agents = {n_agents}")
+        print(f"observation size = {obs_size}")
+
         model_outputs = obs_size * n_agents
         layers = []
 
+        print(f"input nodes number = {model_outputs}")
         for layer_dim in model_config["custom_model_config"]["layers"]:
-        # for layer_dim in [256, 256]:
             layers.append(nn.Sequential(
-            nn.Linear(in_features=model_outputs, out_features=layer_dim),
-            nn.ReLU(),
-            ))
+                nn.Linear(in_features=model_outputs, out_features=layer_dim),
+                nn.ReLU(),
+                ))
             model_outputs = layer_dim
+            print(f"this hidden layer nodes number = {model_outputs}")
 
         self.model = nn.Sequential(
             *layers
-        )
+            )
 
         self._value_branch = nn.Sequential(
             nn.Linear(in_features=model_outputs, out_features=1)
-        )
+            )
 
         self._logits = nn.Sequential(
             nn.Linear(in_features=model_outputs, out_features=num_outputs)
-        )
+            )
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
-        self._features = combine_layers(component.float().permute(3, 0, 1, 2) for component in input_dict["obs"]).flatten()
+        self._features = combine_layers(
+            component.float().permute(3, 0, 1, 2) for component in
+            input_dict["obs"]).flatten()
 
-        obs_flat = input_dict["obs_flat"].float()
+        print(f'input_dict["obs"] length = {len(input_dict["obs"])}')
+        print(f'input_dict["obs"], one obs shape = {input_dict["obs"][0].shape}')
+        print(f'input_dict["obs_flat"], shape = {input_dict["obs_flat"].shape}')
 
-        self._features = self.model(obs_flat)
+        # self._features = input_dict["obs"].float().permute(0, 3, 1, 2)
+
+        print(f"length of self._features = {len(self._features)}")
+
+        # obs_flat = input_dict["obs_flat"].float()
+        #
+        # print(f"length of obs_flat = {len(obs_flat)}")
+        self._features = self.model(self._features)
+
+        print(f"length of self._features (second) = {len(self._features)}")
         x = self._logits(self._features)
 
         return x.squeeze(1), hidden_state

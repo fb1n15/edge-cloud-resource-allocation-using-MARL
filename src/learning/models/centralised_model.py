@@ -44,6 +44,11 @@ class CentralisedModel(TorchModelV2, nn.Module):
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
+
+        # print the shape of the observations
+        print(f'input_dict["obs"] length = {len(input_dict["obs"])}')
+        print(f'input_dict["obs"], one obs shape = {input_dict["obs"][0].shape}')
+
         self._features = combine_layers(component.float().permute(3, 0, 1, 2) for component in input_dict["obs"])
         self._features = self.model(self._features)
         x = self._logits(self._features)

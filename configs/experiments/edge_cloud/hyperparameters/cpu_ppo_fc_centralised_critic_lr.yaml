@@ -1,5 +1,7 @@
+#https://docs.ray.io/en/master/rllib-training.html
 name: edge_cloud_centralised_critic_ppo_fc_depth2
 
+# the environment specifier
 env: edge_cloud
 
 env-config:
@@ -15,37 +17,46 @@ env-config:
 
 trainer: PPO
 trainer-config:
+  # Deep Learning framework Setting (PyTorch)
   framework: torch
+  # number of environments to evaluate vector-wise per worker. (???)
   num_envs_per_worker: 1
-  # number of workers for collecting samples with.
-  num_workers: 6
+  # number of workers for collecting samples parallelly.
+  num_workers: 5
+  # Number of GPUs to allocate to the trainer process.
   num_gpus: 0
+  # This argument, in conjunction with worker_index, sets the random seed of
+  # each worker, so that identically configured trials will have identical
+  # results. This makes experiments reproducible.
   seed: 123
 
   # Model config
   model:
-    custom_model: CentralisedModelFC
-#    custom_model_config:
-#      layers: [256, 256]
+    custom_model: CentralisedCriticFCModel
+    custom_model_config:
+      layers: [256, 256]
+      n_agents: 3
 
   # Trainer parameters
+  # Learning rate
   lr:
 #    gridsearch: [0.00001, 0.001, 0.0001]
     gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
-  rollout_fragment_length: 220
+  # Sample batches of this size are collected from rollout workers and combined into a larger batch of `train_batch_size` for learning.
+  rollout_fragment_length: 200
   # The size of each SGD epoch = Size of Training Set
   train_batch_size: 4000
   # The minibatch size within each epoch.
-  # This number of samples will be worked through before updating the model's
-  #    internal parameters.
+  # This number of samples will be worked through before updating the model's internal parameters.
   sgd_minibatch_size: 128
 
-
+# stop critiera
 stop:
   timesteps_total: 1_000_000
 
-samples: 1
+samples: 1 # number of triale space to scroll down
 
-grouping: all_same
+# use the centralised-critic approach
+grouping: centralised

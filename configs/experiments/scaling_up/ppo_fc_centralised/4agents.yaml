@@ -44,12 +44,14 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 10
-  num_gpus: 1
+  num_workers: 5
+  num_gpus: 0
 
   # Model config
   model:
     custom_model: CentralisedModelFC
+    custom_model_config:
+      layers: [ 256, 256 ]
 
   # Trainer parameters
   lr: 0.00008
