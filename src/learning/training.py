@@ -61,8 +61,8 @@ def get_trainer_config(config):
         obs_space = Tuple(
             [env.get_observation_space(config["env-config"]) for i in
              range(config["env-config"]["num_agents"])])
-        # act_space = Tuple([env.get_action_space(config["env-config"]) for i in
-        act_space = Tuple([env.get_action_space() for i in
+        act_space = Tuple([env.get_action_space(config["env-config"]) for i in
+        # act_space = Tuple([env.get_action_space() for i in
                            range(config["env-config"]["num_agents"])])
         grouping = {
             "group_1": ["drone_" + str(i) for i in
@@ -97,7 +97,7 @@ def get_trainer_config(config):
         obs_space = Tuple(
             [env.get_observation_space(config["env-config"]) for i in
              range(config["env-config"]["num_agents"])])
-        act_space = Tuple([env.get_action_space(config["env-config"]) for i in
+        act_space = Tuple([env.get_action_space() for i in
                            range(config["env-config"]["num_agents"])])
         grouping = {
             "group_1": ["drone_" + str(i) for i in

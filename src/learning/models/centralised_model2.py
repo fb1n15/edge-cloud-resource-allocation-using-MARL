@@ -16,14 +16,18 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
                               model_config, name)
         nn.Module.__init__(self)
 
-        WIDTH, HEIGHT, DEPTH = 11, 11, 3
-        n_agents = obs_space.shape[0] // (WIDTH * HEIGHT * DEPTH)
+        local_obs_len = 37
+        n_agents = obs_space.shape[0] // local_obs_len
         obs_size = _get_size(obs_space)
 
         print(f"number of agents = {n_agents}")
         print(f"observation size = {obs_size}")
+        print(f"number of outputs = {num_outputs}")
+        print(f"action_space = {action_space}")
+        print(f"model_config = {model_config}")
+        print(f"name = {name}")
 
-        model_outputs = obs_size * n_agents
+        model_outputs = obs_size
         layers = []
 
         print(f"input nodes number = {model_outputs}")
@@ -49,17 +53,17 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
-        self._features = combine_layers(
-            component.float().permute(3, 0, 1, 2) for component in
-            input_dict["obs"]).flatten()
+        self._features = input_dict['obs_flat']
 
         print(f'input_dict["obs"] length = {len(input_dict["obs"])}')
         print(f'input_dict["obs"], one obs shape = {input_dict["obs"][0].shape}')
+        print(input_dict["obs"][0])
         print(f'input_dict["obs_flat"], shape = {input_dict["obs_flat"].shape}')
 
         # self._features = input_dict["obs"].float().permute(0, 3, 1, 2)
 
         print(f"length of self._features = {len(self._features)}")
+        print(self._features)
 
         # obs_flat = input_dict["obs_flat"].float()
         #
@@ -68,6 +72,13 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
 
         print(f"length of self._features (second) = {len(self._features)}")
         x = self._logits(self._features)
+        # Adding a Dimension to a Tensor in PyTorch
+        # https://sparrow.dev/adding-a-dimension-to-a-tensor-in-pytorch/
+        x = x.unsqueeze(0)
+        print(f"x = {x}")
+
+        # print(f"hidden_state's dim1 = {len(hidden_state)}")
+        # print(f"hidden_state's dim2 = {len(hidden_state[0])}")
 
         return x.squeeze(1), hidden_state
 
@@ -75,6 +86,8 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
     def value_function(self):
         assert self._features is not None, "must call forward() first"
         value = self._value_branch(self._features)
+        value = value.unsqueeze(0)
+        print(f"value = {value}")
 
         return value.squeeze(1)
 

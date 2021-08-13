@@ -1,5 +1,5 @@
 #https://docs.ray.io/en/master/rllib-training.html
-name: edge_cloud_centralised_critic_ppo_fc_depth2
+name: edge_cloud_centralised_ppo_fc_depth2
 
 # the environment specifier
 env: edge_cloud
@@ -22,7 +22,7 @@ trainer-config:
   # number of environments to evaluate vector-wise per worker. (???)
   num_envs_per_worker: 1
   # number of workers for collecting samples parallelly.
-  num_workers: 5
+  num_workers: 1
   # Number of GPUs to allocate to the trainer process.
   num_gpus: 0
   # This argument, in conjunction with worker_index, sets the random seed of
@@ -32,10 +32,10 @@ trainer-config:
 
   # Model config
   model:
-    custom_model: CentralisedCriticFCModel
+#    custom_model: CentralisedCriticFCModel
+    custom_model: CentralisedModelFC
     custom_model_config:
       layers: [256, 256]
-      n_agents: 3
 
   # Trainer parameters
   # Learning rate
@@ -59,4 +59,4 @@ stop:
 samples: 1 # number of triale space to scroll down
 
 # use the centralised-critic approach
-grouping: centralised
+grouping: all_same
