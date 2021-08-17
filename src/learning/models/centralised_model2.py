@@ -16,12 +16,18 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
                               model_config, name)
         nn.Module.__init__(self)
 
-        local_obs_len = 37
-        n_agents = obs_space.shape[0] // local_obs_len
+        # for the obstacles env.
+        WIDTH, HEIGHT, DEPTH = 11, 11, 3
+        n_agents = obs_space.shape[0] // (WIDTH * HEIGHT * DEPTH)
         obs_size = _get_size(obs_space)
 
+        # # for edge env
+        # local_obs_len = 37
+        # n_agents = obs_space.shape[0] // local_obs_len
+        # obs_size = _get_size(obs_space)
+
         print(f"number of agents = {n_agents}")
-        print(f"observation size = {obs_size}")
+        print(f"global observation size = {obs_size}")
         print(f"number of outputs = {num_outputs}")
         print(f"action_space = {action_space}")
         print(f"model_config = {model_config}")

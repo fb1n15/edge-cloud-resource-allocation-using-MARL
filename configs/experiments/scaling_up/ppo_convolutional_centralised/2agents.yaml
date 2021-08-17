@@ -1,4 +1,4 @@
-name: scaling_up_centralised_ppo_FC_2agent
+name: scaling_up_centralised_ppo_convolutional_2agent
 
 env: gridworld_obstacles_vision_net
 env-config:
