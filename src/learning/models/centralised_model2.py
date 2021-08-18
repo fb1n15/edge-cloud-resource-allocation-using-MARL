@@ -17,11 +17,12 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
         nn.Module.__init__(self)
 
         # for the obstacles env.
-        WIDTH, HEIGHT, DEPTH = 11, 11, 3
-        n_agents = obs_space.shape[0] // (WIDTH * HEIGHT * DEPTH)
+        # WIDTH, HEIGHT, DEPTH = 11, 11, 3
+        # n_agents = obs_space.shape[0] // (WIDTH * HEIGHT * DEPTH)
+        n_agents = 2
         obs_size = _get_size(obs_space)
 
-        # # for edge env
+        # # for the edge env
         # local_obs_len = 37
         # n_agents = obs_space.shape[0] // local_obs_len
         # obs_size = _get_size(obs_space)
@@ -59,32 +60,15 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
-        self._features = input_dict['obs_flat']
+        print(f"input_dict['obs'][0]'s shape = {input_dict['obs'][0].shape}")
+        print(f"input_dict['obs_flat']'s shape = {input_dict['obs_flat'].shape}")
 
-        print(f'input_dict["obs"] length = {len(input_dict["obs"])}')
-        print(f'input_dict["obs"], one obs shape = {input_dict["obs"][0].shape}')
-        print(input_dict["obs"][0])
-        print(f'input_dict["obs_flat"], shape = {input_dict["obs_flat"].shape}')
+        obs_flat = input_dict["obs_flat"].float()
 
-        # self._features = input_dict["obs"].float().permute(0, 3, 1, 2)
-
-        print(f"length of self._features = {len(self._features)}")
-        print(self._features)
-
-        # obs_flat = input_dict["obs_flat"].float()
-        #
-        # print(f"length of obs_flat = {len(obs_flat)}")
-        self._features = self.model(self._features)
-
-        print(f"length of self._features (second) = {len(self._features)}")
+        self._features = self.model(obs_flat)
         x = self._logits(self._features)
-        # Adding a Dimension to a Tensor in PyTorch
-        # https://sparrow.dev/adding-a-dimension-to-a-tensor-in-pytorch/
-        x = x.unsqueeze(0)
-        print(f"x = {x}")
-
-        # print(f"hidden_state's dim1 = {len(hidden_state)}")
-        # print(f"hidden_state's dim2 = {len(hidden_state[0])}")
+        print("the shape of x: ", x.shape)
+        print("the shape of x.squeeze(1): ", x.squeeze(1).shape)
 
         return x.squeeze(1), hidden_state
 
@@ -92,8 +76,8 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
     def value_function(self):
         assert self._features is not None, "must call forward() first"
         value = self._value_branch(self._features)
-        value = value.unsqueeze(0)
-        print(f"value = {value}")
+        print(f"value's shape = {value.shape}")
+        print(f"value.squeeze(1)'s shape = {value.squeeze(1).shape}")
 
         return value.squeeze(1)
 

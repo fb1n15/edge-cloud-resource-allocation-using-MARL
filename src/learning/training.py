@@ -54,9 +54,9 @@ def get_trainer_config(config):
             "policy_mapping_fn": lambda agent_id: "default"
             }
 
-    # agents using a centralised critic
+    # agents using a centralised model
     elif config["grouping"] == "all_same":
-        print(env)
+        print("environment = ", env)
         # combines the observations and actions of all the agents in to one
         obs_space = Tuple(
             [env.get_observation_space(config["env-config"]) for i in
@@ -64,6 +64,9 @@ def get_trainer_config(config):
         # act_space = Tuple([env.get_action_space(config["env-config"]) for i in
         act_space = Tuple([env.get_action_space() for i in
                            range(config["env-config"]["num_agents"])])
+
+        print(f"observation space = {obs_space}")
+        print(f"action space = {act_space}")
         grouping = {
             "group_1": ["drone_" + str(i) for i in
                         range(config["env-config"]["num_agents"])],
@@ -76,14 +79,7 @@ def get_trainer_config(config):
                                                                     obs_space=obs_space,
                                                                     act_space=act_space))
         trainer_config["env"] = config["env"]
-        # trainer_config["env"] = env
-
-        # trainer_config["multiagent"] = {
-        #     "policies": {
-        #         "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
-        #     },
-        #     "policy_mapping_fn": lambda agent_id: "default"
-        # }
+        print(f"grouping = {grouping}")
 
         trainer_config["multiagent"] = {
             "policies": {
