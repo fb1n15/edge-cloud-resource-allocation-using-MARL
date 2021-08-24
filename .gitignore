@@ -1,2 +1,5 @@
 /venv/
 /results/
+/src/results/
+/slurm-output/
+/.virtual_documents/src/
