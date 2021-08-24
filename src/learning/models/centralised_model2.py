@@ -27,24 +27,24 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
         # n_agents = obs_space.shape[0] // local_obs_len
         # obs_size = _get_size(obs_space)
 
-        print(f"number of agents = {n_agents}")
-        print(f"global observation size = {obs_size}")
-        print(f"number of outputs = {num_outputs}")
-        print(f"action_space = {action_space}")
-        print(f"model_config = {model_config}")
-        print(f"name = {name}")
+        # print(f"number of agents = {n_agents}")
+        # print(f"global observation size = {obs_size}")
+        # print(f"number of outputs = {num_outputs}")
+        # print(f"action_space = {action_space}")
+        # print(f"model_config = {model_config}")
+        # print(f"name = {name}")
 
         model_outputs = obs_size
         layers = []
 
-        print(f"input nodes number = {model_outputs}")
+        # print(f"input nodes number = {model_outputs}")
         for layer_dim in model_config["custom_model_config"]["layers"]:
             layers.append(nn.Sequential(
                 nn.Linear(in_features=model_outputs, out_features=layer_dim),
                 nn.ReLU(),
                 ))
             model_outputs = layer_dim
-            print(f"this hidden layer nodes number = {model_outputs}")
+            # print(f"this hidden layer nodes number = {model_outputs}")
 
         self.model = nn.Sequential(
             *layers
@@ -60,15 +60,15 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
-        print(f"input_dict['obs'][0]'s shape = {input_dict['obs'][0].shape}")
-        print(f"input_dict['obs_flat']'s shape = {input_dict['obs_flat'].shape}")
+        # print(f"input_dict['obs'][0]'s shape = {input_dict['obs'][0].shape}")
+        # print(f"input_dict['obs_flat']'s shape = {input_dict['obs_flat'].shape}")
 
         obs_flat = input_dict["obs_flat"].float()
 
         self._features = self.model(obs_flat)
         x = self._logits(self._features)
-        print("the shape of x: ", x.shape)
-        print("the shape of x.squeeze(1): ", x.squeeze(1).shape)
+        # print("the shape of x: ", x.shape)
+        # print("the shape of x.squeeze(1): ", x.squeeze(1).shape)
 
         return x.squeeze(1), hidden_state
 
@@ -76,8 +76,8 @@ class CentralisedModelFC(TorchModelV2, nn.Module):
     def value_function(self):
         assert self._features is not None, "must call forward() first"
         value = self._value_branch(self._features)
-        print(f"value's shape = {value.shape}")
-        print(f"value.squeeze(1)'s shape = {value.squeeze(1).shape}")
+        # print(f"value's shape = {value.shape}")
+        # print(f"value.squeeze(1)'s shape = {value.squeeze(1).shape}")
 
         return value.squeeze(1)
 

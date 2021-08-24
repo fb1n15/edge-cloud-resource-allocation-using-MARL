@@ -15,6 +15,9 @@ import gym
 import numpy as np
 import pandas as pd
 from gym import spaces
+from ray.rllib.models import ModelCatalog
+from ray.rllib.policy.sample_batch import SampleBatch
+from gym.spaces import Box, Dict, Discrete
 
 from common.generate_simulation_data import generate_synthetic_data_edge_cloud
 
@@ -60,10 +63,27 @@ def argmax_earliest(utility_arr, bid_start_time_arr):
     return np.random.choice(ties2)
 
 
+def fill_in_actions(info):
+    """Callback that saves opponent actions into the agent obs.
+    If you don't care about opponent actions you can leave this out."""
+
+    to_update = info["post_batch"][SampleBatch.CUR_OBS]
+    my_id = info["agent_id"]
+    other_id = 1 if my_id == 0 else 0
+    action_encoder = ModelCatalog.get_preprocessor_for_space(Discrete(2))
+
+    # set the opponent actions into the observation
+    _, opponent_batch = info["all_pre_batches"][other_id]
+    opponent_actions = np.array([
+        action_encoder.transform(a)
+        for a in opponent_batch[SampleBatch.ACTIONS]
+        ])
+    to_update[:, -2:] = opponent_actions
+
+
 class EdgeCloudEnv(MultiAgentEnv):
     """Our edge cloud resource allocation environment"""
     VERSION = 1  # Increment each time there are non-backwards compatible changes made
-    # to simulation
 
     def __init__(self, config,
                  seed=0, n_timesteps=20, n_tasks=40,
@@ -262,7 +282,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             future_occup = self.future_occup[i].flatten(order="F")
             agent_state = np.concatenate((task_info, future_occup),
                                          axis=None)
-            self.state[f'node_{i}'] = agent_state
+            self.state[f'drone_{i}'] = agent_state
 
         # # get the social welfare of Online Myopic
         # if self.verbose:
@@ -282,6 +302,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         #     print(f"allocation_scheme:")
         #     print(allocation_scheme)
 
+        # print(f"observation after reset() = {self.state}")
         return self.state
 
     def step(self, actions):
@@ -433,7 +454,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         # reward is the SW increase
         equal_reward = sw_increase
         for i in range(self.n_nodes):
-            self.rewards[f'node_{i}'] = equal_reward
+            self.rewards[f'drone_{i}'] = equal_reward
 
         # find if this is the last task of the episode
         if self.current_task_id >= self.max_steps - 1:
@@ -450,7 +471,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             agent_state = np.concatenate((task_info, future_occup),
                                          axis=None)
 
-            self.state[f'node_{i}'] = agent_state
+            self.state[f'drone_{i}'] = agent_state
 
             # calculate rewards (may need to be changed to list of rewards in the future)
         self.sw_increase = sw_increase
@@ -471,8 +492,10 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # update the total social welfare
         self.total_social_welfare += sw_increase
-        infos = {'node_0': f'social welfare increase = {sw_increase}'}
+        # infos = {'node_0': f'social welfare increase = {sw_increase}'}
+        infos = {}
         # info part is None for now
+        # print(f"observation after step() = {self.state}")
         return self.state, self.rewards, dones, infos
 
     def render(self):
@@ -498,9 +521,13 @@ class EdgeCloudEnv(MultiAgentEnv):
         return spaces.Box(low=0, high=1, shape=(config["obs_length"],),
                           dtype=np.float16)
 
+    # @staticmethod
+    # def get_action_space(config):
+    #     return spaces.Discrete(config["n_actions"])
+
     @staticmethod
-    def get_action_space(config):
-        return spaces.Discrete(config["n_actions"])
+    def get_action_space():
+        return spaces.Discrete(2)
 
     def update_resource_occupency(self, winner_index, winner_usage_time,
                                   winner_relative_start_time):
@@ -637,3 +664,41 @@ class EdgeCloudEnv(MultiAgentEnv):
             # update social welfare
             sw_increase = valuation_coefficient * winner_usage_time - winner_cost
         return winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase
+
+
+class GlobalObsEdgeCloudEnv(MultiAgentEnv):
+    # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)
+
+    action_space = Discrete(2)
+    observation_space = Dict({
+        "own_obs": spaces.Box(low=0, high=1, shape=(37,)),
+        "opponent_obs": spaces.Box(low=0, high=1, shape=(37,)),
+        "opponent_action": Discrete(2),
+        })
+
+    def __init__(self, env_config):
+        self.env = EdgeCloudEnv(env_config)
+
+    def reset(self):
+        obs_dict = self.env.reset()
+        return self.to_global_obs(obs_dict)
+
+    def step(self, action_dict):
+        obs_dict, rewards, dones, infos = self.env.step(action_dict)
+        return self.to_global_obs(obs_dict), rewards, dones, infos
+
+    def _to_global_obs(self, obs_dict):
+        """helper function to return the global observation
+        """
+        return {
+            self.env.agent_1: {
+                "own_obs": obs_dict[self.env.agent_1],
+                "opponent_obs": obs_dict[self.env.agent_2],
+                "opponent_action": 0,  # populated by fill_in_actions
+                },
+            self.env.agent_2: {
+                "own_obs": obs_dict[self.env.agent_2],
+                "opponent_obs": obs_dict[self.env.agent_1],
+                "opponent_action": 0,  # populated by fill_in_actions
+                },
+            }
