@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import Dict
 
 import ray
@@ -168,12 +169,13 @@ def train(config):
         if config["scheduler"] == "pbt":
             scheduler = PopulationBasedTraining(**config["scheduler-config"])
     print("start training")
+    # pprint(f"trainer_config = {trainer_config}")
     # execute training
     analysis = tune.run(
         run_or_experiment=config["trainer"],  # this is the model to train
         name=config["name"],  # name of the experiment
         scheduler=scheduler,  # Scheduler for executing the experiment (default: FIFO)
-        config=trainer_config, # algorithm-specific configuration (e.g., num_workers)
+        config=trainer_config,  # algorithm-specific configuration (e.g., num_workers)
         stop=config["stop"],  # stopping criteria
         # # If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
         # reuse_actors=True,
@@ -185,7 +187,8 @@ def train(config):
         checkpoint_at_end=False,
         # number of times to sample from the hyperparameter space.
         num_samples=config.get("samples", 1),  # to take multiple random samples
-        fail_fast=True  # whether to fail upon the first error, should be used with caution
+        fail_fast=True
+        # whether to fail upon the first error, should be used with caution
         )
 
     # Object for experiment analysis.
