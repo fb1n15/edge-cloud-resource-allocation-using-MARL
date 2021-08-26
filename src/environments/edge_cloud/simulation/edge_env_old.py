@@ -175,7 +175,7 @@ class EdgeEnv(gym.Env):
             a = [info.get('CPU'), info.get('RAM'), info.get('storage')]
             self.resource_capacity_dict[node_id] = np.array(a * 10)
 
-        # the state is a vector of current task information and the future occupancy
+        # the obs is a vector of current task information and the future occupancy
         # const = np.array([1])
         task_info = self.df_tasks_normalised.iloc[0].to_numpy()
         future_occup = self.future_occup.flatten(order="F")
@@ -348,7 +348,7 @@ class EdgeEnv(gym.Env):
             print("current task info:")
             print(self.current_task)
 
-        # update the global observation (state)
+        # update the global observation (obs)
         self.state = []  # observation is a list of ndarrays
         # a list in case different nodes have different rewards
         self.rewards = []

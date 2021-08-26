@@ -87,7 +87,7 @@ class FullyConnectedNetwork(TorchModelV2, nn.Module):
                 self.num_outputs = (
                     [int(np.product(obs_space.shape))] + hiddens[-1:])[-1]
 
-        # Layer to add the log std vars to the state-dependent means.
+        # Layer to add the log std vars to the obs-dependent means.
         if self.free_log_std and self._logits:
             self._append_free_log_std = AppendBiasLayer(num_outputs)
 

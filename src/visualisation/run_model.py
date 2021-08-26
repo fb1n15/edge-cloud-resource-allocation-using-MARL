@@ -94,7 +94,7 @@ class SimulationRunner:
         #                   "explore": False}
         self.env = env(config["env-config"])
         # https://docs.ray.io/en/latest/rllib-training.html#accessing-policy-state
-        # accessing model state
+        # accessing model obs
         trainer_config = get_trainer_config(config)
         self.agent = ppo.PPOTrainer(config=trainer_config,
                                     env=env)

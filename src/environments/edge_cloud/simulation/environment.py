@@ -1,3 +1,5 @@
+from collections import deque
+from itertools import chain
 from typing import Tuple
 
 from gym.spaces import Discrete, Box
@@ -93,7 +95,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                  resource_coefficient=0.2,
                  forgiveness_factor=30,
                  allow_negative_reward=False,
-                 alpha=1.0, lam=1e2):
+                 alpha=1.0, lam=1e2, record_history=True, history_len=7):
         """
         Initialization function for the environment.
         Args:
@@ -109,18 +111,24 @@ class EdgeCloudEnv(MultiAgentEnv):
             high valuation tasks.
             not_verbose: A boolean as a flag to print information about the node
             allocation.
-
+            record_history: whether to put others' action history to the observation of an agent
         """
 
         # Set the class variables
         super().__init__()
 
+        self.rewards = {}
+        self.sw_increase = None
+        self.obs = {}
+        self.state = {}
         avg_resource_capacity = config["avg_resource_capacity"]
         avg_unit_cost = config["avg_unit_cost"]
         verbose = config["verbose"]
         self.avg_resource_capacity = avg_resource_capacity
         self.avg_unit_cost = avg_unit_cost
         self.max_steps = max_steps
+        self.record_history = record_history
+        self.history_len = history_len
 
         resource_coefficient = (
                 resource_coefficient * n_tasks / n_timesteps)
@@ -247,9 +255,9 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.df_tasks_relative.drop('start_time', inplace=True, axis=1)
         self.df_tasks_relative.drop('deadline', inplace=True, axis=1)
         self.df_tasks_relative.drop('arrive_time', inplace=True, axis=1)
-        # "0 max" normalisation
-        self.df_tasks_normalised = (self.df_tasks_relative - 0) / (
-                self.df_tasks_relative.max() - 0)
+        # # "0 max" normalisation
+        # self.df_tasks_normalised = (self.df_tasks_relative - 0) / (
+        #         self.df_tasks_relative.max() - 0)
 
         self.seed_value += 1  # may need to make this random in training
 
@@ -261,9 +269,9 @@ class EdgeCloudEnv(MultiAgentEnv):
             a = [info.get('CPU'), info.get('RAM'), info.get('storage')]
             self.resource_capacity_dict[node_id] = np.array(a * 10)
 
-        # the state is a vector of current task information and the future occupancy
+        # the obs is a vector of current task information and the future occupancy
         # const = np.array([1])
-        task_info = self.df_tasks_normalised.iloc[0].to_numpy()
+        task_info = self.df_tasks_relative.iloc[0].to_numpy()
         future_occup = self.future_occup.flatten(order="F")
 
         # reset the idle resource capacities for all nodes
@@ -277,33 +285,40 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.idle_resource_capacities = copy.deepcopy(
             self.full_resource_capacities)
 
-        self.state = {}
+        # the action history of agents
+        action_history = np.array([1 for _ in range(self.history_len) for _ in
+                          range(self.n_nodes)])
+
+        # print(f"record_history?: {self.record_history}")
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
-            agent_state = np.concatenate((task_info, future_occup),
-                                         axis=None)
+            if self.record_history:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    'action_history': action_history
+                    }
+            else:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    }
+            # print("The original dictionary is : " + str(agent_state))
+            # convert dict to list
+            agent_obs = list(chain(*agent_state.values()))
+            # print("The Concatenated list values are : " + str(agent_state))
+
+            self.obs[f'drone_{i}'] = agent_obs
             self.state[f'drone_{i}'] = agent_state
 
-        # # get the social welfare of Online Myopic
-        # if self.verbose:
-        #     print("running Online Myopic")
-        df_tasks = df_tasks[:20]
-        n_tasks = 20
         if self.verbose:
             print("tasks information")
-            print(df_tasks)
+            print(df_tasks.head())
             print("nodes information")
             print(df_nodes)
-        # social_welfare, number_of_allocated_tasks, allocation_scheme = \
-        #     online_myopic(df_tasks, df_nodes, n_time, n_tasks, n_nodes)
-        # if self.verbose:
-        #     print("social welfare:", social_welfare)
-        #     print("number of allocated tasks:", number_of_allocated_tasks)
-        #     print(f"allocation_scheme:")
-        #     print(allocation_scheme)
+            print(f"observation after reset() = {self.obs}")
 
-        # print(f"observation after reset() = {self.state}")
-        return self.state
+        return self.obs
 
     def step(self, actions):
         """
@@ -442,10 +457,8 @@ class EdgeCloudEnv(MultiAgentEnv):
             print("current task info:")
             print(self.current_task)
 
-        # update the global observation (state)
-        self.state = {}  # observation is a list of ndarrays
+        # update the  observation (obs)
         # a list in case different nodes have different rewards
-        self.rewards = {}
         self.current_task_id += 1
         # reward is the penalty of the value lost
         # every node has the same reward
@@ -463,29 +476,53 @@ class EdgeCloudEnv(MultiAgentEnv):
             dones = {'__all__': False}
             # const = np.array([1])
 
-        task_info = self.df_tasks_normalised.iloc[
+        task_info = self.df_tasks_relative.iloc[
             self.current_task_id].to_numpy()
+        # update the action_history
+        action_history = deque(self.state['drone_0']['action_history'])
+        if self.verbose:
+            print(f"previous action_history = {action_history}")
+        action_history.rotate(-1)
+        actions_lst = list(actions.values())
+        for i in range(self.n_nodes):
+            action_history[self.history_len * (i + 1) - 1] = actions_lst[i]
+        action_history = np.array(action_history)
+        if self.verbose:
+            print(f"updated action_history = {action_history}")
         # generate the next observation
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
-            agent_state = np.concatenate((task_info, future_occup),
-                                         axis=None)
+            if self.record_history:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    'action_history': action_history
+                    }
+            else:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    }
+            # print("The original dictionary is : " + str(agent_state))
+            agent_obs = list(chain(*agent_state.values()))
+            # print("The Concatenated list values are : " + str(agent_obs))
 
             self.state[f'drone_{i}'] = agent_state
+            self.obs[f'drone_{i}'] = agent_obs
 
             # calculate rewards (may need to be changed to list of rewards in the future)
         self.sw_increase = sw_increase
 
         if self.verbose:
-            print("tasks normalised:")
-            print(self.df_tasks_normalised.head())
+            print("tasks (relative):")
+            print(self.df_tasks_relative.head())
             print(f"next task ID = {self.current_task_id}")
             print("The info of the next task")
             print(task_info)
             print("social welfare increase")
             print(self.sw_increase)
             print("next global observation")
-            print(self.state)
+            print(self.obs)
             print(f"rewards for agents = {self.rewards}")
             print(f"Is the episode over? {dones}")
             print("\n\n")
@@ -495,8 +532,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now
-        # print(f"observation after step() = {self.state}")
-        return self.state, self.rewards, dones, infos
+        # print(f"observation after step() = {self.obs}")
+        return self.obs, self.rewards, dones, infos
 
     def render(self):
         print(f"current time slot = {self.current_time_slot}")
@@ -506,7 +543,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             f"social welfare increase of last reverse_auction = {self.sw_increase}")
         print(f"rewards for all agents = {self.rewards}")
         print(f"Total social welfare = {self.total_social_welfare}")
-        print(f"Next global observation = {self.state}")
+        print(f"Next global observation = {self.obs}")
         print()
 
     def get_total_sw(self):
@@ -518,7 +555,7 @@ class EdgeCloudEnv(MultiAgentEnv):
 
     @staticmethod
     def get_observation_space(config):
-        return spaces.Box(low=0, high=1, shape=(config["obs_length"],),
+        return spaces.Box(low=0, high=10_000, shape=(config["obs_length"],),
                           dtype=np.float16)
 
     # @staticmethod

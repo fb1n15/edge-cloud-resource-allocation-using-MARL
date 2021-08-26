@@ -49,7 +49,7 @@ def get_trainer_config(config):
             "policies": {
                 "default": (
                     None, env.get_observation_space(config["env-config"]),
-                    env.get_action_space(config["env-config"]), {}),
+                    env.get_action_space(), {}),
                 },
             # all agents are bound to the 'default' policy
             "policy_mapping_fn": lambda agent_id: "default"
@@ -179,7 +179,7 @@ def train(config):
         stop=config["stop"],  # stopping criteria
         # # If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
         # reuse_actors=True,
-        local_dir="results/",  # local directory to save training results to
+        local_dir="../results/",  # local directory to save training results to
         # Verbosity mode. 0 = silent, 1 = only status updates, 2 = status and brief trial results, 3 = status and detailed trial results. Defaults to 3.
         verbose=3,
         # Whether to checkpoint at the end of the experiment regardless of the checkpoint_freq

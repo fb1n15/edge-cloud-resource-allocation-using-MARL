@@ -44,7 +44,7 @@ class CentralisedCriticFCModel(TorchModelV2, nn.Module):
         self._model_in = None
 
     def forward(self, input_dict, state, seq_lens):
-        # call the model with the given input tensors and state
+        # call the model with the given input tensors and obs
         # Store model-input for possible `value_function()` call.
         # "obs_flat": global observation (flattened)
         self._model_in = [input_dict["obs_flat"], state, seq_lens]
