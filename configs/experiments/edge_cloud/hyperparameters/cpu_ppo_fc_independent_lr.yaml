@@ -7,12 +7,13 @@ env: edge_cloud
 
 env-config:
   n_nodes: 3
+  num_agents: 3
   # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: {0: [ 5, 5, 5 ], 1:[3, 3, 3], 2:[3, 3, 3]}
-  avg_unit_cost: {0: [4, 4, 4], 1:[3, 3, 3], 2: [3, 3, 3]}
-#  verbose: True
+  avg_resource_capacity: { 0: [ 5, 5, 5 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+  #  verbose: True
   verbose: False
-  "log_level": "DEBUG"
+  #  "log_level": "DEBUG"
   obs_length: 37
   n_actions: 2
 
@@ -22,7 +23,7 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 6
+  num_workers: 5
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
   seed: 123
@@ -36,10 +37,11 @@ trainer-config:
   # Trainer parameters
   lr:
 #    gridsearch: [0.01, 0.001, 0.0001]
-    gridsearch: [0.001]
+    gridsearch: [0.0001, 0.001]
   lambda: 1.0
   entropy_coeff: 0.0
-  rollout_fragment_length: 220
+  batch_mode: "complete_episodes"
+#  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size: 4000
   # The minibatch size within each epoch.
@@ -49,6 +51,6 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 100_000
 
-samples: 1
+#samples: 1
