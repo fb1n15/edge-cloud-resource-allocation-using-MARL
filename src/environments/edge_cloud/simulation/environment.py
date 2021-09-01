@@ -287,7 +287,7 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # the action history of agents
         action_history = np.array([1 for _ in range(self.history_len) for _ in
-                          range(self.n_nodes)])
+                                   range(self.n_nodes)])
 
         # print(f"record_history?: {self.record_history}")
         for i in range(self.n_nodes):
@@ -310,6 +310,10 @@ class EdgeCloudEnv(MultiAgentEnv):
 
             self.obs[f'drone_{i}'] = agent_obs
             self.state[f'drone_{i}'] = agent_state
+
+        # print("tasks information")
+        # print(df_tasks)
+        # exit()
 
         if self.verbose:
             print("tasks information")
