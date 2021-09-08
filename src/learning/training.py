@@ -217,4 +217,4 @@ class CustomCallbacks(DefaultCallbacks):
         # episode.custom_metrics["Survivors Rescued"] = env.get_survivors_rescued()
         # episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()
         # episode.custom_metrics["Map Explored"] = env.get_map_explored()
-        # episode.custom_metrics["Social Welfare"] = env.get_total_sw()
+        episode.custom_metrics["Social Welfare"] = env.get_total_sw()

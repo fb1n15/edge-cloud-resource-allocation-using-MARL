@@ -7,11 +7,11 @@ env: edge_cloud
 env-config:
   n_nodes: 3
   num_agents: 3
-#  avg_resource_capacity: {0: [ 5, 5, 5 ], 1:[3, 3, 3], 2:[3, 3, 3]}
-#  avg_unit_cost: {0: [4, 4, 4], 1:[3, 3, 3], 2: [3, 3, 3]}
-  # set an easy environment, one agent have many resources and very cheep
-  avg_resource_capacity: {0: [50, 50, 50], 1:[3, 3, 3], 2:[3, 3, 3]}
-  avg_unit_cost: {0: [0, 0, 0], 1:[30, 30, 30], 2: [30, 30, 30]}
+  avg_resource_capacity: { 0: [ 5, 5, 5 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+#  # set an easy environment, one agent have many resources and very cheep
+#  avg_resource_capacity: {0: [50, 50, 50], 1:[3, 3, 3], 2:[3, 3, 3]}
+#  avg_unit_cost: {0: [0, 0, 0], 1:[30, 30, 30], 2: [30, 30, 30]}
 #  verbose: True
   verbose: False
   obs_length: 37
@@ -43,7 +43,7 @@ trainer-config:
   # Trainer parameters
   # Learning rate
   lr:
-    gridsearch: [0.00001, 0.01]
+    gridsearch: [0.0001]
 #    gridsearch: [0.00001, 0.001, 0.0001]
   lambda: 1.0
   entropy_coeff: 0.0
@@ -52,14 +52,14 @@ trainer-config:
   batch_mode: "complete_episodes"
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-      gridsearch: [6000, 4000]
+      gridsearch: [4000]
 #  # The minibatch size within each epoch.
 #  # This number of samples will be worked through before updating the model's internal parameters.
 #  sgd_minibatch_size: 400
 
 # stop critiera
 stop:
-  timesteps_total: 1_000_000
+  timesteps_total: 100_000
 
 #samples: 6 # number of triale space to scroll down
 #num_samples: 4

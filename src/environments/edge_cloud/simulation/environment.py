@@ -287,8 +287,11 @@ class EdgeCloudEnv(MultiAgentEnv):
         # # get the social welfare of Online Myopic
         # if self.verbose:
         #     print("running Online Myopic")
-        df_tasks = df_tasks[:20]
-        n_tasks = 20
+        # df_tasks = df_tasks[:20]
+        # n_tasks = 20
+        # print("tasks information")
+        # print(df_tasks)
+        # exit()
         if self.verbose:
             print("tasks information")
             print(df_tasks)
