@@ -8,15 +8,18 @@ env: edge_cloud
 env-config:
   n_nodes: 3
   num_agents: 3
-  avg_resource_capacity: { 0: [ 5, 5, 5 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
-  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+#  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+#  avg_unit_cost: { 0: [ 1, 1, 1 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
 #  # agents should learn that low-value tasks should not be allocated to node 0
-#  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
-#  avg_unit_cost: { 0: [ 0, 0, 0 ], 1: [ 30, 30, 30 ], 2: [ 30, 30, 30 ] }
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 10, 10, 10 ], 2: [ 10, 10, 10 ] }
+  avg_unit_cost: { 0: [ 1, 1, 1 ], 1: [ 5, 5, 5 ], 2: [ 5, 5, 5 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
+  record_history: true
   obs_length: 58
+#  record_history: false
+#  obs_length: 37
   n_actions: 2
 
 
@@ -26,6 +29,7 @@ trainer-config:
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
   num_workers: 5
+#  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
   seed: 123
@@ -39,7 +43,7 @@ trainer-config:
   # Trainer parameters
   lr:
 #    gridsearch: [0.01, 0.001, 0.0001]
-    gridsearch: [0.0001]
+    gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
   batch_mode: "complete_episodes"
@@ -54,6 +58,6 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 20_0000
+  timesteps_total: 400_000
 
 #samples: 1

@@ -1,3 +1,4 @@
+import logging
 from collections import deque
 from itertools import chain
 from typing import Tuple
@@ -22,6 +23,8 @@ from ray.rllib.policy.sample_batch import SampleBatch
 from gym.spaces import Box, Dict, Discrete
 
 from common.generate_simulation_data import generate_synthetic_data_edge_cloud
+
+pd.set_option("display.max_rows", None, "display.max_columns", None)
 
 
 def argmax_earliest(utility_arr, bid_start_time_arr):
@@ -88,14 +91,14 @@ class EdgeCloudEnv(MultiAgentEnv):
     VERSION = 1  # Increment each time there are non-backwards compatible changes made
 
     def __init__(self, config,
-                 seed=0, n_timesteps=20, n_tasks=40,
-                 max_steps=20,
+                 seed=0, n_timesteps=20, n_tasks=50,
+                 max_steps=40,
                  p_high_value_tasks=0.1, high_value_slackness=0,
-                 low_value_slackness=0, resource_ratio=3, valuation_ratio=10,
+                 low_value_slackness=0, resource_ratio=3, valuation_ratio=20,
                  resource_coefficient=0.2,
-                 forgiveness_factor=30,
+                 forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,
-                 alpha=1.0, lam=1e2, record_history=True, history_len=7):
+                 alpha=1.0, lam=1e2, record_history=False, history_len=7):
         """
         Initialization function for the environment.
         Args:
@@ -109,13 +112,17 @@ class EdgeCloudEnv(MultiAgentEnv):
             high valuation tasks.
             lam: Speed of increase in the rewards generated from the prioritisation of
             high valuation tasks.
-            not_verbose: A boolean as a flag to print information about the node
+            not_verbose: A boolean as a flag to logging.debug information about the node
             allocation.
             record_history: whether to put others' action history to the observation of an agent
         """
 
         # Set the class variables
         super().__init__()
+        fmtStr = "%(levelname)s: %(funcName)s() -> %(message)s"
+
+        logging.basicConfig(level=logging_level, filename='resource_allocation.log',
+                            filemode='w', format=fmtStr)
 
         self.rewards = {}
         self.sw_increase = None
@@ -179,6 +186,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.forgiveness_factor = forgiveness_factor
 
         self.total_social_welfare = 0
+        self.total_allocated_tasks_num = 0
 
         self.processed_tasks = 0
         self.action_history = []
@@ -237,6 +245,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.processed_tasks = 0
         self.failed = 0
         self.total_social_welfare = 0
+        self.total_allocated_tasks_num = 0
 
         # generate new tasks for next episode
         (df_tasks, df_nodes, n_time, n_tasks,
@@ -248,7 +257,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.df_tasks_relative = self.df_tasks.iloc[0:self.max_steps].copy()
         self.df_tasks_relative["relative_start_time"] = (
                 self.df_tasks_relative['start_time'] -
-                self.df_tasks_relative['arrive_time'].astype(int))
+                self.df_tasks_relative['arrive_time'].astype(int) - 1)
         self.df_tasks_relative["relative_deadline"] = (
                 self.df_tasks_relative["deadline"] -
                 self.df_tasks_relative["start_time"] + 1)
@@ -289,7 +298,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         action_history = np.array([1 for _ in range(self.history_len) for _ in
                                    range(self.n_nodes)])
 
-        # print(f"record_history?: {self.record_history}")
+        # logging.debug(f"record_history?: {self.record_history}")
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
             if self.record_history:
@@ -303,24 +312,18 @@ class EdgeCloudEnv(MultiAgentEnv):
                     'task_info': task_info,
                     'future_occup': future_occup,
                     }
-            # print("The original dictionary is : " + str(agent_state))
+            # logging.debug("The original dictionary is : " + str(agent_state))
             # convert dict to list
             agent_obs = list(chain(*agent_state.values()))
-            # print("The Concatenated list values are : " + str(agent_state))
+            # logging.debug("The Concatenated list values are : " + str(agent_state))
 
             self.obs[f'drone_{i}'] = agent_obs
             self.state[f'drone_{i}'] = agent_state
 
-        # print("tasks information")
-        # print(df_tasks)
-        # exit()
-
-        if self.verbose:
-            print("tasks information")
-            print(df_tasks.head())
-            print("nodes information")
-            print(df_nodes)
-            print(f"observation after reset() = {self.obs}")
+        logging.debug(f"Tasks information: \n{df_tasks}")
+        logging.debug(f"Tasks information (relative):\n{self.df_tasks_relative}")
+        logging.debug(f"Nodes information: \n{df_nodes}")
+        logging.debug(f"observation after reset(): \n {self.obs}")
 
         return self.obs
 
@@ -346,9 +349,11 @@ class EdgeCloudEnv(MultiAgentEnv):
             self.df_tasks.loc[self.current_task_id, "arrive_time"])
         self.next_time_slot = int(
             self.df_tasks.loc[self.current_task_id + 1, "arrive_time"])
-        if self.verbose:
-            print(f"current time slot = {self.current_time_slot}")
-            print(f"next task's time slot = {self.next_time_slot}")
+
+        logging.debug(f"Current time slot = {self.current_time_slot}")
+        logging.debug(
+            f"Time slot followed by next task's arrival = {self.next_time_slot}")
+        logging.debug(f"Last actions:\n {actions}")
 
         bids_list = []  # bid price for one time step
         max_usage_time_list = []  # maximum usage time a fog node can offer
@@ -359,27 +364,28 @@ class EdgeCloudEnv(MultiAgentEnv):
             max_usage_time, relative_start_time = self.find_max_usage_time(
                 node_id)
             # if node_id==0:
-            #     print(f"current task VC = {self.current_task['valuation_coefficient']}")
-            #     print(f"usage time of node 0 = {max_usage_time}")
+            #     logging.debug(f"current task VC = {self.current_task['valuation_coefficient']}")
+            #     logging.debug(f"usage time of node 0 = {max_usage_time}")
             start_time = int(
                 self.df_tasks.loc[
                     self.current_task_id, 'arrive_time'] + relative_start_time + 1)
             # action is in {1,2,...,9,10}
+            # * 0.9 to avoid bidding the same as the value_coefficient
             bids_list.append(action * self.df_tasks.loc[
                 self.current_task_id, 'valuation_coefficient'])
             max_usage_time_list.append(max_usage_time)
             start_time_list.append(start_time)
             relative_start_time_list.append(relative_start_time)
 
-        if self.verbose:
-            print("bid prices:")
-            print(bids_list)
-            print("max usage times:")
-            print(max_usage_time_list)
-            print("start times:")
-            print(start_time_list)
-            print("relative start times:")
-            print(relative_start_time_list)
+        logging.debug("All nodes have submitted their bids:")
+        logging.debug("bid prices:")
+        logging.debug(bids_list)
+        logging.debug("max usage times:")
+        logging.debug(max_usage_time_list)
+        logging.debug("start times:")
+        logging.debug(start_time_list)
+        logging.debug("relative start times:")
+        logging.debug(relative_start_time_list)
 
         # find the winner
         (winner_index, winner_usage_time, winner_utility, max_utility,
@@ -390,8 +396,7 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         self.winner_id = winner_index
 
-        if self.verbose:
-            print(f"winner ID = {self.winner_id}")
+        logging.debug(f"winner ID = {self.winner_id}")
 
         if winner_index is not None:
             # modify the allocation scheme
@@ -410,23 +415,22 @@ class EdgeCloudEnv(MultiAgentEnv):
             self.update_resource_occupency(winner_index, winner_usage_time,
                                            winner_relative_start_time)
 
-            if self.verbose:
-                print(f"allocation scheme:")
-                print(f"{self.allocation_scheme.loc[self.current_task_id]}")
-                print("idle resource capacities of winner node:")
-                print(self.idle_resource_capacities[self.winner_id][:, 0:5])
-                # print("occupancy of future 10 time steps of the winner node")
-                # print(self.future_occup[self.winner_id])
+            logging.debug(f"allocation scheme:")
+            logging.debug(f"{self.allocation_scheme.loc[self.current_task_id]}")
+            logging.debug("idle resource capacities of winner node:")
+            logging.debug(self.idle_resource_capacities[self.winner_id][:, 0:5])
+            logging.debug("occupancy of future 10 time steps of the winner node")
+            logging.debug(self.future_occup[self.winner_id])
 
         # # update the occupancy of resource (10 future time steps)
         # future_idle = np.divide(self.idle_resource_capacities[:, :,
         # self.next_time_slot + 1: (self.next_time_slot + 11)],
         #     self.full_resource_capacities[:, :,
         #     self.next_time_slot + 1: (self.next_time_slot + 11)])
-        # print("idle resource capacities:")
-        # print(self.idle_resource_capacities)
-        # print("full resource capacities: ")
-        # print(self.full_resource_capacities)
+        # logging.debug("idle resource capacities:")
+        # logging.debug(self.idle_resource_capacities)
+        # logging.debug("full resource capacities: ")
+        # logging.debug(self.full_resource_capacities)
 
         self.future_occup = (
                 1 - np.divide(self.idle_resource_capacities[:, :,
@@ -442,24 +446,21 @@ class EdgeCloudEnv(MultiAgentEnv):
                                                axis=2)
             # for i in range(self.n_nodes):
             #     for j in range(3):
-            #         print(f"Eco = {self.future_occup[i][j]}")
+            #         logging.debug(f"Eco = {self.future_occup[i][j]}")
             #         self.future_occup[i][j] = self.future_occup[i][j].resize(10)
             #         self.future_occup[i][j][future_occup_len - 10:] = 1
 
-        if self.verbose:
-            print("occupancy of future 10 time steps:")
-            # print(self.future_occup.shape)
-            print(self.future_occup)
+        logging.debug("occupancy of future 10 time steps:")
+        logging.debug(self.future_occup)
 
         # calcuate the total value of the current task
         self.current_task_value = self.current_task['valuation_coefficient'] * \
                                   self.current_task['usage_time']
-        # print the updated allocation scheme_nd occupancy of resources
-        if self.verbose:
-            print(f"current task ID = {self.current_task_id}")
-            print(f"current task's value = {self.current_task_value}")
-            print("current task info:")
-            print(self.current_task)
+        # logging.debug the updated allocation scheme_nd occupancy of resources
+        logging.debug(f"current task ID = {self.current_task_id}")
+        logging.debug(f"current task's value = {self.current_task_value}")
+        logging.debug("current task info:")
+        logging.debug(self.current_task)
 
         # update the  observation (obs)
         # a list in case different nodes have different rewards
@@ -470,8 +471,12 @@ class EdgeCloudEnv(MultiAgentEnv):
         #     equal_reward =sw_increase - self.current_task_value
         # reward is the SW increase
         equal_reward = sw_increase
+        # only winner has the reward
         for i in range(self.n_nodes):
-            self.rewards[f'drone_{i}'] = equal_reward
+            if i == self.winner_id:
+                self.rewards[f'drone_{i}'] = equal_reward
+            else:
+                self.rewards[f'drone_{i}'] = 0
 
         # find if this is the last task of the episode
         if self.current_task_id >= self.max_steps - 1:
@@ -483,16 +488,16 @@ class EdgeCloudEnv(MultiAgentEnv):
         task_info = self.df_tasks_relative.iloc[
             self.current_task_id].to_numpy()
         # update the action_history
-        action_history = deque(self.state['drone_0']['action_history'])
-        if self.verbose:
-            print(f"previous action_history = {action_history}")
-        action_history.rotate(-1)
-        actions_lst = list(actions.values())
-        for i in range(self.n_nodes):
-            action_history[self.history_len * (i + 1) - 1] = actions_lst[i]
-        action_history = np.array(action_history)
-        if self.verbose:
-            print(f"updated action_history = {action_history}")
+        logging.debug(f"self.state = {self.state}")
+        if self.record_history:
+            action_history = deque(self.state['drone_0']['action_history'])
+            logging.debug(f"previous action_history = {action_history}")
+            action_history.rotate(-1)
+            actions_lst = list(actions.values())
+            for i in range(self.n_nodes):
+                action_history[self.history_len * (i + 1) - 1] = actions_lst[i]
+            action_history = np.array(action_history)
+            logging.debug(f"updated action_history = {action_history}")
         # generate the next observation
         for i in range(self.n_nodes):
             future_occup = self.future_occup[i].flatten(order="F")
@@ -507,51 +512,56 @@ class EdgeCloudEnv(MultiAgentEnv):
                     'task_info': task_info,
                     'future_occup': future_occup,
                     }
-            # print("The original dictionary is : " + str(agent_state))
+            # logging.debug("The original dictionary is : " + str(agent_state))
             agent_obs = list(chain(*agent_state.values()))
-            # print("The Concatenated list values are : " + str(agent_obs))
+            # logging.debug("The Concatenated list values are : " + str(agent_obs))
 
             self.state[f'drone_{i}'] = agent_state
             self.obs[f'drone_{i}'] = agent_obs
 
-            # calculate rewards (may need to be changed to list of rewards in the future)
+        logging.debug(f"self.state updated:\n{self.state}")
+        # calculate rewards (may need to be changed to list of rewards in the future)
         self.sw_increase = sw_increase
 
-        if self.verbose:
-            print("tasks (relative):")
-            print(self.df_tasks_relative.head())
-            print(f"next task ID = {self.current_task_id}")
-            print("The info of the next task")
-            print(task_info)
-            print("social welfare increase")
-            print(self.sw_increase)
-            print("next global observation")
-            print(self.obs)
-            print(f"rewards for agents = {self.rewards}")
-            print(f"Is the episode over? {dones}")
-            print("\n\n")
+        logging.debug("tasks (relative):")
+        logging.debug(self.df_tasks_relative.head())
+        logging.debug(f"next task ID = {self.current_task_id}")
+        logging.debug("The info of the next task")
+        logging.debug(task_info)
+        logging.debug("social welfare increase")
+        logging.debug(self.sw_increase)
+        logging.debug("next global observation")
+        logging.debug(self.obs)
+        logging.debug(f"rewards for agents = {self.rewards}")
+        logging.debug(f"Is the episode over? {dones}")
+        logging.debug("\n\n")
 
         # update the total social welfare
         self.total_social_welfare += sw_increase
+        if sw_increase > 0:
+            self.total_allocated_tasks_num += 1
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now
-        # print(f"observation after step() = {self.obs}")
+        # logging.debug(f"observation after step() = {self.obs}")
         return self.obs, self.rewards, dones, infos
 
     def render(self):
-        print(f"current time slot = {self.current_time_slot}")
-        print(f"next task ID = {self.current_task_id}")
-        print(f"winner of last reverse_auction = {self.winner_id}")
-        print(
+        logging.debug(f"current time slot = {self.current_time_slot}")
+        logging.debug(f"next task ID = {self.current_task_id}")
+        logging.debug(f"winner of last reverse_auction = {self.winner_id}")
+        logging.debug(
             f"social welfare increase of last reverse_auction = {self.sw_increase}")
-        print(f"rewards for all agents = {self.rewards}")
-        print(f"Total social welfare = {self.total_social_welfare}")
-        print(f"Next global observation = {self.obs}")
-        print()
+        logging.debug(f"rewards for all agents = {self.rewards}")
+        logging.debug(f"Total social welfare = {self.total_social_welfare}")
+        logging.debug(f"Next global observation = {self.obs}")
+        logging.debug()
 
     def get_total_sw(self):
         return self.total_social_welfare
+
+    def get_total_allocated_task_num(self):
+        return self.total_allocated_tasks_num
 
     @staticmethod
     def render_method():
@@ -592,14 +602,15 @@ class EdgeCloudEnv(MultiAgentEnv):
                     start_time: the start time of the task according to its allocation
                     scheme
                 """
+
         # calculate idle resource capacity of future 10 time steps
         resource_capacity = self.resource_capacity_dict[node_id]
         # ‘F’ means to flatten in column-major (Fortran- style) order.
         occup_resource_future = resource_capacity * self.future_occup[
             node_id].flatten(order="F")
         idle_resource_future = resource_capacity - occup_resource_future
-        # print(f"node {node_id}'s idle resource:")
-        # print(idle_resource_future)
+        logging.debug(f"node {node_id}'s idle resource:")
+        logging.debug(idle_resource_future)
 
         max_time_length = 0
 
@@ -613,8 +624,8 @@ class EdgeCloudEnv(MultiAgentEnv):
                                         self.current_task['arrive_time'] -
                                         time_length + 2)):
 
-                # print(f"time length: {n_time}, start time: {start_time}")
-                # print(f"remaining resource: {remaining_resource}")
+                # logging.debug(f"time length: {time_length}, start time: {start_time}")
+                # logging.debug(f"remaining resource: {remaining_resource}")
                 can_allocate = True  # can allocate in this case?
                 for i in range(0, time_length):
                     if idle_resource_future[(start_time + i) * 3] < \
@@ -641,13 +652,14 @@ class EdgeCloudEnv(MultiAgentEnv):
         """Decides the reverse_auction result of this task
 
         Args:
-        :param verbose: whether print the procedure
+        :param verbose: whether logging.debug the procedure
         :param bid_start_time_arr: array of start times
         :param bid_price_arr: array of bids
         :param bid_usage_time_arr: array of maximum usage times
         :param auction_type: "second-price" or "first-price" reverse reverse_auction
         """
 
+        logging.debug("The reverse auction starts:")
         # find the winner of the reverse_auction
         valuation_coefficient = self.df_tasks.loc[
             self.current_task_id, "valuation_coefficient"]
@@ -659,6 +671,8 @@ class EdgeCloudEnv(MultiAgentEnv):
             winner_usage_time = None
             winner_revenue = None
             sw_increase = 0
+            logging.debug(
+                "All bidding prices are higher than the unit value of the task!")
         else:
             # which FN wins this task
             winner_index = argmax_earliest(utility_arr=utility_arr,
@@ -672,7 +686,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                            + self.df_nodes.loc[winner_index, 'storage_cost'] *
                            self.df_tasks.loc[
                                self.current_task_id, "storage"]) * winner_usage_time
-            # print(f"cost of the winner is {winner_cost}")
+            # logging.debug(f"cost of the winner is {winner_cost}")
 
             # get winner's rewards
             if auction_type == "first-price":
@@ -692,15 +706,14 @@ class EdgeCloudEnv(MultiAgentEnv):
                         break
                 winner_revenue = (
                         winner_usage_time * second_price - winner_cost)
-                if verbose:
-                    print("Dataframe of the bids:")
-                    print(df_bids)
-                    print(f"second-price={second_price}")
+                logging.debug("Dataframe of the bids:")
+                logging.debug(df_bids)
+                logging.debug(f"second-price={second_price}")
 
             else:
                 raise ValueError("unrecognised reverse_auction type")
-            # print(f"ID of the winner = {winner_index}")
-            # print(f"winner's revenue = {winner_revenue}")
+            logging.debug(f"ID of the winner = {winner_index}")
+            logging.debug(f"winner's revenue = {winner_revenue}")
 
             # update social welfare
             sw_increase = valuation_coefficient * winner_usage_time - winner_cost
