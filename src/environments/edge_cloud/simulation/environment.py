@@ -88,8 +88,7 @@ def fill_in_actions(info):
 
 class EdgeCloudEnv(MultiAgentEnv):
     """Our edge cloud resource allocation environment"""
-    VERSION = 1  # Increment each time there are non-backwards compatible changes made
-
+    VERSION = 1  # Increment each time there are non-backwards compatible changes m
     def __init__(self, config,
                  seed=0, n_timesteps=20, n_tasks=50,
                  max_steps=40,
@@ -98,7 +97,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,
-                 alpha=1.0, lam=1e2, record_history=False, history_len=7):
+                 alpha=1.0, lam=1e2, history_len=7):
         """
         Initialization function for the environment.
         Args:
@@ -119,11 +118,13 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # Set the class variables
         super().__init__()
-        fmtStr = "%(levelname)s: %(funcName)s() -> %(message)s"
+        fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
 
         logging.basicConfig(level=logging_level, filename='resource_allocation.log',
                             filemode='w', format=fmtStr)
 
+        self.record_history = config['record_history']
+        self.cooperative = config['cooperative']
         self.rewards = {}
         self.sw_increase = None
         self.obs = {}
@@ -134,7 +135,6 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.avg_resource_capacity = avg_resource_capacity
         self.avg_unit_cost = avg_unit_cost
         self.max_steps = max_steps
-        self.record_history = record_history
         self.history_len = history_len
 
         resource_coefficient = (
@@ -371,8 +371,14 @@ class EdgeCloudEnv(MultiAgentEnv):
                     self.current_task_id, 'arrive_time'] + relative_start_time + 1)
             # action is in {1,2,...,9,10}
             # * 0.9 to avoid bidding the same as the value_coefficient
-            bids_list.append(action * self.df_tasks.loc[
+            bids_list.append((action + 0.5) * self.df_tasks.loc[
                 self.current_task_id, 'valuation_coefficient'])
+            # if action == 1:
+            #     bids_list.append(0.8 * self.df_tasks.loc[
+            #         self.current_task_id, 'valuation_coefficient'])
+            # else:
+            #     bids_list.append(0.2 * self.df_tasks.loc[
+            #         self.current_task_id, 'valuation_coefficient'])
             max_usage_time_list.append(max_usage_time)
             start_time_list.append(start_time)
             relative_start_time_list.append(relative_start_time)
@@ -388,7 +394,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.debug(relative_start_time_list)
 
         # find the winner
-        (winner_index, winner_usage_time, winner_utility, max_utility,
+        (winner_index, winner_usage_time, winner_revenue, max_utility,
          sw_increase) = self.reverse_auction(bids_list, max_usage_time_list,
                                              start_time_list,
                                              verbose=self.verbose,
@@ -472,11 +478,15 @@ class EdgeCloudEnv(MultiAgentEnv):
         # reward is the SW increase
         equal_reward = sw_increase
         # only winner has the reward
-        for i in range(self.n_nodes):
-            if i == self.winner_id:
+        if self.cooperative:
+            for i in range(self.n_nodes):
                 self.rewards[f'drone_{i}'] = equal_reward
-            else:
-                self.rewards[f'drone_{i}'] = 0
+        else:
+            for i in range(self.n_nodes):
+                if i == self.winner_id:
+                    self.rewards[f'drone_{i}'] = winner_revenue
+                else:
+                    self.rewards[f'drone_{i}'] = 0
 
         # find if this is the last task of the episode
         if self.current_task_id >= self.max_steps - 1:
