@@ -1,5 +1,7 @@
 from pprint import pprint
 
+import numpy as np
+
 from common.config_file_handler import load_yaml
 from environments.edge_cloud.simulation.environment import EdgeCloudEnv
 from environments.edge_cloud.simulation.environment import argmax_earliest
@@ -66,22 +68,126 @@ def test_find_max_usage_time(edge_env):
     print("Result:", edge_env.find_max_usage_time(0))
     assert 3 == result[0]
     assert 1 == result[1]
-    # case one: not enough resource
-    edge_env.current_task["CPU"] = 51
+    # not enough resource
+    edge_env.resource_capacity_dict[node_id][8] = 1
+    edge_env.resource_capacity_dict[node_id][5] = 1
+    print(f"resource_capacity = {resource_capacity}")
     result = edge_env.find_max_usage_time(0)
-    assert 0 == result[0]
+    print("Result:", edge_env.find_max_usage_time(0))
+    assert 1 == result[0]
+    assert 3 == result[1]
     # case one: not enough resource
-    edge_env.current_task["RAM"] = 51
-    result = edge_env.find_max_usage_time(0)
-    assert 0 == result[0]
+    for resource_type in ["CPU", "RAM", "storage"]:
+        resource_demand = edge_env.current_task[resource_type]
+        edge_env.current_task[resource_type] = 51
+        result = edge_env.find_max_usage_time(0)
+        edge_env.current_task[resource_type] = resource_demand
+        assert 0 == result[0]
 
 
+# @pytest.mark.skip(reason="Have not yet implemented the test")
+def test_step(edge_env):
+    # before step
+    print("POI")
+    print(f"current_task_id: {edge_env.current_task_id}")
 
-@pytest.mark.skip(reason="Have not yet implemented the test")
-def test_step():
-    assert False
+    # after step
+    actions = {0: 0.3, 1: 0.2, 2: 0.4}
+    obs, rewards, dones, infos = edge_env.step(actions)
+    print(f"current_task_id: {edge_env.current_task_id}")
+    print(f"winner_id = {edge_env.winner_id}")
+    assert edge_env.winner_id == 1
+    print(f"allocation_scheme:\n {edge_env.allocation_scheme}")
+    print(f"sw increase = {edge_env.sw_increase}")
+    winner_cost = 0
+    winner_index = edge_env.winner_id
+    winner_usage_time = edge_env.winner_usage_time
+    for resource_type in ["CPU", "RAM", "storage"]:
+        winner_cost += (
+                    edge_env.df_tasks.loc[edge_env.current_task_id - 1, resource_type] *
+                    edge_env.df_nodes.loc[
+                        winner_index, f"{resource_type}_cost"] * winner_usage_time)
+    expected_sw_increase = (edge_env.df_tasks.loc[
+        edge_env.current_task_id - 1, "valuation_coefficient"]) * winner_usage_time - winner_cost
+    assert edge_env.sw_increase == expected_sw_increase
+    print(f"rewards: {rewards}")
+    assert rewards[f'drone_{winner_index}'] == expected_sw_increase
+    print(f"winner's future occupancy = {edge_env.future_occup[winner_index]}")
+    # check resource occupancy update
+    for i, resource_type in enumerate(["CPU", "RAM", "storage"]):
+        for time_step in range(edge_env.winner_start_time, edge_env.winner_finish_time):
+            assert (edge_env.future_occup[winner_index][i][time_step] ==
+                    pytest.approx(edge_env.df_tasks.loc[edge_env.current_task_id - 1, resource_type] /
+                    edge_env.df_nodes.loc[winner_index, f"{resource_type}"]))
+    print(f"next observation is {obs}")
+    # TODO: task info
+    assert obs['drone_0'][0] == edge_env.df_tasks.loc[edge_env.current_task_id, "valuation_coefficient"]
+    assert obs['drone_0'][2] == edge_env.df_tasks.loc[edge_env.current_task_id, "CPU"]
+    # TODO: future occupancy
+    print(f"expected future occupancy:")
+    print(edge_env.future_occup)
+    assert np.array(obs['drone_1'][7]) == edge_env.future_occup[1][0][0]
+    # TODO: action history
+    assert obs['drone_0'][-1] == actions[2]
+    assert obs['drone_0'][-8] == actions[1]
+    assert obs['drone_0'][-15] == actions[0]
 
 
-@pytest.mark.skip(reason="Have not yet implemented the test")
-def test_reverse_auction():
-    assert False
+def test_reverse_auction(edge_env):
+    # return winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase
+    # first-price
+    # TODO same price earlier start time should win
+    bid_price_arr = [0, 0, 0]
+    bid_usage_time_arr = [2, 2, 2]
+    bid_start_time_arr = [2, 1, 2]
+    winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase = edge_env.reverse_auction(
+        bid_price_arr, bid_usage_time_arr, bid_start_time_arr)
+    print(winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase)
+    assert winner_index == 1
+    assert winner_usage_time == 2
+    winner_income = 0
+    winner_cost = 0
+    for resource_type in ["CPU", "RAM", "storage"]:
+        winner_cost += (edge_env.df_tasks.loc[edge_env.current_task_id, resource_type] *
+                        edge_env.df_nodes.loc[
+                            winner_index, f"{resource_type}_cost"] * winner_usage_time)
+    expected_winner_revenue = winner_income - winner_cost
+    assert winner_revenue == expected_winner_revenue
+    expected_max_utility = (edge_env.df_tasks.loc[
+                                edge_env.current_task_id, "valuation_coefficient"] -
+                            bid_price_arr[winner_index]) * winner_usage_time
+    assert max_utility == expected_max_utility
+    expected_sw_increase = (edge_env.df_tasks.loc[
+        edge_env.current_task_id, "valuation_coefficient"]) * winner_usage_time - winner_cost
+    assert sw_increase == expected_sw_increase
+
+    # TODO more utility should win
+    bid_price_arr = [1, 1, 0]
+    bid_usage_time_arr = [2, 2, 2]
+    bid_start_time_arr = [2, 1, 2]
+    winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase = edge_env.reverse_auction(
+        bid_price_arr, bid_usage_time_arr, bid_start_time_arr)
+    print(winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase)
+    assert winner_index == 2
+    assert winner_usage_time == 2
+
+    # second-price reverse auction
+    # TODO more utility should win
+    bid_price_arr = [1, 2, 3]
+    bid_usage_time_arr = [2, 2, 2]
+    bid_start_time_arr = [2, 1, 2]
+    winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase = edge_env.reverse_auction(
+        bid_price_arr, bid_usage_time_arr, bid_start_time_arr,
+        auction_type='second-price')
+    print(winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase)
+    assert winner_index == 0
+    assert winner_usage_time == 2
+    second_winner_index = 1
+    winner_income = bid_price_arr[second_winner_index] * winner_usage_time
+    winner_cost = 0
+    for resource_type in ["CPU", "RAM", "storage"]:
+        winner_cost += (edge_env.df_tasks.loc[edge_env.current_task_id, resource_type] *
+                        edge_env.df_nodes.loc[
+                            winner_index, f"{resource_type}_cost"] * winner_usage_time)
+    expected_winner_revenue = winner_income - winner_cost
+    assert winner_revenue == expected_winner_revenue

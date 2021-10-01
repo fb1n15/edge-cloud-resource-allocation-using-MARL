@@ -89,6 +89,7 @@ def fill_in_actions(info):
 class EdgeCloudEnv(MultiAgentEnv):
     """Our edge cloud resource allocation environment"""
     VERSION = 1  # Increment each time there are non-backwards compatible changes m
+
     def __init__(self, config,
                  seed=0, n_timesteps=20, n_tasks=50,
                  max_steps=40,
@@ -401,14 +402,17 @@ class EdgeCloudEnv(MultiAgentEnv):
                                              auction_type=self.auction_type)
 
         self.winner_id = winner_index
+        self.winner_usage_time = winner_usage_time
 
         logging.debug(f"winner ID = {self.winner_id}")
 
         if winner_index is not None:
             # modify the allocation scheme
             winner_start_time = start_time_list[winner_index]
+            self.winner_start_time = winner_start_time
             winner_relative_start_time = relative_start_time_list[winner_index]
             winner_finish_time = (winner_start_time + winner_usage_time - 1)
+            self.winner_finish_time = winner_finish_time
             if winner_usage_time is not None and winner_usage_time > 0:
                 self.allocation_scheme.loc[self.current_task_id] = [
                     winner_index,
@@ -710,7 +714,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                 second_price = bid_price_arr[winner_index]
                 for i in range(self.n_nodes):
                     if df_bids.iloc[i, 0] > second_price and df_bids.iloc[
-                        i, 1] > 0:  # if the price is greater than winner's and the
+                            i, 1] > 0:  # if the price is greater than winner's and the
                         # usage time is not zero
                         second_price = df_bids.iloc[i, 0]
                         break
