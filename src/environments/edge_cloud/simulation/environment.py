@@ -94,7 +94,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                  seed=0, n_timesteps=20, n_tasks=50,
                  max_steps=40,
                  p_high_value_tasks=0.1, high_value_slackness=0,
-                 low_value_slackness=0, resource_ratio=3, valuation_ratio=20,
+                 low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,
@@ -219,6 +219,18 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.seed_value = seed_value
 
     def data_for_next_episode(self):
+        logging.debug(f"average resource capacity = {self.avg_resource_capacity}")
+        logging.debug(f"average unit cost = {self.avg_unit_cost}")
+        logging.debug(f"number of tasks = {self.n_tasks}")
+        logging.debug(f"number of timesteps = {self.n_timesteps}")
+        logging.debug(f"seed = {self.seed_value}")
+        logging.debug(f"number of nodes = {self.n_nodes}")
+        logging.debug(f"proportion of HVTs = {self.p_high_value_tasks}")
+        logging.debug(f"slackness of HVTs = {self.high_value_slackness}")
+        logging.debug(f"slackness of LVTs = {self.low_value_slackness}")
+        logging.debug(f"resource demand ratio = {self.resource_ratio}")
+        logging.debug(f"value coefficient ratio = {self.valuation_ratio}")
+        logging.debug(f"resource coefficient = {self.resource_coefficient}")
         df_tasks, df_nodes, n_time, n_tasks, n_nodes = \
             generate_synthetic_data_edge_cloud(self.avg_resource_capacity,
                                                self.avg_unit_cost, n_tasks=self.n_tasks,
@@ -495,6 +507,9 @@ class EdgeCloudEnv(MultiAgentEnv):
         # find if this is the last task of the episode
         if self.current_task_id >= self.max_steps - 1:
             dones = {'__all__': True}
+            # log the allocation scheme after each episode
+            logging.debug(f"Allocation scheme after an episode:")
+            logging.debug(f"{self.allocation_scheme}")
         else:  # not the last step of the episode
             dones = {'__all__': False}
             # const = np.array([1])

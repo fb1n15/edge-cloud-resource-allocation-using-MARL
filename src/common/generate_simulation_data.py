@@ -81,9 +81,9 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
                 x = k
             finish_time.append(x)
             # resource constraints
-            demand_CPU.append(np.random.uniform(3, 5))
-            demand_RAM.append(np.random.uniform(3, 5))
-            demand_disk.append(np.random.uniform(3, 5))
+            demand_CPU.append(random_generator.uniform(3, 5))
+            demand_RAM.append(random_generator.uniform(3, 5))
+            demand_disk.append(random_generator.uniform(3, 5))
         else:
             v_prime.append(random_generator.uniform(50 * 1, 100 * 1))
             # task can start from the next time step of its arrival time
@@ -100,9 +100,9 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             else:
                 x = k
             finish_time.append(x)
-            demand_CPU.append(np.random.uniform(2, 3))
-            demand_RAM.append(np.random.uniform(2, 3))
-            demand_disk.append(np.random.uniform(2, 3))
+            demand_CPU.append(random_generator.uniform(2, 3))
+            demand_RAM.append(random_generator.uniform(2, 3))
+            demand_disk.append(random_generator.uniform(2, 3))
 
     # dataframe of the tasks
     df_tasks = pd.DataFrame(

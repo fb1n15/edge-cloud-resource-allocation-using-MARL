@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_fc_depth2_without_history
+name: edge_cloud_independent_ppo_without_history
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -12,7 +12,7 @@ env-config:
 #  avg_unit_cost: { 0: [ 1, 1, 1 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
 #  # agents should learn that low-value tasks should not be allocated to node 0
   avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 3, 3, 3], 2: [ 3, 3, 3 ] }
-  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
+  avg_unit_cost: { 0: [ 6, 6, 6 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
@@ -27,7 +27,7 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 4
+  num_workers: 5
 #  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
@@ -46,8 +46,8 @@ trainer-config:
 
   # Trainer parameters
   lr:
-    gridsearch: [0.01, 0.001, 0.0001]
-#    gridsearch: [0.001]
+#    gridsearch: [0.01, 0.001, 0.0001]
+    gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
   batch_mode: "complete_episodes"
@@ -63,6 +63,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 200_000
+  timesteps_total: 100_000
+#  timesteps_total: 100
 
 #samples: 1

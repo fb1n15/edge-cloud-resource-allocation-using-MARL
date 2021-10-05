@@ -7,7 +7,6 @@ from abc import ABC, abstractmethod
 import sys
 from getopt import getopt
 
-
 from common.checkpoint_handler import explore_checkpoints
 from common.config_file_handler import load_yaml
 
@@ -25,13 +24,16 @@ class CLIPromptExperimentChooser(ExperimentChooser):
 
     @staticmethod
     def _experiment_to_str(experiment):
-        checkpoint_scores = " ".join(f"{checkpoint['episode_reward_mean']}" for trial in experiment["trials"] for checkpoint in trial["checkpoints"])
+        checkpoint_scores = " ".join(
+            f"{checkpoint['episode_reward_mean']}" for trial in experiment["trials"] for
+            checkpoint in trial["checkpoints"])
         return f"{experiment['name']} | best trial = {experiment['best trial']['episode_reward_mean']} | {experiment['environment']} | {checkpoint_scores}"
 
     def _ask_input_int(self):
         while True:
             try:
-                response = int(input(f"\nEnter experiment number (1-{len(self.experiments)}) >> ")) - 1
+                response = int(input(
+                    f"\nEnter experiment number (1-{len(self.experiments)}) >> ")) - 1
                 return response
             except ValueError:
                 print("invalid integer, please try again")
@@ -43,7 +45,7 @@ class CLIPromptExperimentChooser(ExperimentChooser):
         """
 
         for i, e in enumerate(self.experiments):
-            print(f"{i+1}: {self._experiment_to_str(e)}")
+            print(f"{i + 1}: {self._experiment_to_str(e)}")
 
         choice = self._ask_input_int()
         while not 0 <= choice < len(self.experiments):
@@ -59,10 +61,10 @@ def main():
     # parser.add_argument('--restore', action='store_true')
     parser.add_argument('--config', type=str, help='File containing the config')
     parser.add_argument('--checkpoint', type=str, help='Path to the checkpoint to run')
-    args = parser.parse_args() # get all arguments
+    args = parser.parse_args()  # get all arguments
 
     restore = False
-    config = load_yaml(args.config) # the dictionary of configurations
+    config = load_yaml(args.config)  # the dictionary of configurations
 
     # train the model
     if args.run_option == "train":

@@ -184,11 +184,15 @@ def train(config):
         verbose=3,
         # Whether to checkpoint at the end of the experiment regardless of the checkpoint_freq
         # (When training deep learning models, the checkpoint is the weights of the model. These weights can be used to make predictions as is, or used as the basis for ongoing training.)
-        checkpoint_at_end=False,
+        checkpoint_at_end=True,
         # number of times to sample from the hyperparameter space.
         num_samples=config.get("samples", 1),  # to take multiple random samples
-        fail_fast=True
+        fail_fast=True,
         # whether to fail upon the first error, should be used with caution
+        ## how to checkpoint?
+        # https://docs.ray.io/en/latest/tune/user-guide.html#checkpointing
+        # name="my_experiment",
+        # resume=True  # You can then call tune.run() with resume=True to continue this run in the future:
         )
 
     # Object for experiment analysis.
@@ -218,4 +222,5 @@ class CustomCallbacks(DefaultCallbacks):
         # episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()
         # episode.custom_metrics["Map Explored"] = env.get_map_explored()
         episode.custom_metrics["Social Welfare"] = env.get_total_sw()
-        episode.custom_metrics["Allocated Tasks Number"] = env.get_total_allocated_task_num()
+        episode.custom_metrics[
+            "Allocated Tasks Number"] = env.get_total_allocated_task_num()
