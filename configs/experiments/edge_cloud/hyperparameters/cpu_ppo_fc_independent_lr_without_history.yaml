@@ -27,11 +27,11 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 5
+  num_workers: 6
 #  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
-  seed: 123
+  seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
   # https://gitmemory.com/issue/ray-project/ray/9399/683323479
   "observation_filter": "MeanStdFilter"

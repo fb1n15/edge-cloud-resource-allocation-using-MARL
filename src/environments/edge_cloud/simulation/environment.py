@@ -92,8 +92,8 @@ class EdgeCloudEnv(MultiAgentEnv):
 
     def __init__(self, config,
                  seed=0, n_timesteps=20, n_tasks=50,
-                 max_steps=40,
-                 p_high_value_tasks=0.1, high_value_slackness=0,
+                 max_steps=41,
+                 p_high_value_tasks=0.0, high_value_slackness=0,
                  low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
@@ -124,6 +124,18 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.basicConfig(level=logging_level, filename='resource_allocation.log',
                             filemode='w', format=fmtStr)
 
+        self.current_task = None
+        self.current_time_slot = None
+        self.next_time_slot = None
+        self.n_tasks_expensive = 0
+        self.winner_id = None
+        self.winner_usage_time = None
+        self.winner_start_time = None
+        self.winner_finish_time = None
+        self.resource_capacity_dict = None
+        self.future_occup = None
+        self.current_task_value = None
+        self.df_tasks_relative = None
         self.record_history = config['record_history']
         self.cooperative = config['cooperative']
         self.rewards = {}
@@ -259,6 +271,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.failed = 0
         self.total_social_welfare = 0
         self.total_allocated_tasks_num = 0
+        self.n_tasks_expensive = 0
 
         # generate new tasks for next episode
         (df_tasks, df_nodes, n_time, n_tasks,
@@ -294,7 +307,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         # the obs is a vector of current task information and the future occupancy
         # const = np.array([1])
         task_info = self.df_tasks_relative.iloc[0].to_numpy()
-        future_occup = self.future_occup.flatten(order="F")
+        # future_occup = self.future_occup.flatten(order="F")
 
         # reset the idle resource capacities for all nodes
         for node in df_nodes.iterrows():
@@ -372,6 +385,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         max_usage_time_list = []  # maximum usage time a fog node can offer
         start_time_list = []  # start time according to the planned allocation
         relative_start_time_list = []  # relative start time according to the current task
+        sw_increase_list = []
         # calculate the maximum usage time and earliest start time for each agent
         for node_id, (node_name, action) in enumerate(actions.items()):
             max_usage_time, relative_start_time = self.find_max_usage_time(
@@ -396,11 +410,22 @@ class EdgeCloudEnv(MultiAgentEnv):
             start_time_list.append(start_time)
             relative_start_time_list.append(relative_start_time)
 
+            cost = self.df_tasks.loc[self.current_task_id, 'CPU'] * self.df_nodes.loc[
+                node_id, 'CPU_cost'] + self.df_tasks.loc[self.current_task_id, 'RAM'] * \
+                   self.df_nodes.loc[node_id, 'RAM_cost'] + self.df_tasks.loc[
+                       self.current_task_id, 'storage'] * self.df_nodes.loc[
+                       node_id, 'storage_cost']
+            value = self.df_tasks.loc[self.current_task_id, 'valuation_coefficient']
+            sw_inc = (value - cost) * max_usage_time
+            sw_increase_list.append(sw_inc)
+
         logging.debug("All nodes have submitted their bids:")
         logging.debug("bid prices:")
         logging.debug(bids_list)
         logging.debug("max usage times:")
         logging.debug(max_usage_time_list)
+        logging.debug("sw increases for different nodes:")
+        logging.debug(sw_increase_list)
         logging.debug("start times:")
         logging.debug(start_time_list)
         logging.debug("relative start times:")
@@ -437,6 +462,15 @@ class EdgeCloudEnv(MultiAgentEnv):
             self.update_resource_occupency(winner_index, winner_usage_time,
                                            winner_relative_start_time)
 
+            # # if the task is allocated to HCN when it can be allocated to LCNs
+            # current_task_usage_time = self.df_tasks.loc[
+            #     self.current_task_id, 'usage_time']
+
+            # if task 0 wins the task while it is not gets the higest social welfare
+            if sw_increase_list.index(max(sw_increase_list)) != 0:
+                if self.winner_id == 0:
+                    self.n_tasks_expensive += 1
+                    logging.debug("This allocation is more expensive than needed.")
             logging.debug(f"allocation scheme:")
             logging.debug(f"{self.allocation_scheme.loc[self.current_task_id]}")
             logging.debug("idle resource capacities of winner node:")
@@ -509,7 +543,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             dones = {'__all__': True}
             # log the allocation scheme after each episode
             logging.debug(f"Allocation scheme after an episode:")
-            logging.debug(f"{self.allocation_scheme}")
+            logging.debug(f"\n{self.allocation_scheme}")
         else:  # not the last step of the episode
             dones = {'__all__': False}
             # const = np.array([1])
@@ -569,6 +603,12 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.total_social_welfare += sw_increase
         if sw_increase > 0:
             self.total_allocated_tasks_num += 1
+
+        # if this is the end of an episode
+        if dones['__all__']:
+            logging.debug(
+                f"The number of expensive allocations = {self.n_tasks_expensive}")
+            logging.debug(f"The total social welfare = {self.total_social_welfare}")
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now
@@ -584,13 +624,15 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.debug(f"rewards for all agents = {self.rewards}")
         logging.debug(f"Total social welfare = {self.total_social_welfare}")
         logging.debug(f"Next global observation = {self.obs}")
-        logging.debug()
 
     def get_total_sw(self):
         return self.total_social_welfare
 
     def get_total_allocated_task_num(self):
         return self.total_allocated_tasks_num
+
+    def get_num_bad_allocations(self):
+        return self.n_tasks_expensive
 
     @staticmethod
     def render_method():
@@ -729,7 +771,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                 second_price = bid_price_arr[winner_index]
                 for i in range(self.n_nodes):
                     if df_bids.iloc[i, 0] > second_price and df_bids.iloc[
-                            i, 1] > 0:  # if the price is greater than winner's and the
+                        i, 1] > 0:  # if the price is greater than winner's and the
                         # usage time is not zero
                         second_price = df_bids.iloc[i, 0]
                         break
