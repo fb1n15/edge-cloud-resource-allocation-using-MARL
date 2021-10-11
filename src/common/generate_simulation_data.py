@@ -29,7 +29,7 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
         low_value_slackness_lower_limit=0,
         low_value_slackness_upper_limit=6,
         resource_demand_high=1, resource_demand_low=1, vc_ratio=10,
-        k_resource=1, ub_usage_time=4):
+        k_resource=1, ub_usage_time=1):
     """generate synthetic data for simulations
 
     Args:

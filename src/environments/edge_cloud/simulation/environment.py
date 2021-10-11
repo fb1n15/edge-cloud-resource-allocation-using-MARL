@@ -91,8 +91,8 @@ class EdgeCloudEnv(MultiAgentEnv):
     VERSION = 1  # Increment each time there are non-backwards compatible changes m
 
     def __init__(self, config,
-                 seed=0, n_timesteps=20, n_tasks=50,
-                 max_steps=41,
+                 seed=0, n_timesteps=10, n_tasks=50,
+                 max_steps=9,
                  p_high_value_tasks=0.0, high_value_slackness=0,
                  low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
                  resource_coefficient=0.2,
@@ -551,12 +551,14 @@ class EdgeCloudEnv(MultiAgentEnv):
         task_info = self.df_tasks_relative.iloc[
             self.current_task_id].to_numpy()
         # update the action_history
-        logging.debug(f"self.state = {self.state}")
+        logging.debug(f"self.state before updating = \n{self.state}")
         if self.record_history:
             action_history = deque(self.state['drone_0']['action_history'])
             logging.debug(f"previous action_history = {action_history}")
             action_history.rotate(-1)
-            actions_lst = list(actions.values())
+            # actions_lst = list(actions.values())
+            # use max usage times in history
+            actions_lst = max_usage_time_list
             for i in range(self.n_nodes):
                 action_history[self.history_len * (i + 1) - 1] = actions_lst[i]
             action_history = np.array(action_history)
@@ -579,8 +581,8 @@ class EdgeCloudEnv(MultiAgentEnv):
             agent_obs = list(chain(*agent_state.values()))
             # logging.debug("The Concatenated list values are : " + str(agent_obs))
 
-            self.state[f'drone_{i}'] = agent_state
-            self.obs[f'drone_{i}'] = agent_obs
+            self.state[f'drone_{i}'] = copy.deepcopy(agent_state)
+            self.obs[f'drone_{i}'] = copy.deepcopy(agent_obs)
 
         logging.debug(f"self.state updated:\n{self.state}")
         # calculate rewards (may need to be changed to list of rewards in the future)
