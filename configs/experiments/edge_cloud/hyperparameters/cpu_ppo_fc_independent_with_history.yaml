@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_without_history
+name: edge_cloud_independent_ppo_with_history
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -16,10 +16,11 @@ env-config:
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
-  record_history: False
+  record_history: True
   cooperative: True
-  obs_length: 37
+  obs_length: 58
   n_actions: 2
+
 
 
 trainer: PPO
@@ -42,11 +43,11 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers: [256, 256]
+      layers: [256, 256, 256, 256]
 
   # Trainer parameters
   lr:
-#    gridsearch: [0.01, 0.001, 0.0001]
+#    gridsearch: [0.001, 0.0001]
     gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
@@ -63,7 +64,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 100_000
+  timesteps_total: 30_000
 #  timesteps_total: 100
 
 #samples: 1

@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_with_history
+name: edge_cloud_independent_DQN_with_history
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -23,7 +23,7 @@ env-config:
 
 
 
-trainer: PPO
+trainer: QMIX
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
@@ -39,18 +39,18 @@ trainer-config:
   # Whether to synchronize the statistics of remote filters.
   "synchronize_filters": True
 
-  # Model config
-  model:
-    custom_model: FCModel
-    custom_model_config:
-      layers: [256, 256]
+#  # Model config
+#  model:
+#    custom_model: FCModel
+#    custom_model_config:
+#      layers: [256, 256]
 
   # Trainer parameters
   lr:
 #    gridsearch: [0.001, 0.0001]
     gridsearch: [0.001]
-  lambda: 1.0
-  entropy_coeff: 0.0
+#  lambda: 1.0
+#  entropy_coeff: 0.0
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
@@ -64,7 +64,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 100_000
+  timesteps_total: 30_000
 #  timesteps_total: 100
 
 #samples: 1
