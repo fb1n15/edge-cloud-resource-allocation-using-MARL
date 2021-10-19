@@ -153,9 +153,9 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         self.n_tasks_in_total = config[
             'n_tasks_in_total']  # the number of tasks for generating the simulation data
-        resource_coefficient = (
-                resource_coefficient * self.n_tasks_in_total / n_timesteps)
         self.duration = config['duration']  # the duration of the allocation
+        resource_coefficient = (
+                resource_coefficient * self.n_tasks_in_total / self.duration)
         self.seed_value = config['seed']
         self.n_nodes = config['n_nodes']
         self.n_actions = config['n_actions']
@@ -180,7 +180,6 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.lam = lam
         self.alpha = alpha
         self.allow_negative_reward = allow_negative_reward
-        self.duration = n_timesteps
         self.n_resource_type = 3
 
         # initialise the ndarray of idle resources
@@ -189,9 +188,9 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         for node in df_nodes.iterrows():
             self.full_resource_capacities[node[0]] = [
-                [df_nodes.loc[node[0], 'CPU'] for _ in range(n_timesteps)],
-                [df_nodes.loc[node[0], 'RAM'] for _ in range(n_timesteps)],
-                [df_nodes.loc[node[0], 'storage'] for _ in range(n_timesteps)]]
+                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.duration)],
+                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.duration)],
+                [df_nodes.loc[node[0], 'storage'] for _ in range(self.duration)]]
 
         self.df_tasks = df_tasks
         self.df_nodes = df_nodes

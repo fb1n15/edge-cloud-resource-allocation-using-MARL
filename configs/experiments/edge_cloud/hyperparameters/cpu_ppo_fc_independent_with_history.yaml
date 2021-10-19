@@ -19,7 +19,7 @@ env-config:
 #  avg_unit_cost: { 0: [ 1, 1, 1 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
 #  # agents should learn that low-value tasks should not be allocated to node 0
   avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
-  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
+  avg_unit_cost: { 0: [ 4, 4, 4 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
@@ -73,7 +73,7 @@ trainer-config:
 
 
 stop:
-#  timesteps_total: 10_0000
-  timesteps_total: 100
+  timesteps_total: 10_0000
+#  timesteps_total: 100
 
 #samples: 1
