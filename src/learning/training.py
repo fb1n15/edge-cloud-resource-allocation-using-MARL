@@ -1,3 +1,4 @@
+import logging
 from pprint import pprint
 from typing import Dict
 
@@ -41,9 +42,15 @@ def get_trainer_config(config):
     env = environment_map(config["env"])["env"]
     print()
     print(env)
+    # # configure logging
+    # fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
+    #
+    # logging.basicConfig(level=logging.DEBUG, filename='resource_allocation.log',
+    #                     filemode='w', format=fmtStr)
     # independent agents
     if "grouping" not in config:
         trainer_config["env"] = env
+        # logging.debug(f"env = {env}")
         # {None (i.e., uses default policy), observation_space, action_space, config: dict}
         trainer_config["multiagent"] = {
             "policies": {
@@ -225,4 +232,5 @@ class CustomCallbacks(DefaultCallbacks):
         episode.custom_metrics[
             "Allocated Tasks Number"] = env.get_total_allocated_task_num()
         episode.custom_metrics["Bad Allocations Number"] = env.get_num_bad_allocations()
-        episode.custom_metrics["Social Welfare (Online Myopic)"] = env.get_total_sw_benchmark()
+        episode.custom_metrics[
+            "Social Welfare (Online Myopic)"] = env.get_total_sw_benchmark()

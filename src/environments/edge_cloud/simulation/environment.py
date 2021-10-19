@@ -349,6 +349,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             # logging.debug("The Concatenated list values are : " + str(agent_state))
 
             self.obs[f'drone_{i}'] = agent_obs
+            self.obs_dim = len(agent_obs)
             self.state[f'drone_{i}'] = agent_state
 
         logging.debug(f"Tasks information: \n{df_tasks}")
@@ -650,7 +651,8 @@ class EdgeCloudEnv(MultiAgentEnv):
 
     @staticmethod
     def get_observation_space(config):
-        return spaces.Box(low=0, high=10_000, shape=(config["obs_length"],),
+        return spaces.Box(low=0, high=10_000, shape=(
+        7 + config["usage_time_ub"] * 3 + config["history_len"] * 3,),
                           dtype=np.float16)
 
     # @staticmethod
@@ -903,6 +905,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             # logging.debug("The Concatenated list values are : " + str(agent_state))
 
             self.obs[f'drone_{i}'] = agent_obs
+            self.obs_dim = len(agent_obs)
             self.state[f'drone_{i}'] = agent_state
 
         logging.debug(f"Tasks information: \n{df_tasks}")
