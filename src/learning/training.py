@@ -186,7 +186,8 @@ def train(config):
         stop=config["stop"],  # stopping criteria
         # # If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
         # reuse_actors=True,
-        local_dir="../results/",  # local directory to save training results to
+        local_dir="/Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/results",
+        # local directory to save training results to
         # Verbosity mode. 0 = silent, 1 = only status updates, 2 = status and brief trial results, 3 = status and detailed trial results. Defaults to 3.
         verbose=3,
         # Whether to checkpoint at the end of the experiment regardless of the checkpoint_freq
@@ -230,7 +231,9 @@ class CustomCallbacks(DefaultCallbacks):
         # episode.custom_metrics["Map Explored"] = env.get_map_explored()
         episode.custom_metrics["Social Welfare"] = env.get_total_sw()
         episode.custom_metrics[
+            "Social Welfare (Online Myopic)"] = env.get_total_sw_online_myopic()
+        episode.custom_metrics[
+            "Social Welfare (Random Allocation)"] = env.get_total_sw_random_allocation()
+        episode.custom_metrics[
             "Allocated Tasks Number"] = env.get_total_allocated_task_num()
         episode.custom_metrics["Bad Allocations Number"] = env.get_num_bad_allocations()
-        episode.custom_metrics[
-            "Social Welfare (Online Myopic)"] = env.get_total_sw_benchmark()

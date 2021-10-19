@@ -8,6 +8,7 @@ from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
 from benchmarks.online_myopic_m import online_myopic
+from benchmarks.random_allocation import random_allocation
 from environments.gridworld_obstacles.simulation.entities import Agent
 from environments.gridworld_obstacles.simulation.gridworld_controller import \
     SimulationController
@@ -635,7 +636,7 @@ class EdgeCloudEnv(MultiAgentEnv):
     def get_total_sw(self):
         return self.total_social_welfare
 
-    def get_total_sw_benchmark(self):
+    def get_total_sw_online_myopic(self):
         return self.total_social_welfare
 
     def get_total_allocated_task_num(self):
@@ -1178,19 +1179,29 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             social_welfare_bench, number_of_allocated_tasks_bench, allocation_scheme_bench = \
                 online_myopic(self.df_tasks_bench, self.df_nodes_bench, self.n_time_bench,
                               self.n_tasks_bench, self.n_nodes_bench)
-            self.social_welfare_bench = social_welfare_bench
-            logging.debug(f"social welfare (benchmark): {social_welfare_bench}")
+            self.social_welfare_online_myopic = social_welfare_bench
+            logging.debug(f"social welfare (online myopic): {social_welfare_bench}")
             logging.debug(
-                f"number of allocated tasks (benchmark): {number_of_allocated_tasks_bench}")
+                f"number of allocated tasks (online myopic): {number_of_allocated_tasks_bench}")
+            # run random allocation algo.
+            social_welfare_random_allocation, number_of_allocated_tasks_random_allocation, allocation_scheme_random_allocation = \
+                random_allocation(self.df_tasks_bench, self.df_nodes_bench, self.n_time_bench,
+                              self.n_tasks_bench, self.n_nodes_bench)
+            self.social_welfare_random_allocation = social_welfare_random_allocation
+            logging.debug(f"social welfare (random_allocation): {social_welfare_random_allocation}")
+            logging.debug(
+                f"number of allocated tasks (random_allocation): {number_of_allocated_tasks_random_allocation}")
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now
         # logging.debug(f"observation after step() = {self.obs}")
         return self.obs, self.rewards, dones, infos
 
-    def get_total_sw_benchmark(self):
-        return self.social_welfare_bench
+    def get_total_sw_online_myopic(self):
+        return self.social_welfare_online_myopic
 
+    def get_total_sw_random_allocation(self):
+        return self.social_welfare_random_allocation
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):
     # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)
