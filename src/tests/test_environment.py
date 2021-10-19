@@ -4,6 +4,7 @@ import numpy as np
 
 from common.config_file_handler import load_yaml
 from environments.edge_cloud.simulation.environment import EdgeCloudEnv
+from environments.edge_cloud.simulation.environment import EdgeCloudEnv1
 from environments.edge_cloud.simulation.environment import argmax_earliest
 import pytest
 
@@ -26,9 +27,19 @@ def test_argmax_earliest():
 @pytest.fixture
 def edge_env() -> EdgeCloudEnv:
     config = load_yaml(
-        '/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml')
+        '/Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml')
     env_config = config['env-config']
     edge_env = EdgeCloudEnv(env_config)
+    edge_env.reset()
+    return edge_env
+
+
+@pytest.fixture
+def edge_env1() -> EdgeCloudEnv:
+    config = load_yaml(
+        '/Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml')
+    env_config = config['env-config']
+    edge_env = EdgeCloudEnv1(env_config)
     edge_env.reset()
     return edge_env
 
@@ -36,8 +47,12 @@ def edge_env() -> EdgeCloudEnv:
 def test_reset(edge_env):
     initial_obs = edge_env.reset()
     first_task = edge_env.df_tasks.iloc[0]
-    # print(initial_obs)
-    # print(first_task)
+    print(initial_obs)
+    print("first task:")
+    print(first_task)
+    print("node info:")
+    print(edge_env.df_nodes.iloc[0])
+
     assert first_task['valuation_coefficient'] == initial_obs['drone_0'][0]
     assert first_task['start_time'] - int(first_task['arrive_time']) - 1 == \
            initial_obs['drone_0'][5]
@@ -51,6 +66,39 @@ def test_reset(edge_env):
     actions_history_list = [1 for _ in range(edge_env.history_len * edge_env.n_nodes)]
     assert initial_obs['drone_0'][
            -edge_env.history_len * edge_env.n_nodes:] == actions_history_list
+
+
+def test_reset1(edge_env1):
+    """Test the reset function of EdgeCloudEnv1 (Env with shorter observation)"""
+    initial_obs = edge_env1.reset()
+    first_task = edge_env1.df_tasks.iloc[0]
+    print("initial_obs:")
+    print(initial_obs)
+    print(f"observation's number of dimension: {len(initial_obs['drone_0'])}")
+    print("first task:")
+    print(first_task)
+    print("node info:")
+    print(edge_env1.df_nodes.iloc[0])
+    # task type part of the observation
+    assert first_task['valuation_coefficient'] == initial_obs['drone_0'][0]
+    assert first_task['start_time'] - int(first_task['arrive_time']) - 1 == \
+           initial_obs['drone_0'][5]
+    assert first_task['deadline'] - int(first_task['start_time']) + 1 == \
+           initial_obs['drone_0'][6]
+    assert first_task['usage_time'] == initial_obs['drone_0'][1]
+    assert first_task['CPU'] == initial_obs['drone_0'][2]
+    assert first_task['RAM'] == initial_obs['drone_0'][3]
+    assert first_task['storage'] == initial_obs['drone_0'][4]
+    # history part of the observation
+    # print(edge_env1.history_len)
+    actions_history_list = [1 for _ in range(edge_env1.history_len * edge_env1.n_nodes)]
+    assert initial_obs['drone_0'][
+           -edge_env1.history_len * edge_env1.n_nodes:] == actions_history_list
+    # future occup part
+    future_occup_list = [0 for _ in range(edge_env1.occup_len * 3)]
+    assert initial_obs['drone_0'][
+           -(edge_env1.history_len * edge_env1.n_nodes + edge_env1.occup_len * 3)
+           : - edge_env1.history_len * edge_env1.n_nodes] == future_occup_list
 
 
 def test_find_max_usage_time(edge_env):
@@ -104,9 +152,9 @@ def test_step(edge_env):
     winner_usage_time = edge_env.winner_usage_time
     for resource_type in ["CPU", "RAM", "storage"]:
         winner_cost += (
-                    edge_env.df_tasks.loc[edge_env.current_task_id - 1, resource_type] *
-                    edge_env.df_nodes.loc[
-                        winner_index, f"{resource_type}_cost"] * winner_usage_time)
+                edge_env.df_tasks.loc[edge_env.current_task_id - 1, resource_type] *
+                edge_env.df_nodes.loc[
+                    winner_index, f"{resource_type}_cost"] * winner_usage_time)
     expected_sw_increase = (edge_env.df_tasks.loc[
         edge_env.current_task_id - 1, "valuation_coefficient"]) * winner_usage_time - winner_cost
     assert edge_env.sw_increase == expected_sw_increase
@@ -117,11 +165,14 @@ def test_step(edge_env):
     for i, resource_type in enumerate(["CPU", "RAM", "storage"]):
         for time_step in range(edge_env.winner_start_time, edge_env.winner_finish_time):
             assert (edge_env.future_occup[winner_index][i][time_step] ==
-                    pytest.approx(edge_env.df_tasks.loc[edge_env.current_task_id - 1, resource_type] /
-                    edge_env.df_nodes.loc[winner_index, f"{resource_type}"]))
+                    pytest.approx(edge_env.df_tasks.loc[
+                                      edge_env.current_task_id - 1, resource_type] /
+                                  edge_env.df_nodes.loc[
+                                      winner_index, f"{resource_type}"]))
     print(f"next observation is {obs}")
     # TODO: task info
-    assert obs['drone_0'][0] == edge_env.df_tasks.loc[edge_env.current_task_id, "valuation_coefficient"]
+    assert obs['drone_0'][0] == edge_env.df_tasks.loc[
+        edge_env.current_task_id, "valuation_coefficient"]
     assert obs['drone_0'][2] == edge_env.df_tasks.loc[edge_env.current_task_id, "CPU"]
     # TODO: future occupancy
     print(f"expected future occupancy:")
@@ -131,6 +182,57 @@ def test_step(edge_env):
     assert obs['drone_0'][-1] == actions[2]
     assert obs['drone_0'][-8] == actions[1]
     assert obs['drone_0'][-15] == actions[0]
+
+
+def test_step1(edge_env1):
+    # before step
+    print("POI")
+    print(f"current_task_id: {edge_env1.current_task_id}")
+
+    # after step
+    actions = {0: 0.3, 1: 0.2, 2: 0.4}
+    obs, rewards, dones, infos = edge_env1.step(actions)
+    print(f"current_task_id: {edge_env1.current_task_id}")
+    print(f"winner_id = {edge_env1.winner_id}")
+    assert edge_env1.winner_id == 1
+    print(f"allocation_scheme:\n {edge_env1.allocation_scheme}")
+    print(f"sw increase = {edge_env1.sw_increase}")
+    winner_cost = 0
+    winner_index = edge_env1.winner_id
+    winner_usage_time = edge_env1.winner_usage_time
+    for resource_type in ["CPU", "RAM", "storage"]:
+        winner_cost += (
+                edge_env1.df_tasks.loc[edge_env1.current_task_id - 1, resource_type] *
+                edge_env1.df_nodes.loc[
+                    winner_index, f"{resource_type}_cost"] * winner_usage_time)
+    expected_sw_increase = (edge_env1.df_tasks.loc[
+        edge_env1.current_task_id - 1, "valuation_coefficient"]) * winner_usage_time - winner_cost
+    assert edge_env1.sw_increase == expected_sw_increase
+    print(f"rewards: {rewards}")
+    assert rewards[f'drone_{winner_index}'] == expected_sw_increase
+    print(f"winner's future occupancy = {edge_env1.future_occup[winner_index]}")
+    # check resource occupancy update
+    for i, resource_type in enumerate(["CPU", "RAM", "storage"]):
+        for time_step in range(edge_env1.winner_start_time, edge_env1.winner_finish_time):
+            assert (edge_env1.future_occup[winner_index][i][time_step] ==
+                    pytest.approx(edge_env1.df_tasks.loc[
+                                      edge_env1.current_task_id - 1, resource_type] /
+                                  edge_env1.df_nodes.loc[
+                                      winner_index, f"{resource_type}"]))
+    print(f"next observation is {obs}")
+    # TODO: task info
+    assert obs['drone_0'][0] == edge_env1.df_tasks.loc[
+        edge_env1.current_task_id, "valuation_coefficient"]
+    assert obs['drone_0'][2] == edge_env1.df_tasks.loc[edge_env1.current_task_id, "CPU"]
+    # TODO: future occupancy
+    print(f"expected future occupancy:")
+    print(edge_env1.future_occup)
+    assert np.array(obs['drone_1'][7]) == pytest.approx(edge_env1.future_occup[1][0][0])
+    # TODO: max usage time history
+    max_usage_times = [1, 1, 1]
+    assert obs['drone_0'][-1] == max_usage_times[2]
+    assert obs['drone_0'][-5] == max_usage_times[1]
+    assert obs['drone_0'][-9] == max_usage_times[0]
 
 
 def test_reverse_auction(edge_env):

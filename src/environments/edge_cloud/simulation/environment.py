@@ -7,6 +7,7 @@ from gym.spaces import Discrete, Box
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
+from benchmarks.online_myopic_m import online_myopic
 from environments.gridworld_obstacles.simulation.entities import Agent
 from environments.gridworld_obstacles.simulation.gridworld_controller import \
     SimulationController
@@ -92,13 +93,13 @@ class EdgeCloudEnv(MultiAgentEnv):
 
     def __init__(self, config,
                  seed=0, n_timesteps=10, n_tasks=50,
-                 max_steps=9,
+                 max_steps=11,
                  p_high_value_tasks=0.0, high_value_slackness=0,
                  low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,
-                 alpha=1.0, lam=1e2, history_len=7):
+                 alpha=1.0, lam=1e2, occup_len=4, history_len=3):
         """
         Initialization function for the environment.
         Args:
@@ -115,6 +116,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             not_verbose: A boolean as a flag to logging.debug information about the node
             allocation.
             record_history: whether to put others' action history to the observation of an agent
+            occup_len: how many time steps of future occupancy is in observations
         """
 
         # Set the class variables
@@ -124,6 +126,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.basicConfig(level=logging_level, filename='resource_allocation.log',
                             filemode='w', format=fmtStr)
 
+        self.occup_len = occup_len
         self.current_task = None
         self.current_time_slot = None
         self.next_time_slot = None
@@ -264,7 +267,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         Returns the initial global observation
         """
         # occupancy is zero initially
-        self.future_occup = np.zeros((self.n_nodes, 10, 3))
+        self.future_occup = np.zeros((self.n_nodes, self.occup_len, 3))
         self._episode_ended = False
         self.current_task_id = 0
         self.processed_tasks = 0
@@ -302,7 +305,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.resource_capacity_dict = {}
         for node_id, info in df_nodes.iterrows():
             a = [info.get('CPU'), info.get('RAM'), info.get('storage')]
-            self.resource_capacity_dict[node_id] = np.array(a * 10)
+            self.resource_capacity_dict[node_id] = np.array(a * self.occup_len)
 
         # the obs is a vector of current task information and the future occupancy
         # const = np.array([1])
@@ -630,6 +633,9 @@ class EdgeCloudEnv(MultiAgentEnv):
     def get_total_sw(self):
         return self.total_social_welfare
 
+    def get_total_sw_benchmark(self):
+        return self.total_social_welfare
+
     def get_total_allocated_task_num(self):
         return self.total_allocated_tasks_num
 
@@ -678,6 +684,8 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # calculate idle resource capacity of future 10 time steps
         resource_capacity = self.resource_capacity_dict[node_id]
+        logging.debug(f"resource capacity of this node = {self.resource_capacity_dict[node_id]}")
+        logging.debug(f"future occupancy of this node = {self.future_occup[node_id]}")
         # ‘F’ means to flatten in column-major (Fortran- style) order.
         occup_resource_future = resource_capacity * self.future_occup[
             node_id].flatten(order="F")
@@ -791,6 +799,392 @@ class EdgeCloudEnv(MultiAgentEnv):
             # update social welfare
             sw_increase = valuation_coefficient * winner_usage_time - winner_cost
         return winner_index, winner_usage_time, winner_revenue, max_utility, sw_increase
+
+
+class EdgeCloudEnv1(EdgeCloudEnv):
+    """an Environment with low-dimensional states(observations)"""
+
+    def reset(self):
+        """Reset the tasks and nodes
+
+        Returns the initial global observation
+        """
+        # occupancy is zero initially
+        self.future_occup = np.zeros((self.n_nodes, self.occup_len, 3))
+        self._episode_ended = False
+        self.current_task_id = 0
+        self.processed_tasks = 0
+        self.failed = 0
+        self.total_social_welfare = 0
+        self.total_allocated_tasks_num = 0
+        self.n_tasks_expensive = 0
+
+        # generate new tasks for next episode
+        (df_tasks, df_nodes, n_time, n_tasks,
+         n_nodes) = self.data_for_next_episode()
+        self.df_tasks = df_tasks
+        self.df_nodes = df_nodes
+        # for benchmark
+        self.df_tasks_bench = copy.deepcopy(df_tasks.iloc[0:self.max_steps])
+        self.df_nodes_bench = copy.deepcopy(df_nodes)
+        logging.debug(f"df_tasks for benchmark:\n{self.df_tasks_bench}")
+        # self.df_tasks_bench = self.df_tasks_bench.rename(columns={"storage": "DISK"})
+        # self.df_nodes_bench = self.df_nodes_bench.rename(
+        #     columns={"storage": "DISK", "storage_cost": "DISK_cost"})
+        self.n_time_bench = n_time
+        self.n_tasks_bench = self.max_steps - 1
+        self.n_nodes_bench = n_nodes
+        self.current_task = df_tasks.iloc[0]
+        # make time constraints relative
+        self.df_tasks_relative = self.df_tasks.iloc[0:self.max_steps].copy()
+        self.df_tasks_relative["relative_start_time"] = (
+                self.df_tasks_relative['start_time'] -
+                self.df_tasks_relative['arrive_time'].astype(int) - 1)
+        self.df_tasks_relative["relative_deadline"] = (
+                self.df_tasks_relative["deadline"] -
+                self.df_tasks_relative["start_time"] + 1)
+        self.df_tasks_relative.drop('start_time', inplace=True, axis=1)
+        self.df_tasks_relative.drop('deadline', inplace=True, axis=1)
+        self.df_tasks_relative.drop('arrive_time', inplace=True, axis=1)
+        # # "0 max" normalisation
+        # self.df_tasks_normalised = (self.df_tasks_relative - 0) / (
+        #         self.df_tasks_relative.max() - 0)
+
+        self.seed_value += 1  # may need to make this random in training
+
+        # current timeslot is where the start time of current task in
+        self.current_time_slot = int(self.df_tasks.loc[0, "arrive_time"])
+        # generate a dict of resource capacity of future 4 time slots
+        self.resource_capacity_dict = {}
+        for node_id, info in df_nodes.iterrows():
+            a = [info.get('CPU'), info.get('RAM'), info.get('storage')]
+            self.resource_capacity_dict[node_id] = np.array(a * self.occup_len)
+
+        # the obs is a vector of current task information and the future occupancy
+        # const = np.array([1])
+        task_info = self.df_tasks_relative.iloc[0].to_numpy()
+        # future_occup = self.future_occup.flatten(order="F")
+
+        # reset the idle resource capacities for all nodes
+        for node in df_nodes.iterrows():
+            self.full_resource_capacities[node[0]] = [
+                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.n_timesteps)],
+                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.n_timesteps)],
+                [df_nodes.loc[node[0], 'storage'] for _ in range(
+                    self.n_timesteps)]]
+
+        self.idle_resource_capacities = copy.deepcopy(
+            self.full_resource_capacities)
+
+        # the action history of agents
+        action_history = np.array([1 for _ in range(self.history_len) for _ in
+                                   range(self.n_nodes)])
+
+        # logging.debug(f"record_history?: {self.record_history}")
+        for i in range(self.n_nodes):
+            future_occup = self.future_occup[i].flatten(order="F")
+            if self.record_history:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    'action_history': action_history
+                    }
+            else:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    }
+            # logging.debug("The original dictionary is : " + str(agent_state))
+            # convert dict to list
+            agent_obs = list(chain(*agent_state.values()))
+            # logging.debug("The Concatenated list values are : " + str(agent_state))
+
+            self.obs[f'drone_{i}'] = agent_obs
+            self.state[f'drone_{i}'] = agent_state
+
+        logging.debug(f"Tasks information: \n{df_tasks}")
+        logging.debug(f"Tasks information (relative):\n{self.df_tasks_relative}")
+        logging.debug(f"Nodes information: \n{df_nodes}")
+        logging.debug(f"observation after reset(): \n {self.obs}")
+
+        return self.obs
+
+    def step(self, actions):
+        """
+        Step function for the environment.
+        Args:
+            actions: a list of bid actions from all agents (e.g., 0.5 means bid 0.5 VC
+            of the current task)
+
+        Returns:
+            observation (object): next observation?
+            rewards (float): rewards of previous actions
+            done (boolean): whether to reset the environment
+            info (dict): diagnostic information for debugging.
+
+        """
+
+        # update the information of the current task
+        global action_history
+        self.current_task = self.df_tasks.loc[self.current_task_id]
+        # current timeslot is where the start time of current task in
+        self.current_time_slot = int(
+            self.df_tasks.loc[self.current_task_id, "arrive_time"])
+        self.next_time_slot = int(
+            self.df_tasks.loc[self.current_task_id + 1, "arrive_time"])
+
+        logging.debug(f"Current time slot = {self.current_time_slot}")
+        logging.debug(
+            f"Time slot followed by next task's arrival = {self.next_time_slot}")
+        logging.debug(f"Last actions:\n {actions}")
+
+        bids_list = []  # bid price for one time step
+        max_usage_time_list = []  # maximum usage time a fog node can offer
+        start_time_list = []  # start time according to the planned allocation
+        relative_start_time_list = []  # relative start time according to the current task
+        sw_increase_list = []
+        # calculate the maximum usage time and earliest start time for each agent
+        for node_id, (node_name, action) in enumerate(actions.items()):
+            max_usage_time, relative_start_time = self.find_max_usage_time(
+                node_id)
+            # if node_id==0:
+            #     logging.debug(f"current task VC = {self.current_task['valuation_coefficient']}")
+            #     logging.debug(f"usage time of node 0 = {max_usage_time}")
+            start_time = int(
+                self.df_tasks.loc[
+                    self.current_task_id, 'arrive_time'] + relative_start_time + 1)
+            # action is in {1,2,...,9,10}
+            # * 0.9 to avoid bidding the same as the value_coefficient
+            bids_list.append((action + 0.5) * self.df_tasks.loc[
+                self.current_task_id, 'valuation_coefficient'])
+            # if action == 1:
+            #     bids_list.append(0.8 * self.df_tasks.loc[
+            #         self.current_task_id, 'valuation_coefficient'])
+            # else:
+            #     bids_list.append(0.2 * self.df_tasks.loc[
+            #         self.current_task_id, 'valuation_coefficient'])
+            max_usage_time_list.append(max_usage_time)
+            start_time_list.append(start_time)
+            relative_start_time_list.append(relative_start_time)
+
+            cost = self.df_tasks.loc[self.current_task_id, 'CPU'] * self.df_nodes.loc[
+                node_id, 'CPU_cost'] + self.df_tasks.loc[self.current_task_id, 'RAM'] * \
+                   self.df_nodes.loc[node_id, 'RAM_cost'] + self.df_tasks.loc[
+                       self.current_task_id, 'storage'] * self.df_nodes.loc[
+                       node_id, 'storage_cost']
+            value = self.df_tasks.loc[self.current_task_id, 'valuation_coefficient']
+            sw_inc = (value - cost) * max_usage_time
+            sw_increase_list.append(sw_inc)
+
+        logging.debug("All nodes have submitted their bids:")
+        logging.debug("bid prices:")
+        logging.debug(bids_list)
+        logging.debug("max usage times:")
+        logging.debug(max_usage_time_list)
+        logging.debug("sw increases for different nodes:")
+        logging.debug(sw_increase_list)
+        logging.debug("start times:")
+        logging.debug(start_time_list)
+        logging.debug("relative start times:")
+        logging.debug(relative_start_time_list)
+
+        # find the winner
+        (winner_index, winner_usage_time, winner_revenue, max_utility,
+         sw_increase) = self.reverse_auction(bids_list, max_usage_time_list,
+                                             start_time_list,
+                                             verbose=self.verbose,
+                                             auction_type=self.auction_type)
+
+        self.winner_id = winner_index
+        self.winner_usage_time = winner_usage_time
+
+        logging.debug(f"winner ID = {self.winner_id}")
+
+        if winner_index is not None:
+            # modify the allocation scheme
+            winner_start_time = start_time_list[winner_index]
+            self.winner_start_time = winner_start_time
+            winner_relative_start_time = relative_start_time_list[winner_index]
+            winner_finish_time = (winner_start_time + winner_usage_time - 1)
+            self.winner_finish_time = winner_finish_time
+            if winner_usage_time is not None and winner_usage_time > 0:
+                self.allocation_scheme.loc[self.current_task_id] = [
+                    winner_index,
+                    winner_start_time, winner_finish_time]
+            else:  # the task is rejected
+                self.allocation_scheme.loc[self.current_task_id] = [None, None,
+                                                                    None]
+
+            # modify the occupancy of resources
+            self.update_resource_occupency(winner_index, winner_usage_time,
+                                           winner_relative_start_time)
+
+            # # if the task is allocated to HCN when it can be allocated to LCNs
+            # current_task_usage_time = self.df_tasks.loc[
+            #     self.current_task_id, 'usage_time']
+
+            # if task 0 wins the task while it is not gets the higest social welfare
+            if sw_increase_list.index(max(sw_increase_list)) != 0:
+                if self.winner_id == 0:
+                    self.n_tasks_expensive += 1
+                    logging.debug("This allocation is more expensive than needed.")
+            logging.debug(f"allocation scheme:")
+            logging.debug(f"{self.allocation_scheme.loc[self.current_task_id]}")
+            logging.debug("idle resource capacities of winner node:")
+            logging.debug(self.idle_resource_capacities[self.winner_id][:, 0:5])
+            logging.debug("occupancy of future 10 time steps of the winner node")
+            logging.debug(self.future_occup[self.winner_id])
+
+        # # update the occupancy of resource (10 future time steps)
+        # future_idle = np.divide(self.idle_resource_capacities[:, :,
+        # self.next_time_slot + 1: (self.next_time_slot + 11)],
+        #     self.full_resource_capacities[:, :,
+        #     self.next_time_slot + 1: (self.next_time_slot + 11)])
+        # logging.debug("idle resource capacities:")
+        # logging.debug(self.idle_resource_capacities)
+        # logging.debug("full resource capacities: ")
+        # logging.debug(self.full_resource_capacities)
+
+        self.future_occup = (
+                1 - np.divide(self.idle_resource_capacities[:, :,
+                              self.next_time_slot + 1: (
+                                          self.next_time_slot + self.occup_len + 1)],
+                              self.full_resource_capacities[:, :,
+                              self.next_time_slot + 1: (
+                                          self.next_time_slot + self.occup_len + 1)]))
+
+        future_occup_len = len(self.future_occup[0][0])
+        if future_occup_len < self.occup_len:
+            # self.future_occup.resize((6, 3, 10))
+            z = np.zeros((self.n_nodes, 3, self.occup_len - future_occup_len))
+            self.future_occup = np.concatenate((self.future_occup, z),
+                                               axis=2)
+            # for i in range(self.n_nodes):
+            #     for j in range(3):
+            #         logging.debug(f"Eco = {self.future_occup[i][j]}")
+            #         self.future_occup[i][j] = self.future_occup[i][j].resize(10)
+            #         self.future_occup[i][j][future_occup_len - 10:] = 1
+
+        logging.debug(f"occupancy of future {self.occup_len} time steps:")
+        logging.debug(self.future_occup)
+
+        # calcuate the total value of the current task
+        self.current_task_value = self.current_task['valuation_coefficient'] * \
+                                  self.current_task['usage_time']
+        # logging.debug the updated allocation scheme_nd occupancy of resources
+        logging.debug(f"current task ID = {self.current_task_id}")
+        logging.debug(f"current task's value = {self.current_task_value}")
+        logging.debug("current task info:")
+        logging.debug(self.current_task)
+
+        # update the  observation (obs)
+        # a list in case different nodes have different rewards
+        self.current_task_id += 1
+        # reward is the penalty of the value lost
+        # every node has the same reward
+        #     # reward is the lost value
+        #     equal_reward =sw_increase - self.current_task_value
+        # reward is the SW increase
+        equal_reward = sw_increase
+        if self.cooperative:
+            for i in range(self.n_nodes):
+                self.rewards[f'drone_{i}'] = equal_reward
+        else:  # only winner has the reward
+            for i in range(self.n_nodes):
+                if i == self.winner_id:
+                    self.rewards[f'drone_{i}'] = winner_revenue
+                else:
+                    self.rewards[f'drone_{i}'] = 0
+
+        # find if this is the last task of the episode
+        if self.current_task_id >= self.max_steps - 1:
+            dones = {'__all__': True}
+            # log the allocation scheme after each episode
+            logging.debug(f"Allocation scheme after an episode:")
+            logging.debug(f"\n{self.allocation_scheme}")
+        else:  # not the last step of the episode
+            dones = {'__all__': False}
+            # const = np.array([1])
+
+        task_info = self.df_tasks_relative.iloc[
+            self.current_task_id].to_numpy()
+        # update the action_history
+        logging.debug(f"self.state before updating = \n{self.state}")
+        if self.record_history:
+            action_history = deque(self.state['drone_0']['action_history'])
+            logging.debug(f"previous action_history = {action_history}")
+            action_history.rotate(-1)
+            # actions_lst = list(actions.values())
+            # use max usage times in history
+            actions_lst = max_usage_time_list
+            for i in range(self.n_nodes):
+                action_history[self.history_len * (i + 1) - 1] = actions_lst[i]
+            action_history = np.array(action_history)
+            logging.debug(f"updated action_history = {action_history}")
+        # generate the next observation
+        for i in range(self.n_nodes):
+            future_occup = self.future_occup[i].flatten(order="F")
+            if self.record_history:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    'action_history': action_history
+                    }
+            else:
+                agent_state = {
+                    'task_info': task_info,
+                    'future_occup': future_occup,
+                    }
+            # logging.debug("The original dictionary is : " + str(agent_state))
+            agent_obs = list(chain(*agent_state.values()))
+            # logging.debug("The Concatenated list values are : " + str(agent_obs))
+
+            self.state[f'drone_{i}'] = copy.deepcopy(agent_state)
+            self.obs[f'drone_{i}'] = copy.deepcopy(agent_obs)
+
+        logging.debug(f"self.state updated:\n{self.state}")
+        # calculate rewards (may need to be changed to list of rewards in the future)
+        self.sw_increase = sw_increase
+
+        logging.debug("tasks (relative):")
+        logging.debug(self.df_tasks_relative.head())
+        logging.debug(f"next task ID = {self.current_task_id}")
+        logging.debug("The info of the next task")
+        logging.debug(task_info)
+        logging.debug("social welfare increase")
+        logging.debug(self.sw_increase)
+        logging.debug("next global observation")
+        logging.debug(self.obs)
+        logging.debug(f"rewards for agents = {self.rewards}")
+        logging.debug(f"Is the episode over? {dones}")
+        logging.debug("\n\n")
+
+        # update the total social welfare
+        self.total_social_welfare += sw_increase
+        if sw_increase > 0:
+            self.total_allocated_tasks_num += 1
+
+        # if this is the end of an episode
+        if dones['__all__']:
+            logging.debug(
+                f"The number of expensive allocations = {self.n_tasks_expensive}")
+            logging.debug(f"The total social welfare = {self.total_social_welfare}")
+            # run online myopic algo.
+            social_welfare_bench, number_of_allocated_tasks_bench, allocation_scheme_bench = \
+                online_myopic(self.df_tasks_bench, self.df_nodes_bench, self.n_time_bench,
+                              self.n_tasks_bench, self.n_nodes_bench)
+            self.social_welfare_bench = social_welfare_bench
+            logging.debug(f"social welfare (benchmark): {social_welfare_bench}")
+            logging.debug(
+                f"number of allocated tasks (benchmark): {number_of_allocated_tasks_bench}")
+        # infos = {'node_0': f'social welfare increase = {sw_increase}'}
+        infos = {}
+        # info part is None for now
+        # logging.debug(f"observation after step() = {self.obs}")
+        return self.obs, self.rewards, dones, infos
+
+    def get_total_sw_benchmark(self):
+        return self.social_welfare_bench
 
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):

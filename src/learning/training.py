@@ -225,3 +225,4 @@ class CustomCallbacks(DefaultCallbacks):
         episode.custom_metrics[
             "Allocated Tasks Number"] = env.get_total_allocated_task_num()
         episode.custom_metrics["Bad Allocations Number"] = env.get_num_bad_allocations()
+        episode.custom_metrics["Social Welfare (Online Myopic)"] = env.get_total_sw_benchmark()
