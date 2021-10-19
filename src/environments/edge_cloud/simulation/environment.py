@@ -147,10 +147,12 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.state = {}
         self.avg_resource_capacity = config["avg_resource_capacity"]
         self.avg_unit_cost = config["avg_unit_cost"]
-        self.n_tasks_to_allocate = config['n_tasks_to_allocate'] + 1  # the number of tasks to allocate (+1 so that the program can work)
+        self.n_tasks_to_allocate = config[
+                                       'n_tasks_to_allocate'] + 1  # the number of tasks to allocate (+1 so that the program can work)
         self.history_len = config['history_len']
 
-        self.n_tasks_in_total = config['n_tasks_in_total']  # the number of tasks for generating the simulation data
+        self.n_tasks_in_total = config[
+            'n_tasks_in_total']  # the number of tasks for generating the simulation data
         resource_coefficient = (
                 resource_coefficient * self.n_tasks_in_total / n_timesteps)
         self.duration = config['duration']  # the duration of the allocation
@@ -163,6 +165,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.resource_ratio = resource_ratio
         self.valuation_ratio = valuation_ratio
         self.resource_coefficient = resource_coefficient
+        self.usage_time_ub = config['usage_time_ub']
         self.auction_type = 'first-price'
         self.verbose = config["verbose"]
         # record the allocation scheme (task_id: [node_id, start_time, end_time])
@@ -245,7 +248,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.debug(f"resource coefficient = {self.resource_coefficient}")
         df_tasks, df_nodes, n_time, n_tasks, n_nodes = \
             generate_synthetic_data_edge_cloud(self.avg_resource_capacity,
-                                               self.avg_unit_cost, n_tasks=self.n_tasks_in_total,
+                                               self.avg_unit_cost,
+                                               n_tasks=self.n_tasks_in_total,
                                                n_time=self.duration,
                                                seed=self.seed_value, n_nodes=self.n_nodes,
                                                p_high_value_tasks=self.p_high_value_tasks,
@@ -255,7 +259,8 @@ class EdgeCloudEnv(MultiAgentEnv):
                                                low_value_slackness_upper_limit=self.low_value_slackness,
                                                resource_demand_high=self.resource_ratio,
                                                vc_ratio=self.valuation_ratio,
-                                               k_resource=self.resource_coefficient)
+                                               k_resource=self.resource_coefficient,
+                                               usage_time_ub=self.usage_time_ub)
         return df_tasks, df_nodes, n_time, n_tasks, n_nodes
 
     def reset(self):
@@ -681,7 +686,8 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # calculate idle resource capacity of future 10 time steps
         resource_capacity = self.resource_capacity_dict[node_id]
-        logging.debug(f"resource capacity of this node = {self.resource_capacity_dict[node_id]}")
+        logging.debug(
+            f"resource capacity of this node = {self.resource_capacity_dict[node_id]}")
         logging.debug(f"future occupancy of this node = {self.future_occup[node_id]}")
         # ‘F’ means to flatten in column-major (Fortran- style) order.
         occup_resource_future = resource_capacity * self.future_occup[
@@ -1045,10 +1051,10 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         self.future_occup = (
                 1 - np.divide(self.idle_resource_capacities[:, :,
                               self.next_time_slot + 1: (
-                                          self.next_time_slot + self.occup_len + 1)],
+                                      self.next_time_slot + self.occup_len + 1)],
                               self.full_resource_capacities[:, :,
                               self.next_time_slot + 1: (
-                                          self.next_time_slot + self.occup_len + 1)]))
+                                      self.next_time_slot + self.occup_len + 1)]))
 
         future_occup_len = len(self.future_occup[0][0])
         if future_occup_len < self.occup_len:

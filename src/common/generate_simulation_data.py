@@ -22,19 +22,20 @@ def PosNormal(mean, sigma, size, random_generator):
 
 
 def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
-        n_tasks=10, n_time=10, n_nodes=6,
-        p_high_value_tasks=0.2, seed=7,
-        high_value_slackness_lower_limit=0,
-        high_value_slackness_upper_limit=0,
-        low_value_slackness_lower_limit=0,
-        low_value_slackness_upper_limit=6,
-        resource_demand_high=1, resource_demand_low=1, vc_ratio=10,
-        k_resource=1, ub_usage_time=1):
+                                       n_tasks=10, n_time=10, n_nodes=6,
+                                       p_high_value_tasks=0.2, seed=7,
+                                       high_value_slackness_lower_limit=0,
+                                       high_value_slackness_upper_limit=0,
+                                       low_value_slackness_lower_limit=0,
+                                       low_value_slackness_upper_limit=6,
+                                       resource_demand_high=1, resource_demand_low=1, vc_ratio=10,
+                                       k_resource=1, usage_time_ub=3):
     """generate synthetic data for simulations
 
     Args:
         avg_resource_capacity: a dict of average resource capacity for each node
         avg_unit_cost: a dict of average unit operational cost for each node
+        usage_time_ub: upper bound of usage times
 
     """
     T = n_time  # 12 discrete time steps
@@ -68,7 +69,7 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
                 random_generator.uniform(50 * vc_ratio, 100 * vc_ratio))
             # task can start from the next time step of its arrival time
             start_time.append(int(arrive_time[i]) + 1)
-            usage_time.append(random_generator.randint(ub_usage_time, ub_usage_time + 1))
+            usage_time.append(random_generator.randint(usage_time_ub, usage_time_ub + 1))
             # j: earliest finish time
             j = start_time[i] + usage_time[i] - 1
             # generate finish_time
@@ -88,7 +89,7 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             v_prime.append(random_generator.uniform(50 * 1, 100 * 1))
             # task can start from the next time step of its arrival time
             start_time.append(int(arrive_time[i]) + 1)
-            usage_time.append(random_generator.randint(ub_usage_time, ub_usage_time + 1))
+            usage_time.append(random_generator.randint(usage_time_ub, usage_time_ub + 1))
             # j: earliest finish time
             j = start_time[i] + usage_time[i] - 1
             # generate finish_time
