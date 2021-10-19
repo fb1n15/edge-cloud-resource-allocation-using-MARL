@@ -64,7 +64,7 @@ def offline_optimal(df_tasks, df_nodes, n_time, n_tasks, n_nodes, gap=0.1):
 
     # # tasks are non-preemptive
     # for p in range(n_nodes):
-    #     for n in range(n_tasks):
+    #     for n in range(n_tasks_in_total):
     #         start_time = df_tasks.loc[n, 'start_time']
     #         deadline = df_tasks.loc[n, "deadline"]
     #         for t1 in range(start_time + 1, deadline):

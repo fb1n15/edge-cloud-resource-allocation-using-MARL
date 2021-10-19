@@ -145,7 +145,7 @@ def fig_10_5():
 
     n_steps = 20
 
-    # run episode -- until we reach max_steps
+    # run episode -- until we reach n_tasks_to_allocate
     agent.run_episode()
 
     policy = agent.get_policy()

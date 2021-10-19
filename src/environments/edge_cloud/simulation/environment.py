@@ -105,7 +105,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         Args:
 
             seed: seed_value for generating simulation data
-            n_timesteps The number of timestamps.
+            duration The number of timestamps.
             allow_negative_reward: Flag for allowing negative rewards for the bad
             allocation of tasks.
             forgiveness_factor: Tolerance to sequential bad allocation of tasks.
@@ -145,19 +145,16 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.sw_increase = None
         self.obs = {}
         self.state = {}
-        avg_resource_capacity = config["avg_resource_capacity"]
-        avg_unit_cost = config["avg_unit_cost"]
-        verbose = config["verbose"]
-        self.avg_resource_capacity = avg_resource_capacity
-        self.avg_unit_cost = avg_unit_cost
-        self.max_steps = max_steps
-        self.history_len = history_len
+        self.avg_resource_capacity = config["avg_resource_capacity"]
+        self.avg_unit_cost = config["avg_unit_cost"]
+        self.n_tasks_to_allocate = config['n_tasks_to_allocate'] + 1  # the number of tasks to allocate (+1 so that the program can work)
+        self.history_len = config['history_len']
 
+        self.n_tasks_in_total = config['n_tasks_in_total']  # the number of tasks for generating the simulation data
         resource_coefficient = (
-                resource_coefficient * n_tasks / n_timesteps)
-        self.n_tasks = n_tasks
-        self.n_timesteps = n_timesteps
-        self.seed_value = seed
+                resource_coefficient * self.n_tasks_in_total / n_timesteps)
+        self.duration = config['duration']  # the duration of the allocation
+        self.seed_value = config['seed']
         self.n_nodes = config['n_nodes']
         self.n_actions = config['n_actions']
         self.p_high_value_tasks = p_high_value_tasks
@@ -167,7 +164,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.valuation_ratio = valuation_ratio
         self.resource_coefficient = resource_coefficient
         self.auction_type = 'first-price'
-        self.verbose = verbose
+        self.verbose = config["verbose"]
         # record the allocation scheme (task_id: [node_id, start_time, end_time])
         self.allocation_scheme = pd.DataFrame(
             columns=['node_id', 'start_time', 'end_time'])
@@ -180,12 +177,12 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.lam = lam
         self.alpha = alpha
         self.allow_negative_reward = allow_negative_reward
-        self.n_timesteps = n_timesteps
+        self.duration = n_timesteps
         self.n_resource_type = 3
 
         # initialise the ndarray of idle resources
         self.full_resource_capacities = np.empty(
-            [self.n_nodes, self.n_resource_type, self.n_timesteps])
+            [self.n_nodes, self.n_resource_type, self.duration])
 
         for node in df_nodes.iterrows():
             self.full_resource_capacities[node[0]] = [
@@ -236,8 +233,8 @@ class EdgeCloudEnv(MultiAgentEnv):
     def data_for_next_episode(self):
         logging.debug(f"average resource capacity = {self.avg_resource_capacity}")
         logging.debug(f"average unit cost = {self.avg_unit_cost}")
-        logging.debug(f"number of tasks = {self.n_tasks}")
-        logging.debug(f"number of timesteps = {self.n_timesteps}")
+        logging.debug(f"number of tasks = {self.n_tasks_in_total}")
+        logging.debug(f"number of timesteps = {self.duration}")
         logging.debug(f"seed = {self.seed_value}")
         logging.debug(f"number of nodes = {self.n_nodes}")
         logging.debug(f"proportion of HVTs = {self.p_high_value_tasks}")
@@ -248,8 +245,8 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.debug(f"resource coefficient = {self.resource_coefficient}")
         df_tasks, df_nodes, n_time, n_tasks, n_nodes = \
             generate_synthetic_data_edge_cloud(self.avg_resource_capacity,
-                                               self.avg_unit_cost, n_tasks=self.n_tasks,
-                                               n_time=self.n_timesteps,
+                                               self.avg_unit_cost, n_tasks=self.n_tasks_in_total,
+                                               n_time=self.duration,
                                                seed=self.seed_value, n_nodes=self.n_nodes,
                                                p_high_value_tasks=self.p_high_value_tasks,
                                                high_value_slackness_lower_limit=self.high_value_slackness,
@@ -283,7 +280,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.df_nodes = df_nodes
         self.current_task = df_tasks.iloc[0]
         # make time constraints relative
-        self.df_tasks_relative = self.df_tasks.iloc[0:self.max_steps].copy()
+        self.df_tasks_relative = self.df_tasks.iloc[0:self.n_tasks_to_allocate].copy()
         self.df_tasks_relative["relative_start_time"] = (
                 self.df_tasks_relative['start_time'] -
                 self.df_tasks_relative['arrive_time'].astype(int) - 1)
@@ -315,10 +312,10 @@ class EdgeCloudEnv(MultiAgentEnv):
         # reset the idle resource capacities for all nodes
         for node in df_nodes.iterrows():
             self.full_resource_capacities[node[0]] = [
-                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.n_timesteps)],
-                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.n_timesteps)],
+                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.duration)],
+                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.duration)],
                 [df_nodes.loc[node[0], 'storage'] for _ in range(
-                    self.n_timesteps)]]
+                    self.duration)]]
 
         self.idle_resource_capacities = copy.deepcopy(
             self.full_resource_capacities)
@@ -542,7 +539,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                     self.rewards[f'drone_{i}'] = 0
 
         # find if this is the last task of the episode
-        if self.current_task_id >= self.max_steps - 1:
+        if self.current_task_id >= self.n_tasks_to_allocate - 1:
             dones = {'__all__': True}
             # log the allocation scheme after each episode
             logging.debug(f"Allocation scheme after an episode:")
@@ -825,18 +822,18 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         self.df_tasks = df_tasks
         self.df_nodes = df_nodes
         # for benchmark
-        self.df_tasks_bench = copy.deepcopy(df_tasks.iloc[0:self.max_steps])
+        self.df_tasks_bench = copy.deepcopy(df_tasks.iloc[0:self.n_tasks_to_allocate])
         self.df_nodes_bench = copy.deepcopy(df_nodes)
         logging.debug(f"df_tasks for benchmark:\n{self.df_tasks_bench}")
         # self.df_tasks_bench = self.df_tasks_bench.rename(columns={"storage": "DISK"})
         # self.df_nodes_bench = self.df_nodes_bench.rename(
         #     columns={"storage": "DISK", "storage_cost": "DISK_cost"})
         self.n_time_bench = n_time
-        self.n_tasks_bench = self.max_steps - 1
+        self.n_tasks_bench = self.n_tasks_to_allocate - 1
         self.n_nodes_bench = n_nodes
         self.current_task = df_tasks.iloc[0]
         # make time constraints relative
-        self.df_tasks_relative = self.df_tasks.iloc[0:self.max_steps].copy()
+        self.df_tasks_relative = self.df_tasks.iloc[0:self.n_tasks_to_allocate].copy()
         self.df_tasks_relative["relative_start_time"] = (
                 self.df_tasks_relative['start_time'] -
                 self.df_tasks_relative['arrive_time'].astype(int) - 1)
@@ -868,10 +865,10 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         # reset the idle resource capacities for all nodes
         for node in df_nodes.iterrows():
             self.full_resource_capacities[node[0]] = [
-                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.n_timesteps)],
-                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.n_timesteps)],
+                [df_nodes.loc[node[0], 'CPU'] for _ in range(self.duration)],
+                [df_nodes.loc[node[0], 'RAM'] for _ in range(self.duration)],
                 [df_nodes.loc[node[0], 'storage'] for _ in range(
-                    self.n_timesteps)]]
+                    self.duration)]]
 
         self.idle_resource_capacities = copy.deepcopy(
             self.full_resource_capacities)
@@ -1097,7 +1094,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
                     self.rewards[f'drone_{i}'] = 0
 
         # find if this is the last task of the episode
-        if self.current_task_id >= self.max_steps - 1:
+        if self.current_task_id >= self.n_tasks_to_allocate - 1:
             dones = {'__all__': True}
             # log the allocation scheme after each episode
             logging.debug(f"Allocation scheme after an episode:")

@@ -183,7 +183,7 @@ def evaluate_task_range(x, y):
         # plt.ylabel("Walfare")
         # plt.legend()
         # plt.show()
-        # plt.savefig("./" + str(nr_fog_nodes) + "_nodes_" + str(n_timesteps) + "_time_" +
+        # plt.savefig("./" + str(nr_fog_nodes) + "_nodes_" + str(duration) + "_time_" +
         #             str(x) + "-" + str(y) + "_tasks_comparison_" + str(time_of_run) + ".png")
 
 
@@ -232,10 +232,10 @@ print("NUMBER OF TIMESTAMPS:", nr_timestamps, "\n\nGENERATED TASKS:\n",
 # print("------------------------------------\n")
 
 # social_walfare_offline, social_walfare_solution, allocated_tasks_offline, allocation_scheme_offline = offline_optimal(
-#     df_tasks, df_nodes, n_timesteps, nr_tasks, nr_fog_nodes)
+#     df_tasks, df_nodes, duration, nr_tasks, nr_fog_nodes)
 
 # display_allocation(allocation_scheme_offline,
-#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, n_timesteps=n_timesteps)
+#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, duration=duration)
 
 # print("\n\nOFFLINE OPTIMAL RESULTS:\n------------------------\n")
 # print("\nAllocated tasks:", allocated_tasks_offline, "/", nr_tasks, "\n")
@@ -245,12 +245,12 @@ print("NUMBER OF TIMESTAMPS:", nr_timestamps, "\n\nGENERATED TASKS:\n",
 # print("\nRunning ONLINE MYOPIC benchmark...#")
 # print("------------------------------------\n")
 
-# social_walfare_myopic, allocated_tasks_myopic, allocation_scheme_myopic = online_myopic(df_tasks, df_nodes, n_timesteps, nr_tasks, nr_fog_nodes, verbose=False)
+# social_walfare_myopic, allocated_tasks_myopic, allocation_scheme_myopic = online_myopic(df_tasks, df_nodes, duration, nr_tasks, nr_fog_nodes, verbose=False)
 
 # print("\n\nONLINE MYOPIC RESULTS:\n------------------------\n")
 
 # display_allocation(allocation_scheme_myopic,
-#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, n_timesteps=n_timesteps)
+#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, duration=duration)
 
 # print("\nAllocated tasks:", allocated_tasks_myopic, "/", nr_tasks, "\n")
 # print("Social walfare:", social_walfare_myopic, "\n")
@@ -262,10 +262,10 @@ print("NUMBER OF TIMESTAMPS:", nr_timestamps, "\n\nGENERATED TASKS:\n",
 # print("------------------------------------\n")
 
 # social_walfare_price, allocated_tasks_price, optimal_phi, allocation_scheme_pricing = optimal_pricing(
-#     df_tasks=df_tasks, df_nodes=df_nodes, n_timesteps=n_timesteps, task_number=nr_tasks, fn_nr=nr_fog_nodes, global_phi=True, price_upper_value=4.0, price_lower_value=0.0)
+#     df_tasks=df_tasks, df_nodes=df_nodes, duration=duration, task_number=nr_tasks, fn_nr=nr_fog_nodes, global_phi=True, price_upper_value=4.0, price_lower_value=0.0)
 
 # display_allocation(allocation_scheme_pricing,
-#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, n_timesteps=n_timesteps)
+#                    n_nodes=nr_fog_nodes, nr_tasks=nr_tasks, df_tasks=df_tasks, duration=duration)
 
 # print("\n\nOPTIMAL PRICING RESULTS:\n------------------------\n")
 # print("\nOptimal phi:", optimal_phi, "\n")

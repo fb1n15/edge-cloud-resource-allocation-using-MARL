@@ -9,15 +9,21 @@ env: edge_cloud1
 env-config:
   n_nodes: 3
   num_agents: 3
+  n_tasks_in_total: 40
+  n_tasks_to_allocate: 10
+  duration: 20
+  seed: 124
+
 #  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
 #  avg_unit_cost: { 0: [ 1, 1, 1 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
 #  # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 10, 10, 10], 2: [ 10, 10, 10 ] }
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
   avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
   record_history: True
+  history_len: 3
   cooperative: True
 #  obs_length: 58
   obs_length: 28
@@ -66,7 +72,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 10_0000
-#  timesteps_total: 100
+#  timesteps_total: 10_0000
+  timesteps_total: 100
 
 #samples: 1

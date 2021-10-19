@@ -416,7 +416,7 @@ def allocate_waiting_tasks(df_optimal_allocation, df_tasks_waiting,
                         >= -1)
 
     # value_of_tasks = mdl.sum(df_tasks.loc[task, 'valuation_coefficient'] / df_tasks.loc[task, 'usage_time'] * z[task, fog_node, timestamp] * x[task, fog_node]
-    #                          for task, i in df_tasks_waiting.iterrows() for fog_node in range(n_nodes) for timestamp in range(n_timesteps))
+    #                          for task, i in df_tasks_waiting.iterrows() for fog_node in range(n_nodes) for timestamp in range(duration))
 
     value_of_tasks = mdl.sum(df_tasks.loc[task, 'valuation_coefficient'] * z[
         task, fog_node, timestamp] * x[task, fog_node]
@@ -464,7 +464,7 @@ def allocate_waiting_tasks(df_optimal_allocation, df_tasks_waiting,
 
     for task, i in df_tasks_waiting.iterrows():
         x = 0
-        # for t in range(n_timesteps):
+        # for t in range(duration):
         #     for p in range(n_nodes):
         #         if z[(task, p, t)].solution_value != 0:
         #             x = 1
@@ -586,7 +586,7 @@ def online_optimal(df_tasks, df_nodes, nr_timestamps, task_number, nr_nodes,
         :param mipgap: relative gap of Cplex solution
         :param df_tasks (Dataframe): A dataframe containing the incoming tasks.
         :param df_nodes (Dataframe): A dataframe containing the information about the fog nodes.
-        :param n_timesteps (int): Number of timestamps for the benchmark.
+        :param duration (int): Number of timestamps for the benchmark.
         :param task_number (int): Total number of tasks.
         :param n_nodes (int): Total number of fog nodes.
         :param verbose (bool): Check for the logging of progress. Default is False.

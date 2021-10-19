@@ -26,7 +26,7 @@ class EdgeEnv(gym.Env):
         Args:
 
             seed: seed_value for generating simulation data
-            n_timesteps The number of timestamps.
+            duration The number of timestamps.
             allow_negative_reward: Flag for allowing negative rewards for the bad allocation of tasks.
             forgiveness_factor: Tolerance to sequential bad allocation of tasks.
             alpha: Percentage of the total rewards influenced by the prioritisation of high valuation tasks.

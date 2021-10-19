@@ -187,7 +187,7 @@ def attempt_allocation(df_tasks, df_nodes, nr_timestamps, task_number, fn_nr, ph
     Args:
         :param df_tasks (Dataframe): A dataframe containing the incoming tasks.
         :param df_nodes (Dataframe): A dataframe containing the information about the fog nodes.
-        :param n_timesteps (int): Number of timestamps for the benchmark.
+        :param duration (int): Number of timestamps for the benchmark.
         :param task_number (int): Total number of tasks.
         :param fn_nr (int): Total number of fog nodes.
         :param phi (double): Optimal cost parameter.
