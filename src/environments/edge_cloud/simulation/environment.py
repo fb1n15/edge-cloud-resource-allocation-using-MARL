@@ -651,8 +651,12 @@ class EdgeCloudEnv(MultiAgentEnv):
 
     @staticmethod
     def get_observation_space(config):
-        return spaces.Box(low=0, high=10_000, shape=(
-        7 + config["usage_time_ub"] * 3 + config["history_len"] * 3,),
+        if config['record_history']:
+            obs_dim = 7 + config["usage_time_ub"] * 3 + config["history_len"] * 3
+        else:
+            obs_dim = 7 + config["usage_time_ub"] * 3
+
+        return spaces.Box(low=0, high=10_000, shape=(obs_dim,),
                           dtype=np.float16)
 
     # @staticmethod
@@ -1185,10 +1189,12 @@ class EdgeCloudEnv1(EdgeCloudEnv):
                 f"number of allocated tasks (online myopic): {number_of_allocated_tasks_bench}")
             # run random allocation algo.
             social_welfare_random_allocation, number_of_allocated_tasks_random_allocation, allocation_scheme_random_allocation = \
-                random_allocation(self.df_tasks_bench, self.df_nodes_bench, self.n_time_bench,
-                              self.n_tasks_bench, self.n_nodes_bench)
+                random_allocation(self.df_tasks_bench, self.df_nodes_bench,
+                                  self.n_time_bench,
+                                  self.n_tasks_bench, self.n_nodes_bench)
             self.social_welfare_random_allocation = social_welfare_random_allocation
-            logging.debug(f"social welfare (random_allocation): {social_welfare_random_allocation}")
+            logging.debug(
+                f"social welfare (random_allocation): {social_welfare_random_allocation}")
             logging.debug(
                 f"number of allocated tasks (random_allocation): {number_of_allocated_tasks_random_allocation}")
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
@@ -1202,6 +1208,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
 
     def get_total_sw_random_allocation(self):
         return self.social_welfare_random_allocation
+
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):
     # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)
