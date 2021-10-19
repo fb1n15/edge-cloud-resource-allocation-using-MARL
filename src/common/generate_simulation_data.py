@@ -50,9 +50,9 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
     # user's valuation and time constraint
     # The valuation b_prime is uniformly randomly chosen within the interval decided by the constant F
     v_prime = []
-    start_time = []
-    usage_time = []
-    finish_time = []
+    start_times = []
+    usage_times = []
+    finish_times = []
     demand_CPU = []
     demand_RAM = []
     demand_disk = []
@@ -68,19 +68,22 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             v_prime.append(
                 random_generator.uniform(50 * vc_ratio, 100 * vc_ratio))
             # task can start from the next time step of its arrival time
-            start_time.append(int(arrive_time[i]) + 1)
-            usage_time.append(random_generator.randint(usage_time_ub, usage_time_ub + 1))
+            start_time = int(arrive_time[i]) + 1
+            start_times.append(start_time)
             # j: earliest finish time
-            j = start_time[i] + usage_time[i] - 1
+            j = start_times[i] + usage_times[i] - 1
             # generate finish_time
             k = j + random_generator.randint(high_value_slackness_lower_limit,
                 high_value_slackness_upper_limit + 1)
             # finish time cannot be greater than the end time
             if k > end_time:
-                x = end_time
+                finish_time = end_time
             else:
-                x = k
-            finish_time.append(x)
+                finish_time = k
+            finish_times.append(finish_time)
+            #
+            usage_time = min(random_generator.randint(usage_time_ub, usage_time_ub + 1), finish_time-start_time+1)
+            usage_times.append(usage_time)
             # resource constraints
             demand_CPU.append(random_generator.uniform(3, 5))
             demand_RAM.append(random_generator.uniform(3, 5))
@@ -88,19 +91,21 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
         else:
             v_prime.append(random_generator.uniform(50 * 1, 100 * 1))
             # task can start from the next time step of its arrival time
-            start_time.append(int(arrive_time[i]) + 1)
-            usage_time.append(random_generator.randint(usage_time_ub, usage_time_ub + 1))
+            start_time = int(arrive_time[i]) + 1
+            start_times.append(start_time)
             # j: earliest finish time
-            j = start_time[i] + usage_time[i] - 1
+            j = start_times[i] + usage_times[i] - 1
             # generate finish_time
             k = j + random_generator.randint(low_value_slackness_lower_limit,
                 low_value_slackness_upper_limit + 1)
             # finish time cannot be greater than the end time
             if k > end_time:
-                x = end_time
+                finish_time = end_time
             else:
-                x = k
-            finish_time.append(x)
+                finish_time = k
+            finish_times.append(finish_time)
+            usage_time = min(random_generator.randint(usage_time_ub, usage_time_ub + 1), finish_time-start_time+1)
+            usage_times.append(usage_time)
             demand_CPU.append(random_generator.uniform(2, 3))
             demand_RAM.append(random_generator.uniform(2, 3))
             demand_disk.append(random_generator.uniform(2, 3))
@@ -108,8 +113,8 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
     # dataframe of the tasks
     df_tasks = pd.DataFrame(
         {'valuation_coefficient': v_prime, 'arrive_time': arrive_time,
-            'start_time': start_time, 'deadline': finish_time,
-            'usage_time': usage_time, 'CPU': demand_CPU,
+            'start_time': start_times, 'deadline': finish_times,
+            'usage_time': usage_times, 'CPU': demand_CPU,
             'RAM': demand_RAM, 'storage': demand_disk})
 
     # generate resource capacities of fog nodes
