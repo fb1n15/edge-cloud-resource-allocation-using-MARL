@@ -3,3 +3,13 @@
 /src/results/
 /slurm-output/
 /.virtual_documents/src/
+/src/edge_cloud.egg-info/dependency_links.txt
+/src/edge_cloud.egg-info/PKG-INFO
+/src/edge_cloud.egg-info/requires.txt
+/src/edge_cloud.egg-info/SOURCES.txt
+/src/edge_cloud.egg-info/top_level.txt
+/src/jupyter_notebooks/.ipynb_checkpoints/compare-porformance-in-terms-of-social-welfare-checkpoint.ipynb
+/src/resource_allocation.log
+/resource_allocation.log
+/resource_allocation_old.log
+/resource_allocation_without_history.log
