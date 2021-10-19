@@ -70,8 +70,9 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             # task can start from the next time step of its arrival time
             start_time = int(arrive_time[i]) + 1
             start_times.append(start_time)
+            usage_time = random_generator.randint(usage_time_ub, usage_time_ub + 1)
             # j: earliest finish time
-            j = start_times[i] + usage_times[i] - 1
+            j = start_time + usage_time - 1
             # generate finish_time
             k = j + random_generator.randint(high_value_slackness_lower_limit,
                 high_value_slackness_upper_limit + 1)
@@ -82,7 +83,7 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
                 finish_time = k
             finish_times.append(finish_time)
             #
-            usage_time = min(random_generator.randint(usage_time_ub, usage_time_ub + 1), finish_time-start_time+1)
+            usage_time = min(usage_time, finish_time-start_time+1)
             usage_times.append(usage_time)
             # resource constraints
             demand_CPU.append(random_generator.uniform(3, 5))
@@ -93,8 +94,9 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             # task can start from the next time step of its arrival time
             start_time = int(arrive_time[i]) + 1
             start_times.append(start_time)
+            usage_time = random_generator.randint(usage_time_ub, usage_time_ub + 1)
             # j: earliest finish time
-            j = start_times[i] + usage_times[i] - 1
+            j = start_time + usage_time - 1
             # generate finish_time
             k = j + random_generator.randint(low_value_slackness_lower_limit,
                 low_value_slackness_upper_limit + 1)
@@ -104,7 +106,7 @@ def generate_synthetic_data_edge_cloud(avg_resource_capacity, avg_unit_cost,
             else:
                 finish_time = k
             finish_times.append(finish_time)
-            usage_time = min(random_generator.randint(usage_time_ub, usage_time_ub + 1), finish_time-start_time+1)
+            usage_time = min(usage_time, finish_time-start_time+1)
             usage_times.append(usage_time)
             demand_CPU.append(random_generator.uniform(2, 3))
             demand_RAM.append(random_generator.uniform(2, 3))

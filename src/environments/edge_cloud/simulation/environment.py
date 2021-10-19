@@ -126,7 +126,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         logging.basicConfig(level=logging_level, filename='resource_allocation.log',
                             filemode='w', format=fmtStr)
 
-        self.occup_len = occup_len
+        self.occup_len = config['usage_time_ub']
         self.current_task = None
         self.current_time_slot = None
         self.next_time_slot = None
