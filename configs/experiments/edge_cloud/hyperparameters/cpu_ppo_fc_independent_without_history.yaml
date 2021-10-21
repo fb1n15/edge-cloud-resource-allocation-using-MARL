@@ -24,7 +24,7 @@ env-config:
   record_history: False
   history_len: 3
   cooperative: True
-  n_actions: 2
+  n_actions: 5
 
 
 

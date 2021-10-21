@@ -122,9 +122,11 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # Set the class variables
         super().__init__()
+        # config the log of the program
         fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
 
-        logging.basicConfig(level=logging_level, filename='resource_allocation.log',
+        logging.basicConfig(level=logging_level,
+                            filename='/Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/resource_allocation.log',
                             filemode='w', format=fmtStr)
 
         self.occup_len = config['usage_time_ub']
@@ -664,8 +666,8 @@ class EdgeCloudEnv(MultiAgentEnv):
     #     return spaces.Discrete(config["n_actions"])
 
     @staticmethod
-    def get_action_space():
-        return spaces.Discrete(2)
+    def get_action_space(config):
+        return spaces.Discrete(config['n_actions'])
 
     def update_resource_occupency(self, winner_index, winner_usage_time,
                                   winner_relative_start_time):
