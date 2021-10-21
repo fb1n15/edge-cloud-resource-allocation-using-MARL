@@ -10,7 +10,7 @@ env-config:
   n_nodes: 3
   num_agents: 3
   n_tasks_in_total: 40
-  n_tasks_to_allocate: 10
+  n_tasks_to_allocate: 30
   duration: 20
   usage_time_ub: 6
   seed: 124
@@ -69,7 +69,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 50_0000
+  timesteps_total: 15_0000
 #  timesteps_total: 100
 
 #samples: 1
