@@ -965,7 +965,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
                     self.current_task_id, 'arrive_time'] + relative_start_time + 1)
             # action is in {1,2,...,9,10}
             # * 0.9 to avoid bidding the same as the value_coefficient
-            bids_list.append((action + 0.5) * self.df_tasks.loc[
+            bids_list.append((action + 1) / self.n_actions * self.df_tasks.loc[
                 self.current_task_id, 'valuation_coefficient'])
             # if action == 1:
             #     bids_list.append(0.8 * self.df_tasks.loc[
