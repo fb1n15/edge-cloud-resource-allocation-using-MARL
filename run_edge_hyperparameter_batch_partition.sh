@@ -3,9 +3,8 @@
 ## maximum count of tasks per node
 #SBATCH --ntasks-per-node=14
 #SBATCH --nodes=1
-#SBATCH --partition=gpu
+#SBATCH --partition=batch
 #SBATCH --time=04:00:00
-#SBATCH --gres=gpu:2
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
 
@@ -26,6 +25,6 @@ source activate jack
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 conda env list
 python --version
-python src/marl-disaster.py train --config $CONFIG_FILE
+python src/marl.py train --config $CONFIG_FILE
 
 echo "Finishing job"

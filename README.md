@@ -62,3 +62,7 @@ or
 `tensorboard dev upload --logdir "results/<experiment>" --name "MARL Disaster Response" --description "Training drones in a gridworld disaster simulation environment"`
 
 (`ctrl-b d` to exit tmux window)
+
+## ToDos
+
+- move iridis5 output file (slurm-***.out) to a folder (maybe called iridis5-output)
