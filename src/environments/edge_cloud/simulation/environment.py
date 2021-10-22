@@ -126,7 +126,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
 
         logging.basicConfig(level=logging_level,
-                            filename='/Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/resource_allocation.log',
+                            filename='./edge_cloud_resource_allocation.log',
                             filemode='w', format=fmtStr)
 
         self.occup_len = config['usage_time_ub']
