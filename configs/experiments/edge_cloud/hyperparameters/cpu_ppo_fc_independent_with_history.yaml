@@ -33,7 +33,7 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 9
+  num_workers: 8
 #  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment

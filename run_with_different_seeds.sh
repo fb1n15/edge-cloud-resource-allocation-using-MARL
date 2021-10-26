@@ -1,17 +1,16 @@
 #!/bin/bash
 
-# #SBATCH --nodes=2  # Number of nodes requested
-#SBATCH --ntasks=20  # Number of Tasks (up-to 32 jobs running at the same time)
-#SBATCH --ntasks-per-node=4  # Tasks per node
-#SBATCH --partition=batch
+#SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
+#SBATCH --ntasks=6  # Number of Tasks (up-to 32 jobs running at the same time)6#SBATCH --ntasks-per-node=4  # Tasks per node6# #SBATCH --exclusive          # I don't want to share my compute n6de with anyone6#SBATCH --partition=batch
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
-#SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
 # (https://stackoverflow.com/a/67537416/7060068)
-
+# #SBATCH --nodes=2  # Number of nodes requested
+# #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
+n_tasks=6
 
 case $SLURM_ARRAY_TASK_ID in
 # Scaling up experiment
@@ -34,6 +33,6 @@ export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 #  python ./src/marl.py train --config $CONFIG_FILE
 #done
 
-mpirun -np 20 python ./src/marl.py train --config $CONFIG_FILE
+mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE
 
 echo "Finishing job"

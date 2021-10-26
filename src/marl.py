@@ -66,9 +66,13 @@ def main():
 
     restore = False
     config = load_yaml(args.config)  # the dictionary of configurations
-    print(f"The seed = {config['env-config']['seed']}")
+    print(f"The env seed = {config['env-config']['seed']}")
     config['env-config']['seed'] = random.randint(0, 1000)
-    print(f"The random seed = {config['env-config']['seed']}")
+    print(f"The new random env seed = {config['env-config']['seed']}")
+
+    print(f"The trainer seed = {config['trainer-config']['seed']}")
+    config['trainer-config']['seed'] = random.randint(0, 1000)
+    print(f"The new random trainer seed = {config['trainer-config']['seed']}")
 
     # train the model
     if args.run_option == "train":
