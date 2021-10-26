@@ -63,6 +63,33 @@ or
 
 (`ctrl-b d` to exit tmux window)
 
+## Instructions for Iridis5
+
+## Run on the login node
+```shell
+cd MARL-ReverseAuction/marl-edge-cloud
+module load conda/py3-latest
+source activate jack
+bash ./src/run_jobs_locally.sh
+```
+
+## Run on an interactive node
+```shell
+cd MARL-ReverseAuction/marl-edge-cloud
+module load conda/py3-latest
+source activate jack
+sinteractive -p gpu --gres=gpu:2
+bash ./src/run_jobs_locally.sh
+```
+
+## Submit batch jobs
+
+```sbatch --array=<config_indices> -p batch run_<experiment_name>.sh```
+or
+```sbatch --array=<config_indices> -p gpu run_<experiment_name>.sh```
+
+
 ## ToDos
 
 - move iridis5 output file (slurm-***.out) to a folder (maybe called iridis5-output)
+- how to put other parameters to the name of the RL results? So that I can distinguish different simulations.
