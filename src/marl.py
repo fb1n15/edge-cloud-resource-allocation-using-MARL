@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 import sys
 from getopt import getopt
 
+from numpy.random import randint
+
 from common.checkpoint_handler import explore_checkpoints
 from common.config_file_handler import load_yaml
 
@@ -65,6 +67,9 @@ def main():
 
     restore = False
     config = load_yaml(args.config)  # the dictionary of configurations
+    print(f"The seed = {config['env-config']['seed']}")
+    config['env-config']['seed'] = randint(0, 1000)
+    print(f"The random seed = {config['env-config']['seed']}")
 
     # train the model
     if args.run_option == "train":
