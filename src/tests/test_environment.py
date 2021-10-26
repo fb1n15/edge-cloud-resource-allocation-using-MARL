@@ -27,7 +27,7 @@ def test_argmax_earliest():
 @pytest.fixture
 def edge_env() -> EdgeCloudEnv:
     config = load_yaml(
-        '/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml')
+        '/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_5_actions.yaml')
     env_config = config['env-config']
     edge_env = EdgeCloudEnv(env_config)
     edge_env.reset()
@@ -37,7 +37,7 @@ def edge_env() -> EdgeCloudEnv:
 @pytest.fixture
 def edge_env1() -> EdgeCloudEnv:
     config = load_yaml(
-        '/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml')
+        '/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_5_actions.yaml')
     env_config = config['env-config']
     edge_env = EdgeCloudEnv1(env_config)
     edge_env.reset()

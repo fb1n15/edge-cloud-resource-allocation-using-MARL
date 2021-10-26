@@ -6,7 +6,7 @@ do
 done
 
 ## run just one job (ppo with history)
-#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
+#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_5_actions.yaml"
 #python "./src/marl.py" train --config "$CONFIG_FILE"
 
 ## run just one job PPO without history

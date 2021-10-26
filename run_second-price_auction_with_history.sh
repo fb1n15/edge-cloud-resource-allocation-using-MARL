@@ -2,13 +2,14 @@
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
 #SBATCH --ntasks=4  # Number of Tasks (up-to 32 jobs running at the same time)
-#SBATCH --ntasks-per-node=4  # Tasks per node
+#SBATCH --cpus-per-task=10  # use multiple cores each for multithreading
 #SBATCH --time=4:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
 # (https://stackoverflow.com/a/67537416/7060068)
 # #SBATCH --nodes=2  # Number of nodes requested
 # #SBATCH --exclusive          # I don't want to share my compute node with anyone
+# #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
 n_tasks=4
