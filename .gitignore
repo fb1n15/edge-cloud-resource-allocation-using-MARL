@@ -13,3 +13,13 @@
 /resource_allocation.log
 /resource_allocation_old.log
 /resource_allocation_without_history.log
+/edge_cloud_resource_allocation.log
+/slurm-589752_1.out
+/slurm-589754_1.out
+/slurm-589756_1.out
+/slurm-596801_1.out
+/slurm-596849_1.out
+/slurm-596856_1.out
+/slurm-596877_1.out
+/slurm-596906_1.out
+/slurm-596913_1.out
