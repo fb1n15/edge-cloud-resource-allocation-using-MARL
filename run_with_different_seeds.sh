@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # #SBATCH --nodes=2  # Number of nodes requested
-#SBATCH --ntasks=10  # Number of Tasks
+#SBATCH --ntasks=20  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=4  # Tasks per node
 #SBATCH --partition=batch
 #SBATCH --time=2:00:00
@@ -34,6 +34,6 @@ export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 #  python ./src/marl.py train --config $CONFIG_FILE
 #done
 
-mpirun -np 10 python ./src/marl.py train --config $CONFIG_FILE
+mpirun -np 20 python ./src/marl.py train --config $CONFIG_FILE
 
 echo "Finishing job"
