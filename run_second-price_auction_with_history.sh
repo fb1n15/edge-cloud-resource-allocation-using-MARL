@@ -1,28 +1,19 @@
 #!/bin/bash
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
-#SBATCH --ntasks=10  # Number of Tasks (up-to 32 jobs running at the same time)
+#SBATCH --ntasks=4  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=4  # Tasks per node
 #SBATCH --time=4:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
 # (https://stackoverflow.com/a/67537416/7060068)
-### configurations not in use
 # #SBATCH --nodes=2  # Number of nodes requested
 # #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
-n_tasks=10  # number of tasks
+n_tasks=4
 
-case $SLURM_ARRAY_TASK_ID in
-# Scaling up experiment
-  1)
-    CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
-    ;;
-  2)
-    CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without_history.yaml"
-    ;;
-esac
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_second-price_auction_non-cooperative.yaml"
 
 echo "Starting Job"
 
@@ -30,10 +21,6 @@ module load conda/py3-latest
 source activate jack
 module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
-#for j in {1..10}
-#do
-#  python ./src/marl.py train --config $CONFIG_FILE
-#done
 
 mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE
 

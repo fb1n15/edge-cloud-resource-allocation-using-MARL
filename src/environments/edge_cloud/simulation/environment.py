@@ -169,7 +169,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         self.valuation_ratio = valuation_ratio
         self.resource_coefficient = resource_coefficient
         self.usage_time_ub = config['usage_time_ub']
-        self.auction_type = 'first-price'
+        self.auction_type = config['auction_type']
         self.verbose = config["verbose"]
         # record the allocation scheme (task_id: [node_id, start_time, end_time])
         self.allocation_scheme = pd.DataFrame(
