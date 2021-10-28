@@ -25,6 +25,7 @@ env-config:
   history_len: 3
   cooperative: True
   n_actions: 5
+  auction_type: 'first-price'
 
 
 
