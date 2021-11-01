@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_with_history_5_actions
+name: edge_cloud_independent_ppo_with_history_5-actions
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
