@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
-#SBATCH --ntasks=30  # Number of Tasks (up-to 32 jobs running at the same time)
+#SBATCH --ntasks=10  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --cpus-per-task=10  # use multiple cores each for multithreading
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
@@ -29,8 +29,8 @@ source activate jack
 module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 
-mpirun -np $n_jobs --bind-to none python ./src/marl.py train --config $CONFIG_FILE1
-mpirun -np $n_jobs --bind-to none python ./src/marl.py train --config $CONFIG_FILE2
+#mpirun -np $n_jobs --bind-to none python ./src/marl.py train --config $CONFIG_FILE1
+#mpirun -np $n_jobs --bind-to none python ./src/marl.py train --config $CONFIG_FILE2
 mpirun -np $n_jobs --bind-to none python ./src/marl.py train --config $CONFIG_FILE3
 
 echo "Finishing job"

@@ -1228,7 +1228,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
     def get_total_sw_random_allocation(self):
         return self.social_welfare_random_allocation
 
-    def get_total_sw__bidding_zero(self):
+    def get_total_sw_bidding_zero(self):
         return self.social_welfare_bidding_zero
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):

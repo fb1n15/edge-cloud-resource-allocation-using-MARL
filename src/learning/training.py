@@ -234,5 +234,7 @@ class CustomCallbacks(DefaultCallbacks):
         episode.custom_metrics[
             "Social Welfare (Random Allocation)"] = env.get_total_sw_random_allocation()
         episode.custom_metrics[
+            "Social Welfare (All Bidding Zero)"] = env.get_total_sw_bidding_zero()
+        episode.custom_metrics[
             "Allocated Tasks Number"] = env.get_total_allocated_task_num()
         episode.custom_metrics["Bad Allocations Number"] = env.get_num_bad_allocations()
