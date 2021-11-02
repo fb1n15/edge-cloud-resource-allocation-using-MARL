@@ -7,6 +7,7 @@ from gym.spaces import Discrete, Box
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
+from benchmarks.all_bidding_zero import all_bidding_zero
 from benchmarks.online_myopic_m import online_myopic
 from benchmarks.random_allocation import random_allocation
 from environments.gridworld_obstacles.simulation.entities import Agent
@@ -1203,6 +1204,18 @@ class EdgeCloudEnv1(EdgeCloudEnv):
                 f"social welfare (random_allocation): {social_welfare_random_allocation}")
             logging.debug(
                 f"number of allocated tasks (random_allocation): {number_of_allocated_tasks_random_allocation}")
+
+        # run the all bidding zero auction
+        social_welfare_bidding_zero, number_of_allocated_tasks_bidding_zero, allocation_scheme_bidding_zero = \
+            all_bidding_zero(self.df_tasks_bench, self.df_nodes_bench,
+                              self.n_time_bench,
+                              self.n_tasks_bench, self.n_nodes_bench)
+        self.social_welfare_bidding_zero = social_welfare_bidding_zero
+        logging.debug(
+            f"social welfare (bidding_zero): {social_welfare_bidding_zero}")
+        logging.debug(
+            f"number of allocated tasks (bidding_zero): {number_of_allocated_tasks_bidding_zero}")
+
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now
