@@ -1228,6 +1228,8 @@ class EdgeCloudEnv1(EdgeCloudEnv):
     def get_total_sw_random_allocation(self):
         return self.social_welfare_random_allocation
 
+    def get_total_sw__bidding_zero(self):
+        return self.social_welfare_bidding_zero
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):
     # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)
