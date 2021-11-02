@@ -985,6 +985,10 @@ class EdgeCloudEnv1(EdgeCloudEnv):
                        self.current_task_id, 'storage'] * self.df_nodes.loc[
                        node_id, 'storage_cost']
             value = self.df_tasks.loc[self.current_task_id, 'valuation_coefficient']
+            logging.debug(f"node ID = {node_id}")
+            logging.debug(f"valuation coefficient for current task = {value}")
+            logging.debug(f"cost for current task for this node = {cost}")
+
             sw_inc = (value - cost) * max_usage_time
             sw_increase_list.append(sw_inc)
 

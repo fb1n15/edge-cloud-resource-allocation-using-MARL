@@ -9,7 +9,7 @@ env: edge_cloud1
 env-config:
   n_nodes: 3
   num_agents: 3
-  n_tasks_in_total: 23
+  n_tasks_in_total: 22
   n_tasks_to_allocate: 20
   duration: 20
   usage_time_ub: 6
@@ -17,7 +17,7 @@ env-config:
 
 # agents should learn that low-value tasks should not be allocated to node 0
   avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
-  avg_unit_cost: { 0: [ 4, 4, 4 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
+  avg_unit_cost: { 0: [ 8, 8, 8 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
@@ -34,7 +34,7 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 8
+  num_workers: 7
 #  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
@@ -53,8 +53,8 @@ trainer-config:
 
   # Trainer parameters
   lr:
-    gridsearch: [0.0001, 0.001]
-#    gridsearch: [0.001]
+#    gridsearch: [0.0001, 0.001]
+    gridsearch: [0.0001]
   lambda: 1.0
   entropy_coeff: 0.0
   batch_mode: "complete_episodes"
@@ -70,7 +70,7 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 10_0000
-#  timesteps_total: 100
+  timesteps_total: 15_0000
+#  timesteps_total: 1_0000
 
-#samples: 1
+#samples: 3
