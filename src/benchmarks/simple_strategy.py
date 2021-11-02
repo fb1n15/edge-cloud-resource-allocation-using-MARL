@@ -43,7 +43,7 @@ def format_allocation(nr_nodes, nr_timestamps, allocation_matrix, start_matrix):
     return output
 
 
-def random_allocation(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False):
+def simple_strategy(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False):
     """
     random allocate tasks to a node
     :param df_tasks: a dataframe of the types of tasks
@@ -158,8 +158,8 @@ def random_allocation(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=Fals
             # df_tasks.loc[n, 'valuation_coefficient'] /
             # df_tasks.loc[n, 'usage_time'] - cost_unit_time)
 
-            mat_utility[n, fn] = mat_time_temp[n, fn] * (
-                    df_tasks.loc[n, 'valuation_coefficient'] - cost_unit_time)
+            # the bidding price is always zero
+            mat_utility[n, fn] = mat_time_temp[n, fn] * (df_tasks.loc[n, 'valuation_coefficient'])
         # find a random node
         random_utility = np.random.choice(mat_utility[n])
 
