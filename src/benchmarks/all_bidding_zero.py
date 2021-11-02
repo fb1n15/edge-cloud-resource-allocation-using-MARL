@@ -43,9 +43,9 @@ def format_allocation(nr_nodes, nr_timestamps, allocation_matrix, start_matrix):
     return output
 
 
-def simple_strategy(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False):
+def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False):
     """
-    random allocate tasks to a node
+    all nodes bidding zero
     :param df_tasks: a dataframe of the types of tasks
     :param df_nodes: a dataframe of the information of fog nodes
     :param n_time: range of the time interval
@@ -160,21 +160,21 @@ def simple_strategy(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False)
 
             # the bidding price is always zero
             mat_utility[n, fn] = mat_time_temp[n, fn] * (df_tasks.loc[n, 'valuation_coefficient'])
-        # find a random node
-        random_utility = np.random.choice(mat_utility[n])
+        # find the cheapest node to allocate
+        max_utility = np.amax(mat_utility[n])
 
         if verbose:
             print('array of utilites:', mat_utility[n])
         if verbose:
-            print("max_utility:", random_utility)
+            print("max_utility:", max_utility)
 
-        max_fn = np.where(mat_utility[n] == random_utility)[0][0]
+        max_fn = np.where(mat_utility[n] == max_utility)[0][0]
 
         if verbose:
             print("winner fn:", max_fn)
 
         # update the number of allocated tasks
-        if random_utility > 0:
+        if max_utility > 0:
             number_of_allocated_tasks += 1
 
         # save it to the final allocation matrix
@@ -196,7 +196,7 @@ def simple_strategy(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False)
             print("remaining storage capacity:\n", mat_storage)
 
         # update the social welfare
-        social_welfare += random_utility
+        social_welfare += max_utility
 
         if verbose:
             print('\nSocial welfare: ', social_welfare, '\n')
