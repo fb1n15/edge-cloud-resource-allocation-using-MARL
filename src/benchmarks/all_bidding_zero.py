@@ -82,6 +82,7 @@ def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False
     # proposed start time for each task from each fog node
     mat_start_time = np.zeros([n_tasks, n_nodes], dtype=int)
     mat_utility = np.zeros([n_tasks, n_nodes])
+    mat_sw = np.zeros([n_tasks, n_nodes])
     # number of time steps that is finally allocated
     mat_time_allocated = np.zeros([n_tasks, n_nodes], dtype=int)
     if verbose:
@@ -158,9 +159,12 @@ def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False
             # df_tasks.loc[n, 'valuation_coefficient'] /
             # df_tasks.loc[n, 'usage_time'] - cost_unit_time)
 
-            # the bidding price is always zero
-            mat_utility[n, fn] = mat_time_temp[n, fn] * (df_tasks.loc[n, 'valuation_coefficient'])
-        # find the cheapest node to allocate
+            mat_sw[n, fn] = mat_time_temp[n, fn] * (
+                    df_tasks.loc[n, 'valuation_coefficient'] - cost_unit_time)
+            mat_utility[n, fn] = mat_time_temp[n, fn] * (
+                    df_tasks.loc[n, 'valuation_coefficient'])
+
+        # find which fn gives task n the maximum utility
         max_utility = np.amax(mat_utility[n])
 
         if verbose:
@@ -196,7 +200,7 @@ def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False
             print("remaining storage capacity:\n", mat_storage)
 
         # update the social welfare
-        social_welfare += max_utility
+        social_welfare += mat_sw[n, max_fn]
 
         if verbose:
             print('\nSocial welfare: ', social_welfare, '\n')
