@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
-#SBATCH --ntasks=12  # Number of Tasks (up-to 32 jobs running at the same time)
+#SBATCH --ntasks=30  # Number of Tasks (up-to 32 nodes running at the same time)
 #SBATCH --cpus-per-task=10  # use multiple cores each for multithreading
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
@@ -13,13 +13,9 @@
 # #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
-n_tasks=4
+n_tasks=30
 
-CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
-
-CONFIG_FILE2="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
-
-CONFIG_FILE3="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
+CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_5_actions.yaml"
 
 echo "Starting Job"
 
@@ -29,7 +25,5 @@ module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 
 mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE1
-mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE2
-mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE3
 
 echo "Finishing job"

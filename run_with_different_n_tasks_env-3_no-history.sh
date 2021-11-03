@@ -15,7 +15,7 @@
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
 n_jobs=3
 
-CONFIG_FILE3="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with-history_5-actions_env-3.yaml"
+CONFIG_FILE3="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without-history_5-actions_env-3.yaml"
 
 echo "Starting Job, number of jobs:"
 echo $n_jobs
