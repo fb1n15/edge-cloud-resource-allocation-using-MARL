@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
-#SBATCH --ntasks=30  # Number of Tasks (up-to 32 nodes running at the same time)
-#SBATCH --cpus-per-task=10  # use multiple cores each for multithreading
+#SBATCH --ntasks=10  # Number of Tasks (up-to 32 nodes running at the same time)
+#SBATCH --cpus-per-task=40  # use multiple cores each for multithreading
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
@@ -13,7 +13,7 @@
 # #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
-n_tasks=30
+n_tasks=10
 
 CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history_2_actions.yaml"
 

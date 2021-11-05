@@ -26,3 +26,5 @@
 /iridis-reports/
 /recycle-bin/edge_cloud_resource_allocation.log
 /src/edge_cloud_resource_allocation.log
+/src/jupyter_notebooks/.virtual_documents/
+/src/jupyter_notebooks/.ipynb_checkpoints/
