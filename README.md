@@ -21,11 +21,12 @@ For Windows
 
 `pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-win_amd64.whl`
 
+- (windows usually has GPUs)
+`pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 torchaudio===0.8.1 -f https://download.pytorch.org/whl/torch_stable.html`
+
 For MacOS
 
 `pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-macosx_10_13_intel.whl`
-
-`pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 torchaudio===0.8.1 -f https://download.pytorch.org/whl/torch_stable.html`
 
 `pip install torch==1.8.1 torchvision==0.9.1 torchaudio===0.8.1 -f 
 https://download.pytorch.org/whl/torch_stable.html`
