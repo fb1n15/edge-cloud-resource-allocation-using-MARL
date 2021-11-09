@@ -54,15 +54,17 @@ trainer-config:
   # Trainer parameters
   lr:
 #    gridsearch: [0.0001, 0.001]
-    gridsearch: [0.0001, 0.001, 0.01]
-  lambda: 1.0
-  entropy_coeff: 0.0
+    gridsearch: [0.0001, 0.01]
+  lambda:
+    gridsearch: [0.9, 1.0]
+  entropy_coeff:
+    gridsearch: [0.0, 0.005]
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-#    gridsearch: [3000, 4000]
-    gridsearch: [3000, 5000]
+    gridsearch: [3000, 4000]
+#    gridsearch: [5000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
