@@ -1,4 +1,6 @@
 import logging
+from pathlib import Path
+from time import strftime
 from collections import deque
 from itertools import chain
 from typing import Tuple
@@ -123,12 +125,18 @@ class EdgeCloudEnv(MultiAgentEnv):
 
         # Set the class variables
         super().__init__()
+        # # Remove all handlers associated with the root logger object.
+        # for handler in logging.root.handlers[:]:
+        #     logging.root.removeHandler(handler)
+        #
+        # myfile = Path('./logs/edge_cloud_resource_allocation_{}.log'.format(
+        #                         strftime('%Y/%m/%d_%T')))
+        # myfile.touch(exist_ok=True)
         # config the log of the program
         fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
-
         logging.basicConfig(level=logging_level,
-                            filename='./edge_cloud_resource_allocation.log',
-                            filemode='w', format=fmtStr)
+                            filename='./logs/edge_cloud_resource_allocation{}.log'.format(
+                                strftime('_%Y_%m_%d_%T')), filemode='w', format=fmtStr)
 
         self.occup_len = config['usage_time_ub']
         self.current_task = None
@@ -429,6 +437,8 @@ class EdgeCloudEnv(MultiAgentEnv):
             sw_increase_list.append(sw_inc)
 
         logging.debug("All nodes have submitted their bids:")
+        logging.debug("actions of all nodes:")
+        logging.debug(actions)
         logging.debug("bid prices:")
         logging.debug(bids_list)
         logging.debug("max usage times:")
@@ -759,7 +769,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         utility_arr = np.multiply(bid_usage_time_arr,
                                   (valuation_coefficient - bid_price_arr))
         max_utility = np.amax(utility_arr)  # maximum utility for this task
-        if max_utility <= 0:  # if bidding prices are all too high
+        if max_utility < 0:  # if bidding prices are all too high
             winner_index = None
             winner_usage_time = None
             winner_revenue = None
@@ -994,6 +1004,8 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             sw_increase_list.append(sw_inc)
 
         logging.debug("All nodes have submitted their bids:")
+        logging.debug("actions of all nodes:")
+        logging.debug(actions)
         logging.debug("bid prices:")
         logging.debug(bids_list)
         logging.debug("max usage times:")
@@ -1208,8 +1220,8 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         # run the all bidding zero auction
         social_welfare_bidding_zero, number_of_allocated_tasks_bidding_zero, allocation_scheme_bidding_zero = \
             all_bidding_zero(self.df_tasks_bench, self.df_nodes_bench,
-                              self.n_time_bench,
-                              self.n_tasks_bench, self.n_nodes_bench)
+                             self.n_time_bench,
+                             self.n_tasks_bench, self.n_nodes_bench)
         self.social_welfare_bidding_zero = social_welfare_bidding_zero
         logging.debug(
             f"social welfare (bidding_zero): {social_welfare_bidding_zero}")
@@ -1230,6 +1242,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
 
     def get_total_sw_bidding_zero(self):
         return self.social_welfare_bidding_zero
+
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):
     # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)

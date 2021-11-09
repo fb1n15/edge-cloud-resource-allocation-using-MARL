@@ -16,14 +16,14 @@ env-config:
   seed: 124
 
 # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 50, 50, 50], 2: [ 20, 20, 20 ] }
-  avg_unit_cost: { 0: [ 9, 9, 9 ], 1: [ 9, 9, 9 ], 2: [ 0, 0, 0 ] }
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 50, 50, 50], 2: [ 70, 70, 70 ] }
+  avg_unit_cost: { 0: [ 90, 90, 90 ], 1: [ 90, 90, 90 ], 2: [ 0, 0, 0 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
   record_history: True
   history_len: 3
-  cooperative: True
+  cooperative: False
   n_actions: 5
   auction_type: 'first-price'
 
@@ -34,7 +34,7 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 6
+  num_workers: 1
 #  num_workers: 1  # used when checking the log
   num_gpus: 0
   # set a seed_value value for each worker as well as for the environment
@@ -54,17 +54,19 @@ trainer-config:
   # Trainer parameters
   lr:
 #    gridsearch: [0.0001, 0.001]
-    gridsearch: [0.0001, 0.01]
+    gridsearch: [0.0001]
   lambda:
-    gridsearch: [0.9, 1.0]
+#    gridsearch: [0.9, 1.0]
+    gridsearch: [1.0]
   entropy_coeff:
-    gridsearch: [0.0, 0.005]
+#    gridsearch: [0.0, 0.005]
+    gridsearch: [0.0]
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-    gridsearch: [3000, 4000]
-#    gridsearch: [5000]
+#    gridsearch: [3000, 4000]
+    gridsearch: [128]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -72,7 +74,7 @@ trainer-config:
 
 
 stop:
-#  timesteps_total: 15_0000
-  timesteps_total: 5_0000
+#  timesteps_total: 8_0000
+  timesteps_total: 100
 
 #samples: 3
