@@ -1,8 +1,10 @@
 #!/bin/bash
 
+#SBATCH --partition=gtx1080  # change to a less busy partition
+#SBATCH --gres=gpu:4
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=3  # Number of Tasks (up-to 32 jobs running at the same time)
-#SBATCH --cpus-per-task=40  # use multiple cores each for multithreading
+#SBATCH --cpus-per-task=56  # use multiple cores each for multithreading
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com

@@ -1,8 +1,10 @@
 #!/bin/bash
 
+#SBATCH --partition=gtx1080  # change to a less busy partition
+#SBATCH --gres=gpu:4
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
-#SBATCH --ntasks=3  # Number of Tasks (up-to 32 jobs running at the same time)
-#SBATCH --cpus-per-task=40  # use multiple cores each for multithreading
+#SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
+#SBATCH --cpus-per-task=56  # use multiple cores each for multithreading
 #SBATCH --time=2:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
@@ -13,7 +15,7 @@
 # #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
-n_jobs=3
+n_jobs=1
 
 CONFIG_FILE3="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with-history_5-actions_env-3.yaml"
 

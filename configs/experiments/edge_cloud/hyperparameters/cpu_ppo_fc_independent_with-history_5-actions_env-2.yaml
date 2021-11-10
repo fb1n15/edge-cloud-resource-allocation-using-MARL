@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_with_history_5-actions_env-2
+name: edge_cloud_independent_ppo_with_history_5-actions_env-2_cooperative_first-price
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -12,12 +12,12 @@ env-config:
   n_tasks_in_total: 12
   n_tasks_to_allocate: 10
   duration: 20
-  usage_time_ub: 6
+  usage_time_ub: 2
   seed: 124
 
 # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
-  avg_unit_cost: { 0: [ 9, 9, 9 ], 1: [ 9, 9, 9 ], 2: [ 0, 0, 0 ] }
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 50, 50, 50], 2: [ 20, 20, 20 ] }
+  avg_unit_cost: { 0: [ 5, 5, 5 ], 1: [ 5, 5, 5 ], 2: [ -5, -5, -5 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
@@ -34,9 +34,9 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 7
+  num_workers: 54
 #  num_workers: 1  # used when checking the log
-  num_gpus: 0
+  num_gpus: 4
   # set a seed_value value for each worker as well as for the environment
   seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
@@ -71,6 +71,6 @@ trainer-config:
 
 stop:
 #  timesteps_total: 15_0000
-  timesteps_total: 1_0000
+  timesteps_total: 20_0000
 
 #samples: 3

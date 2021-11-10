@@ -16,8 +16,8 @@ env-config:
   seed: 124
 
 # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 50, 50, 50], 2: [ 70, 70, 70 ] }
-  avg_unit_cost: { 0: [ 90, 90, 90 ], 1: [ 90, 90, 90 ], 2: [ 0, 0, 0 ] }
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 50, 50, 50], 2: [ 20, 20, 20 ] }
+  avg_unit_cost: { 0: [ 5, 5, 5 ], 1: [ 5, 5, 5 ], 2: [ -5, -5, -5 ] }
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
@@ -34,9 +34,9 @@ trainer-config:
   framework: torch
   num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 1
+  num_workers: 5
 #  num_workers: 1  # used when checking the log
-  num_gpus: 0
+  num_gpus: 2
   # set a seed_value value for each worker as well as for the environment
   seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
@@ -66,7 +66,7 @@ trainer-config:
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
 #    gridsearch: [3000, 4000]
-    gridsearch: [128]
+    gridsearch: [3000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -74,7 +74,7 @@ trainer-config:
 
 
 stop:
-#  timesteps_total: 8_0000
-  timesteps_total: 100
+  timesteps_total: 3_0000
+#  timesteps_total: 100
 
 #samples: 3

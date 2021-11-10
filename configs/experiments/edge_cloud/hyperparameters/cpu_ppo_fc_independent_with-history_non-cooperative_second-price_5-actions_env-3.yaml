@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_with_history_5-actions_env-3_cooperative_first-price
+name: edge_cloud_independent_ppo_with_history_5-actions_env-3_non-cooperative_second-price
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -23,10 +23,9 @@ env-config:
 #  "log_level": "DEBUG"
   record_history: True
   history_len: 3
-  cooperative: True
+  cooperative: False
   n_actions: 5
-  auction_type: 'first-price'
-
+  auction_type: 'second-price'
 
 
 trainer: PPO

@@ -159,10 +159,15 @@ def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False
             # df_tasks.loc[n, 'valuation_coefficient'] /
             # df_tasks.loc[n, 'usage_time'] - cost_unit_time)
 
-            mat_sw[n, fn] = mat_time_temp[n, fn] * (
+            # social welfare increase if this fn get allocated
+            sw_fn = mat_time_temp[n, fn] * (
                     df_tasks.loc[n, 'valuation_coefficient'] - cost_unit_time)
-            mat_utility[n, fn] = mat_time_temp[n, fn] * (
+            mat_sw[n, fn] = sw_fn
+            if sw_fn > 0:
+                mat_utility[n, fn] = mat_time_temp[n, fn] * (
                     df_tasks.loc[n, 'valuation_coefficient'])
+            else:  # bid high when sw is negative
+                mat_utility[n, fn] = 0
 
         # find which fn gives task n the maximum utility
         max_utility = np.amax(mat_utility[n])
@@ -172,7 +177,7 @@ def all_bidding_zero(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=False
         if verbose:
             print("max_utility:", max_utility)
 
-        max_fn = np.where(mat_utility[n] == max_utility)[0][0]
+        max_fn = np.random.choice(np.where(mat_utility[n] == max_utility)[0])
 
         if verbose:
             print("winner fn:", max_fn)

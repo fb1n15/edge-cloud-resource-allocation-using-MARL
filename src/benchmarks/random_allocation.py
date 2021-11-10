@@ -168,7 +168,7 @@ def random_allocation(df_tasks, df_nodes, n_time, n_tasks, n_nodes, verbose=Fals
         if verbose:
             print("max_utility:", random_utility)
 
-        max_fn = np.where(mat_utility[n] == random_utility)[0][0]
+        max_fn = np.random.choice(np.where(mat_utility[n] == random_utility)[0])
 
         if verbose:
             print("winner fn:", max_fn)
