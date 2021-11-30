@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run just one job
-CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with-history_non-cooperative_5-actions_env-3.yaml"
+CONFIG_FILE="./configs/cpu_ppo_fc_independent_with-history_non-cooperative_5-actions_env-3.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
 
 #for CONFIG_FILE in "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without_history.yaml" "Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_without_history.yaml"

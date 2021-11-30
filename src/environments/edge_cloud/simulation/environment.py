@@ -98,7 +98,7 @@ class EdgeCloudEnv(MultiAgentEnv):
     def __init__(self, config,
                  seed=0, n_timesteps=10, n_tasks=50,
                  max_steps=11,
-                 p_high_value_tasks=0.0, high_value_slackness=0,
+                 p_high_value_tasks=0.2, high_value_slackness=0,
                  low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
