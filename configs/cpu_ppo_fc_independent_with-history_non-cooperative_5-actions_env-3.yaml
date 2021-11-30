@@ -14,6 +14,7 @@ env-config:
   duration: 20
   usage_time_ub: 3
   seed: 124
+  random_seed: True
 
 # agents should learn that low-value tasks should not be allocated to node 0
   avg_resource_capacity: { 0: [ 5, 5, 5]}
