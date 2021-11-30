@@ -9,10 +9,10 @@ env: edge_cloud1
 env-config:
   n_nodes: 1
   num_agents: 1
-  n_tasks_in_total: 22
-  n_tasks_to_allocate: 20
+  n_tasks_in_total: 32
+  n_tasks_to_allocate: 30
   duration: 20
-  usage_time_ub: 2
+  usage_time_ub: 3
   seed: 124
 
 # agents should learn that low-value tasks should not be allocated to node 0
@@ -32,9 +32,9 @@ env-config:
 trainer: PPO
 trainer-config:
   framework: torch
-  num_envs_per_worker: 1
+#  num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 18
+  num_workers: 38
 #  num_workers: 6  # for run locally
 #  num_workers: 1  # used when checking the log
   num_gpus: 2
@@ -73,6 +73,6 @@ trainer-config:
 
 stop:
 #  timesteps_total: 15_0000
-  timesteps_total: 10_0000
+  timesteps_total: 3_0000
 
 #samples: 4

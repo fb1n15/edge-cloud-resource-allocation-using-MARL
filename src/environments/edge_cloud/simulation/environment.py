@@ -769,7 +769,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         utility_arr = np.multiply(bid_usage_time_arr,
                                   (valuation_coefficient - bid_price_arr))
         max_utility = np.amax(utility_arr)  # maximum utility for this task
-        if max_utility < 0:  # if bidding prices are all too high
+        if max_utility - 0.01 < 0:  # if bidding prices are all too high, basically means max_utility <= 0
             winner_index = None
             winner_usage_time = None
             winner_revenue = None
