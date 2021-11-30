@@ -73,13 +73,17 @@ source activate jack
 bash ./src/run_jobs_locally.sh
 ```
 
-## Run on an interactive node
+## Request an interactive node
 ```shell
 cd MARL-ReverseAuction/marl-edge-cloud
 module load conda/py3-latest
 source activate jack
-sinteractive -p gpu --gres=gpu:2
-bash ./src/run_jobs_locally.sh
+sinteractive -p gpu --gres=gpu:2 --time=04:00:00 --mem=16GB --job-name=marl-edge-cloud
+```
+
+then use it like a local machine, e.g.,
+```shell
+bash ./run_jobs_locally.sh
 ```
 
 ## Submit batch jobs
@@ -87,6 +91,33 @@ bash ./src/run_jobs_locally.sh
 ```sbatch --array=<config_indices> -p batch run_<experiment_name>.sh```
 or
 ```sbatch --array=<config_indices> -p gpu run_<experiment_name>.sh```
+
+
+## Local port forwarding
+
+### method 1
+
+First, add the following lines to your `.ssh/config` on your laptop. Look here if you want a slightly more detailed instruction on how to access your computer remotely.
+```shell
+Host workstation
+     HostName <hostname>
+     User <username>
+     Port <port>
+     LocalForward 8888 localhost:8888
+     LocalForward 6006 localhost:6006
+```
+
+### method 2
+
+```shell
+ssh -L 8000:localhost:8888 fb1n15@iridis5_b.soton.ac.uk
+```
+
+### notes
+
+- You can use `ssh -L` to forward a port from your local machine to a remote machine.
+- to run tensorboard, typing `tensorboard --logdir="results/<experiment>" --port=6006` on the logging node (not on the iteractive job node). (6006 can be changed to any port number) 
+- [source1](https://towardsdatascience.com/jupyter-and-tensorboard-in-tmux-5e5d202a4fb6), [source2](https://www.digitalocean.com/community/tutorials/how-to-install-run-connect-to-jupyter-notebook-on-remote-server)
 
 
 ## ToDos
