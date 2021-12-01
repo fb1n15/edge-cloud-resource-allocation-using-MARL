@@ -114,13 +114,18 @@ ssh -L 8000:localhost:8888 fb1n15@iridis5_b.soton.ac.uk
 ```
 
 ### notes
+#### Local port forwarding
 
 - You can use `ssh -L` to forward a port from your local machine to a remote machine.
 - to run tensorboard, typing `tensorboard --logdir="results/<experiment>" --port=6006` on the logging node (not on the iteractive job node). (6006 can be changed to any port number) 
 - [source1](https://towardsdatascience.com/jupyter-and-tensorboard-in-tmux-5e5d202a4fb6), [source2](https://www.digitalocean.com/community/tutorials/how-to-install-run-connect-to-jupyter-notebook-on-remote-server)
 
+#### Precautions
+
+- Do not load `conda` on the login node before requesting an interactive node. (This may cause the `ModuleNotFoundError: No module named 'ray'` error in the interactive node.)
+
 
 ## ToDos
 
-- move iridis5 output file (slurm-***.out) to a folder (maybe called iridis5-output)
-- how to put other parameters to the name of the RL results? So that I can distinguish different simulations.
+- [x] move iridis5 output file (slurm-***.out) to a folder (maybe called iridis5-output)
+- [ ] how to put other parameters to the name of the RL results? So that I can distinguish different simulations.

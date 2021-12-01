@@ -17,7 +17,7 @@ env-config:
   random_seed: False
 
 # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 6, 6, 6]}
+  avg_resource_capacity: { 0: [6, 6, 6]}
   avg_unit_cost: { 0: [ 3, 3, 3 ]}
 #  verbose: True
   verbose: False
@@ -35,11 +35,11 @@ trainer-config:
   framework: torch
 #  num_envs_per_worker: 1
   # number of workers for collecting samples with.
-#  num_workers: 39
-  num_workers: 6  # for run locally
+  num_workers: 18
+#  num_workers: 18  # for run locally
 #  num_workers: 1  # used when checking the log
-#  num_gpus: 2
-  num_gpus: 0  # for run locally
+  num_gpus: 1
+#  num_gpus: 0  # for run locally
 #  # set a seed_value value for each worker as well as for the environment
   seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
@@ -55,20 +55,21 @@ trainer-config:
     custom_model: FCModel
     custom_model_config:
       layers:
+#        gridsearch: [[64, 64], [128, 128], [256, 256], [512, 512], [64, 64, 64], [128, 128, 128], [256, 256, 256], [512, 512, 512]]
         gridsearch: [[256, 256]]
 
   # Trainer parameters
   lr:
-#    gridsearch: [0.0001, 0.001]
-    gridsearch: [0.001]
+    gridsearch: [0.0001, 0.001]
+#    gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-#    gridsearch: [3000, 4000]
-    gridsearch: [3000]
+    gridsearch: [3000, 4000, 5000]
+#    gridsearch: [3000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -76,7 +77,7 @@ trainer-config:
 
 
 stop:
-#  timesteps_total: 10_0000
-  timesteps_total: 6_0000
+  timesteps_total: 15_0000
+#  timesteps_total: 4_0000
 
 #samples: 4

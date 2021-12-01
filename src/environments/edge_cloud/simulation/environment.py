@@ -1228,10 +1228,10 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             logging.debug(
                 f"number of allocated tasks (bidding_zero): {number_of_allocated_tasks_bidding_zero}")
 
-            # infos = {'node_0': f'social welfare increase = {sw_increase}'}
-            infos = {}
-            # info part is None for now
-            # logging.debug(f"observation after step() = {self.obs}")
+        # infos = {'node_0': f'social welfare increase = {sw_increase}'}
+        infos = {}
+        # info part is None for now
+        # logging.debug(f"observation after step() = {self.obs}")
         return self.obs, self.rewards, dones, infos
 
     def get_total_sw_online_myopic(self):
