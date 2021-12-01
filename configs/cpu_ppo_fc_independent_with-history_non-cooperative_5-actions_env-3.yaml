@@ -9,15 +9,15 @@ env: edge_cloud1
 env-config:
   n_nodes: 1
   num_agents: 1
-  n_tasks_in_total: 32
-  n_tasks_to_allocate: 30
-  duration: 20
+  n_tasks_in_total: 22
+  n_tasks_to_allocate: 20
+  duration: 5
   usage_time_ub: 3
   seed: 124
-  random_seed: True
+  random_seed: False
 
 # agents should learn that low-value tasks should not be allocated to node 0
-  avg_resource_capacity: { 0: [ 5, 5, 5]}
+  avg_resource_capacity: { 0: [ 15, 15, 15]}
   avg_unit_cost: { 0: [ 3, 3, 3 ]}
 #  verbose: True
   verbose: False
@@ -35,11 +35,11 @@ trainer-config:
   framework: torch
 #  num_envs_per_worker: 1
   # number of workers for collecting samples with.
-  num_workers: 38
-#  num_workers: 6  # for run locally
+#  num_workers: 39
+  num_workers: 6  # for run locally
 #  num_workers: 1  # used when checking the log
-  num_gpus: 2
-#  num_gpus: 0  # for run locally
+#  num_gpus: 2
+  num_gpus: 0  # for run locally
 #  # set a seed_value value for each worker as well as for the environment
   seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
@@ -74,6 +74,6 @@ trainer-config:
 
 stop:
 #  timesteps_total: 15_0000
-  timesteps_total: 3_0000
+  timesteps_total: 1_0000
 
 #samples: 4

@@ -98,8 +98,8 @@ class EdgeCloudEnv(MultiAgentEnv):
     def __init__(self, config,
                  seed=0, n_timesteps=10, n_tasks=50,
                  max_steps=11,
-                 p_high_value_tasks=0.2, high_value_slackness=0,
-                 low_value_slackness=0, resource_ratio=3, valuation_ratio=3,
+                 p_high_value_tasks=0.3, high_value_slackness=0,
+                 low_value_slackness=0, resource_ratio=1, valuation_ratio=20,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,
@@ -1193,7 +1193,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         if sw_increase > 0:
             self.total_allocated_tasks_num += 1
 
-        # if this is the end of an episode
+        # if this is the end of an episode, run all the benchmarks
         if dones['__all__']:
             logging.debug(
                 f"The number of expensive allocations = {self.n_tasks_expensive}")
@@ -1217,21 +1217,21 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             logging.debug(
                 f"number of allocated tasks (random_allocation): {number_of_allocated_tasks_random_allocation}")
 
-        # run the all bidding zero auction
-        social_welfare_bidding_zero, number_of_allocated_tasks_bidding_zero, allocation_scheme_bidding_zero = \
-            all_bidding_zero(self.df_tasks_bench, self.df_nodes_bench,
-                             self.n_time_bench,
-                             self.n_tasks_bench, self.n_nodes_bench)
-        self.social_welfare_bidding_zero = social_welfare_bidding_zero
-        logging.debug(
-            f"social welfare (bidding_zero): {social_welfare_bidding_zero}")
-        logging.debug(
-            f"number of allocated tasks (bidding_zero): {number_of_allocated_tasks_bidding_zero}")
+            # run the all bidding zero auction
+            social_welfare_bidding_zero, number_of_allocated_tasks_bidding_zero, allocation_scheme_bidding_zero = \
+                all_bidding_zero(self.df_tasks_bench, self.df_nodes_bench,
+                                 self.n_time_bench,
+                                 self.n_tasks_bench, self.n_nodes_bench)
+            self.social_welfare_bidding_zero = social_welfare_bidding_zero
+            logging.debug(
+                f"social welfare (bidding_zero): {social_welfare_bidding_zero}")
+            logging.debug(
+                f"number of allocated tasks (bidding_zero): {number_of_allocated_tasks_bidding_zero}")
 
-        # infos = {'node_0': f'social welfare increase = {sw_increase}'}
-        infos = {}
-        # info part is None for now
-        # logging.debug(f"observation after step() = {self.obs}")
+            # infos = {'node_0': f'social welfare increase = {sw_increase}'}
+            infos = {}
+            # info part is None for now
+            # logging.debug(f"observation after step() = {self.obs}")
         return self.obs, self.rewards, dones, infos
 
     def get_total_sw_online_myopic(self):
