@@ -816,6 +816,7 @@ class EdgeCloudEnv(MultiAgentEnv):
             else:
                 raise ValueError("unrecognised reverse_auction type")
             logging.debug(f"ID of the winner = {winner_index}")
+            logging.debug(f"operational cost of the winner = {winner_cost}")
             logging.debug(f"winner's revenue = {winner_revenue}")
 
             # update social welfare
