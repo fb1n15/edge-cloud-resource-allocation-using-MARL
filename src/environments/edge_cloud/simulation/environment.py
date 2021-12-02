@@ -976,10 +976,15 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             start_time = int(
                 self.df_tasks.loc[
                     self.current_task_id, 'arrive_time'] + relative_start_time + 1)
-            # action is in {1,2,...,9,10}
-            # * 0.9 to avoid bidding the same as the value_coefficient
-            bids_list.append((action + 1) / self.n_actions * self.df_tasks.loc[
-                self.current_task_id, 'valuation_coefficient'])
+            # action is in {0,1,2,...,9}
+            # the smalles action means bidding 0
+            if action == 0:
+                bid = 0
+                bids_list.append(bid)
+            else:  # the biggest action means bidding the maximum VC
+                bid = (action + 1) / self.n_actions * self.df_tasks.loc[
+                    self.current_task_id, 'valuation_coefficient']
+                bids_list.append(bid)
             # if action == 1:
             #     bids_list.append(0.8 * self.df_tasks.loc[
             #         self.current_task_id, 'valuation_coefficient'])
