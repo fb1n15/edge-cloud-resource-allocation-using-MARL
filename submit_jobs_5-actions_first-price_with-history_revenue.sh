@@ -15,7 +15,7 @@
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
 n_tasks=10
 
-CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/5-actions_first-price_no-history_revenue.yaml"
+CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/5-actions_first-price_with-history_revenue.yaml"
 
 echo "Starting Job"
 

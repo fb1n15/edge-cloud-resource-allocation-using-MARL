@@ -1,9 +1,8 @@
-name: 5-actions_first-price_no-history_revenue
+name: 5-actions_first-price_with-history_revenue
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
 
-#env: edge_cloud
 env: edge_cloud1
 
 env-config:
@@ -22,8 +21,8 @@ env-config:
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
-#  record_history: True
-  record_history: False
+  record_history: True
+#  record_history: False
   history_len: 4
   cooperative: False
   n_actions: 5

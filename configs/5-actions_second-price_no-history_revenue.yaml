@@ -1,9 +1,8 @@
-name: 5-actions_first-price_no-history_revenue
+name: 5-actions_second-price_no-history_revenue
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
 
-#env: edge_cloud
 env: edge_cloud1
 
 env-config:
@@ -27,8 +26,8 @@ env-config:
   history_len: 4
   cooperative: False
   n_actions: 5
-  auction_type: 'first-price'
-#  auction_type: 'second-price'
+#  auction_type: 'first-price'
+  auction_type: 'second-price'
 
 
 trainer: PPO
