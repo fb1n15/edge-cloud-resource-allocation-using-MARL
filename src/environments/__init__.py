@@ -8,7 +8,7 @@ def environment_map(name):
         "edge_cloud": {
             "env": EdgeCloudEnv,
             "render": EdgeCloudEnv.render_method()
-        },
+            },
         "edge_cloud1": {
             "env": EdgeCloudEnv1,
             "render": EdgeCloudEnv1.render_method()
@@ -16,10 +16,10 @@ def environment_map(name):
         "gridworld_obstacles_vision_net": {
             "env": GridWorldObstaclesEnv,
             "render": GridWorldObstaclesEnv.render_method()
-        },
+            },
         "gridworld_radar_vision_net": {
             "env": GridWorldRadarRescueEnv,
             "render": GridWorldRadarRescueEnv.render_method()
+            }
         }
-    }
     return environments[name]

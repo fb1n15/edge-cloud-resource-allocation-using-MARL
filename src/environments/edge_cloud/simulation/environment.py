@@ -240,6 +240,7 @@ class EdgeCloudEnv(MultiAgentEnv):
         # an upper bound of the social welfare
         self.total_possible_reward = sum(
             df_tasks.valuation_coefficient * df_tasks.usage_time)
+        logging.debug(f"self.seed_value: {self.seed_value} (after initialising)")
 
     def seed(self, seed_value):
         self.seed_value = seed_value
@@ -832,6 +833,8 @@ class EdgeCloudEnv1(EdgeCloudEnv):
 
         Returns the initial global observation
         """
+
+        logging.debug(f"self.seed_value={self.seed_value} (after reset)")
         # occupancy is zero initially
         self.future_occup = np.zeros((self.n_nodes, self.occup_len, 3))
         self._episode_ended = False
@@ -842,6 +845,7 @@ class EdgeCloudEnv1(EdgeCloudEnv):
         self.total_allocated_tasks_num = 0
         self.n_tasks_expensive = 0
 
+        # reset the tasks
         # generate new tasks for next episode
         (df_tasks, df_nodes, n_time, n_tasks,
          n_nodes) = self.data_for_next_episode()
