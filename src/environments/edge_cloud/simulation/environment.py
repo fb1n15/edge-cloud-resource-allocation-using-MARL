@@ -10,6 +10,7 @@ from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
 from benchmarks.all_bidding_zero import all_bidding_zero
+from benchmarks.offline_optimal_m import offline_optimal
 from benchmarks.online_myopic_m import online_myopic
 from benchmarks.random_allocation import random_allocation
 from environments.gridworld_obstacles.simulation.entities import Agent
@@ -1240,6 +1241,16 @@ class EdgeCloudEnv1(EdgeCloudEnv):
             logging.debug(
                 f"number of allocated tasks (bidding_zero): {number_of_allocated_tasks_bidding_zero}")
 
+            # run the Offline Optimal benchmark
+            social_welfare_offline_optimal, number_of_allocated_tasks_bidding_zero, allocation_scheme_bidding_zero = \
+                offline_optimal(self.df_tasks_bench, self.df_nodes_bench,
+                                 self.n_time_bench,
+                                 self.n_tasks_bench, self.n_nodes_bench)
+            self.social_welfare_offline_optimal = social_welfare_offline_optimal
+            logging.debug(
+                f"social welfare (Offline Optimal): {social_welfare_offline_optimal}")
+            logging.debug(
+                f"number of allocated tasks (Offline Optimal): {number_of_allocated_tasks_bidding_zero}")
         # infos = {'node_0': f'social welfare increase = {sw_increase}'}
         infos = {}
         # info part is None for now

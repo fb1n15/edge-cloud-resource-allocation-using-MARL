@@ -143,13 +143,13 @@ def compute_walfare_based_on_tasks(model_solution, df_tasks, df_nodes):
     #     [(df_tasks.loc[task, 'valuation_coefficient'] / df_tasks.loc[task, 'usage_time'] -
     #       (df_tasks.loc[task, 'CPU'] * df_nodes.loc[node, 'CPU_cost'] +
     #        df_tasks.loc[task, 'RAM'] * df_nodes.loc[node, 'RAM_cost'] +
-    #        df_tasks.loc[task, 'DISK'] * df_nodes.loc[node, 'DISK_cost'])) * task_usage[task]
+    #        df_tasks.loc[task, 'storage'] * df_nodes.loc[node, 'storage_cost'])) * task_usage[task]
     #      for (task, node) in tasks_dict.items()])
     return sum(
         [(df_tasks.loc[task, 'valuation_coefficient'] -
           (df_tasks.loc[task, 'CPU'] * df_nodes.loc[node, 'CPU_cost'] +
            df_tasks.loc[task, 'RAM'] * df_nodes.loc[node, 'RAM_cost'] +
-           df_tasks.loc[task, 'DISK'] * df_nodes.loc[node, 'DISK_cost'])) *
+           df_tasks.loc[task, 'storage'] * df_nodes.loc[node, 'storage_cost'])) *
          task_usage[task]
          for (task, node) in tasks_dict.items()])
 
@@ -240,9 +240,9 @@ def offline_optimal(df_tasks, df_nodes, timestamp_nr, task_nr, node_nr,
                                <= df_nodes.loc[fog_node, 'RAM'])
 
             mdl.add_constraint(mdl.sum(
-                z[task, fog_node, timestamp] * df_tasks.loc[task, 'DISK']
+                z[task, fog_node, timestamp] * df_tasks.loc[task, 'storage']
                 for task in range(task_nr)) <= df_nodes.loc[
-                                   fog_node, 'DISK'])
+                                   fog_node, 'storage'])
 
     # one tasktimestamp is only processed in one fog node
     for timestamp in range(timestamp_nr):
@@ -303,14 +303,14 @@ def offline_optimal(df_tasks, df_nodes, timestamp_nr, task_nr, node_nr,
         for task in range(task_nr) for fog_node in range(node_nr) for timestamp
         in
         range(timestamp_nr))
-    DISK_cost = mdl.sum(
-        df_tasks.loc[task, 'DISK'] * df_nodes.loc[fog_node, 'DISK_cost'] * z[
+    storage_cost = mdl.sum(
+        df_tasks.loc[task, 'storage'] * df_nodes.loc[fog_node, 'storage_cost'] * z[
             task, fog_node, timestamp]
         for task in range(task_nr) for fog_node in range(node_nr) for timestamp
         in
         range(timestamp_nr))
 
-    social_welfare = value_of_tasks - CPU_cost - RAM_cost - DISK_cost
+    social_welfare = value_of_tasks - CPU_cost - RAM_cost - storage_cost
 
     # the objective is to maximise the social welfare
     mdl.maximize(social_welfare)
@@ -346,6 +346,6 @@ def offline_optimal(df_tasks, df_nodes, timestamp_nr, task_nr, node_nr,
                                nr_timestamps=timestamp_nr,
                                cplex_solution=mdl.solution)
 
-    return social_walfare_by_task_count, social_welfare.solution_value, number_of_allocated_tasks, output
+    # return social_walfare_by_task_count, social_welfare.solution_value, number_of_allocated_tasks, output
 
-    # return social_welfare.solution_value, number_of_allocated_tasks, z
+    return social_welfare.solution_value, number_of_allocated_tasks, z
