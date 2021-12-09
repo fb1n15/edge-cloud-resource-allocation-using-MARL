@@ -69,7 +69,7 @@ trainer-config:
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
 #    gridsearch: [3000, 4000]
-    gridsearch: [300]
+    gridsearch: [2000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -78,6 +78,6 @@ trainer-config:
 
 stop:
 #  timesteps_total: 10_0000
-  episodes_total: 10
+  episodes_total: 150
 
 #samples: 4

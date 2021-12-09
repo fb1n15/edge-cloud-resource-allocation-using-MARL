@@ -1266,6 +1266,10 @@ class EdgeCloudEnv1(EdgeCloudEnv):
     def get_total_sw_bidding_zero(self):
         return self.social_welfare_bidding_zero
 
+    def get_total_sw_offline_optimal(self):
+        # return the social welfare of the offline optimal algo.
+        return self.social_welfare_offline_optimal
+
 
 class GlobalObsEdgeCloudEnv(MultiAgentEnv):
     # example source (https://github.com/ray-project/ray/blob/ced062319dca261b72b42d78048a167818c1f729/rllib/examples/centralized_critic_2.py#L73)
