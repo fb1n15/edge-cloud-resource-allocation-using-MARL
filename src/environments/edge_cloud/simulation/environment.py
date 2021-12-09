@@ -242,8 +242,10 @@ class EdgeCloudEnv(MultiAgentEnv):
             df_tasks.valuation_coefficient * df_tasks.usage_time)
         logging.debug(f"self.seed_value: {self.seed_value} (after initialising)")
 
-    def seed(self, seed_value):
-        self.seed_value = seed_value
+    # def seed(self, seed_value):
+    #     logging.debug("where is this seed() called?")
+    #     logging.debug(f"seed_value: {seed_value} (in seed())")
+    #     self.seed_value = seed_value
 
     def data_for_next_episode(self):
         logging.debug(f"average resource capacity = {self.avg_resource_capacity}")
