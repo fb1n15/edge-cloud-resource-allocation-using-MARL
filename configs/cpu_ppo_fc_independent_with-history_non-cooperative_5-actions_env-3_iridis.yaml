@@ -37,7 +37,7 @@ trainer-config:
 #  num_envs_per_worker: 1
   # number of workers for collecting samples with.
 #  num_workers: 39
-  num_workers: 10  # for run locally
+  num_workers: 1  # for run locally
 #  num_workers: 1  # used when checking the log
 #  num_gpus: 2
   num_gpus: 0  # for run locally
@@ -69,7 +69,7 @@ trainer-config:
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
 #    gridsearch: [3000, 4000]
-    gridsearch: [2000]
+    gridsearch: [200]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -78,6 +78,6 @@ trainer-config:
 
 stop:
 #  timesteps_total: 10_0000
-  episodes_total: 150  # stop after this many episodes
+  episodes_total: 10  # stop after this many episodes
 
 #samples: 4
