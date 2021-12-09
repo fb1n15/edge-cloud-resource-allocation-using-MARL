@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script is used to run the jobs on the iridis cluster.
+# To use cplex
+export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
+
 # run just one job
 CONFIG_FILE="./configs/cpu_ppo_fc_independent_with-history_non-cooperative_5-actions_env-3_iridis.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
