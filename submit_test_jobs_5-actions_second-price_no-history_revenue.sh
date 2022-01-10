@@ -1,21 +1,23 @@
 #!/bin/bash
 
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
-#SBATCH --ntasks=10  # Number of Tasks (up-to 32 nodes running at the same time)
+#SBATCH --ntasks=1  # Number of Tasks (up-to 32 nodes running at the same time)
 #SBATCH --cpus-per-task=40  # use multiple cores each for multithreading
-#SBATCH --time=06:00:00
+#SBATCH --time=00:05:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
+#SBATCH --requeue
+#SBATCH --partition=scavenger  # for run short/test jobs
 
 # (https://stackoverflow.com/a/67537416/7060068)
-# #SBATCH --nodes=2  # Number of nodes requested
+# #SBATCH --nodes=1  # Number of nodes requested
 # #SBATCH --exclusive          # I don't want to share my compute node with anyone
 # #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to the project location
-n_tasks=10
+n_tasks=1
 
-CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/5-actions_first-price_with-history_revenue.yaml"
+CONFIG_FILE1="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/5-actions_second-price_no-history_revenue.yaml"
 
 echo "Starting Job"
 

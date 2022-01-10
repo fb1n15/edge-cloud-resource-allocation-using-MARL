@@ -3,7 +3,7 @@
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out
 #SBATCH --ntasks=10  # Number of Tasks (up-to 32 nodes running at the same time)
 #SBATCH --cpus-per-task=40  # use multiple cores each for multithreading
-#SBATCH --time=7:00:00
+#SBATCH --time=06:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fan_bi@icloud.com
 
@@ -21,8 +21,10 @@ echo "Starting Job"
 
 module load conda/py3-latest
 source activate jack
+module load cplex/12.8
 module load openmpi/3.0.0/intel
-export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
+# put cplex into PYTHONPATH
+export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
 mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE1
 
