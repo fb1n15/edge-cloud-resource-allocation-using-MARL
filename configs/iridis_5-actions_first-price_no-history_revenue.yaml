@@ -1,4 +1,4 @@
-name: edge_cloud_independent_ppo_one-node_2-actions_env-3
+name: 5-actions_first-price_no-history_revenue
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -22,8 +22,8 @@ env-config:
 #  verbose: True
   verbose: False
 #  "log_level": "DEBUG"
-  record_history: True
-#  record_history: False
+#  record_history: True
+  record_history: False
   history_len: 4
   cooperative: False
   n_actions: 5
@@ -34,20 +34,15 @@ env-config:
 trainer: PPO
 trainer-config:
   framework: torch
-#  num_envs_per_worker: 1
   # number of workers for collecting samples with.
-#  num_workers: 39
-  num_workers: 1  # for run locally
-#  num_workers: 1  # used when checking the log
-#  num_gpus: 2
-  num_gpus: 0  # for run locally
+  num_workers: 38 # use 6 cores out of 8 CPU cores
+  num_gpus: 2
 #  # set a seed_value value for each worker as well as for the environment
   seed: 124
   # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
   # https://gitmemory.com/issue/ray-project/ray/9399/683323479
   # https://intellabs.github.io/coach/components/filters/input_filters.html
   "observation_filter": "MeanStdFilter"
-#  "observation_filter": "NoFilter"
   # Whether to synchronize the statistics of remote filters.
   "synchronize_filters": True
 
@@ -57,27 +52,29 @@ trainer-config:
     custom_model_config:
       layers:
         gridsearch: [[256, 256]]
+#        gridsearch: [[256, 256], [256, 256, 256]]
 
   # Trainer parameters
   lr:
+     gridsearch: [0.001]
 #    gridsearch: [0.0001, 0.001]
-    gridsearch: [0.001]
   lambda: 1.0
   entropy_coeff: 0.0
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
+    gridsearch: [3000]
 #    gridsearch: [3000, 4000]
-    gridsearch: [2000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
-#  sgd_minibatch_size: 128
+  sgd_minibatch_size: 128
 
 
 stop:
-  timesteps_total: 10_0000
-#  episodes_total: 100
+#  timesteps_total: 10_0000
+  timesteps_total: 4_0000
 
-#samples: 4
+# how many trials to run for each hyperparameter combinations
+samples: 1

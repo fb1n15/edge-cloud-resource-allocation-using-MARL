@@ -100,7 +100,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                  seed=0, n_timesteps=10, n_tasks=50,
                  max_steps=11,
                  p_high_value_tasks=0.3, high_value_slackness=0,
-                 low_value_slackness=0, resource_ratio=1, valuation_ratio=20,
+                 low_value_slackness=0, resource_ratio=1, valuation_ratio=10,
                  resource_coefficient=0.2,
                  forgiveness_factor=30, logging_level=logging.DEBUG,
                  allow_negative_reward=False,

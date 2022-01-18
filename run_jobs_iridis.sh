@@ -5,8 +5,22 @@
 export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
 # run just one job
-CONFIG_FILE="./configs/cpu_ppo_fc_independent_with-history_non-cooperative_5-actions_env-3_iridis.yaml"
+CONFIG_FILE="./configs/iridis_5-actions_first-price_with-history_revenue.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #for CONFIG_FILE in "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without_history.yaml" "Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_without_history.yaml"
 #do

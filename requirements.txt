@@ -27,6 +27,7 @@ google-api-core==1.25.1
 google-auth==1.24.0
 googleapis-common-protos==1.52.0
 gpustat==0.6.0
+GPUtil==1.4.0
 grpcio @ file:///opt/concourse/worker/volumes/live/d0c27b04-1d51-475c-6a4c-f62699e6198e/volume/grpcio_1613130408516/work
 gym==0.18.0
 hiredis==1.1.0
