@@ -1,56 +1,41 @@
 # Multi-Agent Reinforcement Learning for Disaster Response
 A third year individual project.
 
-## Build instructions for Windows 10
+## Build instructions for MacOS
 
-Install Python 3.6
+Install Python 3.6.13
 
 Install CUDA toolkit 10.2 (https://developer.nvidia.com/cuda-10.2-download-archive?target_os=Windows&target_arch=x86_64&target_version=10&target_type=exenetwork), and cudnn 8.1.1 (https://developer.nvidia.com/rdp/cudnn-download)
 
 For cudnn installation guide, see: https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html#install-windows
 
-`python3 -m venv venv`
+`conda create --name edge-cloud-resource-allocation python=3.6`
 
-`source venv/bin/activate`
+`conda activate edge-cloud-resource-allocation`
 
 `pip install --upgrade pip`
 
 `pip install -r requirements.txt`
 
+For Windows
+
 `pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-win_amd64.whl`
+
+For MacOS
+
+`pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-2.0.0.dev0-cp36-cp36m-macosx_10_15_intel.whl`
+
+- with GPU:
 
 `pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 torchaudio===0.8.1 -f https://download.pytorch.org/whl/torch_stable.html`
 
-## Build Instructions for Lycuim 4
+- without GPU:
 
-### Create docker image on docker hub
+`pip install torch==1.8.1 torchvision==0.9.1 torchaudio===0.8.1 -f 
+https://download.pytorch.org/whl/torch_stable.html`
 
-`docker build --tag marl-diaster-image .`
+- To install the CPLEX-Python modules on your system, use the script setup.py located in `CPLEX_Studio1210/cplex/python/VERSION/PLATFORM`.
 
-`docker tag marl-diaster-image jparons74/marl-disaster:v2 `
-
-`docker push jparons74/marl-disaster:v2`
-
-### Run on Iridis 4 with singularity
-
-Create singularity container with 
-
-`module load singularity`
-
-`singularity build image.sif docker://jparons74/marl-disaster:v4`
-
-
-Set python path to be the sources root of src/
-
-`export PYTHONPATH="${PYTHONPATH}:/lyceum/jp6g18/git/marl_disaster_relief/src"`
-
-Run with 
-
-`singularity exec image.sif python src/marl-disaster.py train`
-
-or
-
-`qsub run.sh -l nodes=2:ppn=16`
 
 ## Build Instructions on Lycuim 5
 
@@ -83,3 +68,70 @@ or
 `tensorboard dev upload --logdir "results/<experiment>" --name "MARL Disaster Response" --description "Training drones in a gridworld disaster simulation environment"`
 
 (`ctrl-b d` to exit tmux window)
+
+## Instructions for Iridis5
+
+## Run on the login node
+```shell
+cd MARL-ReverseAuction/marl-edge-cloud
+module load conda/py3-latest
+source activate jack
+bash ./src/run_jobs_locally.sh
+```
+
+## Request an interactive node
+```shell
+cd MARL-ReverseAuction/marl-edge-cloud
+module load conda/py3-latest
+source activate jack
+sinteractive -p gpu --gres=gpu:2 --time=04:00:00 --mem=16GB --job-name=marl-edge-cloud
+```
+
+then use it like a local machine, e.g.,
+```shell
+bash ./run_jobs_locally.sh
+```
+
+## Submit batch jobs
+
+```sbatch --array=<config_indices> -p batch run_<experiment_name>.sh```
+or
+```sbatch --array=<config_indices> -p gpu run_<experiment_name>.sh```
+
+
+## Local port forwarding
+
+### method 1
+
+First, add the following lines to your `.ssh/config` on your laptop. Look here if you want a slightly more detailed instruction on how to access your computer remotely.
+```shell
+Host workstation
+     HostName <hostname>
+     User <username>
+     Port <port>
+     LocalForward 8888 localhost:8888
+     LocalForward 6006 localhost:6006
+```
+
+### method 2
+
+```shell
+ssh -L 8000:localhost:8888 fb1n15@iridis5_b.soton.ac.uk
+```
+
+### notes
+#### Local port forwarding
+
+- You can use `ssh -L` to forward a port from your local machine to a remote machine.
+- to run tensorboard, typing `tensorboard --logdir="results/<experiment>" --port=6006` on the logging node (not on the iteractive job node). (6006 can be changed to any port number) 
+- [source1](https://towardsdatascience.com/jupyter-and-tensorboard-in-tmux-5e5d202a4fb6), [source2](https://www.digitalocean.com/community/tutorials/how-to-install-run-connect-to-jupyter-notebook-on-remote-server)
+
+#### Precautions
+
+- Do not load `conda` on the login node before requesting an interactive node. (This may cause the `ModuleNotFoundError: No module named 'ray'` error in the interactive node.)
+
+
+## ToDos
+
+- [x] move iridis5 output file (slurm-***.out) to a folder (maybe called iridis5-output)
+- [ ] how to put other parameters to the name of the RL results? So that I can distinguish different simulations.

@@ -50,6 +50,7 @@ class ConvolutionalModel(TorchModelV2, nn.Module):
         logits = x.squeeze(3)
         logits = logits.squeeze(2)
 
+
         return logits, hidden_state
 
     @override(TorchModelV2)

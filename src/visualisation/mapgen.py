@@ -2,14 +2,14 @@ import thorpy
 
 import pygame
 
-from environments import environments
-from visualisation import gridworld_vis
+from environments import environment_map
 from visualisation.run_model import WIDTH, HEIGHT
 
 
-def main(env=environments["gridworld_obstacles"]):
+def main(config):
     """This is for testing the map generation and graphics"""
-    env_controller = env["env"](env["env_config"]).controller
+    env = environment_map(config["env"])
+    env_controller = env["env"](config["env-config"]).controller
     env_controller.initialise()
 
     pygame.init()

@@ -27,25 +27,24 @@ class FCModel(TorchModelV2, nn.Module):
             layers.append(nn.Sequential(
                 nn.Linear(in_features=model_outputs, out_features=layer_dim),
                 nn.ReLU(),
-            ))
+                ))
             model_outputs = layer_dim
 
         self.model = nn.Sequential(
             *layers
-        )
+            )
 
         self._value_branch = nn.Sequential(
             nn.Linear(in_features=model_outputs, out_features=1)
-        )
+            )
 
         self._logits = nn.Sequential(
             nn.Linear(in_features=model_outputs, out_features=num_outputs)
-        )
+            )
 
     @override(ModelV2)
     def forward(self, input_dict, hidden_state, seq_lens):
         obs_flat = input_dict["obs_flat"].float()
-
 
         self._features = self.model(obs_flat)
         x = self._logits(self._features)

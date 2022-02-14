@@ -40,6 +40,7 @@ class GridWorldObstaclesEnv(MultiAgentEnv):
     def reset(self) -> MultiAgentDict:
         self.controller.initialise()
         # Discard observation based rewards for first iteration
+        print(f"return of reset() = {self.controller.get_observations(self._empty_reward_map())}")
         return self.controller.get_observations(self._empty_reward_map())
 
     def step(self, action_dict: MultiAgentDict) -> Tuple[
@@ -50,6 +51,7 @@ class GridWorldObstaclesEnv(MultiAgentEnv):
         obs = self.controller.get_observations(rew)
         done = {"__all__": self.controller.all_agents_dead()}
 
+        # print(f"observations after step() = {obs}")
         return obs, rew, done, {}
 
     def num_agents_crashed(self):

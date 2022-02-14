@@ -44,8 +44,8 @@ trainer: PPO
 trainer-config:
   framework: torch
   num_envs_per_worker: 1
-  num_workers: 10
-  num_gpus: 1
+  num_workers: 1
+  num_gpus: 0
 
   # Model config
   model:
@@ -63,6 +63,6 @@ trainer-config:
 stop:
   timesteps_total: 500_000
 
-samples: 4
+samples: 1
 
-grouping: all_same
+grouping: centralised

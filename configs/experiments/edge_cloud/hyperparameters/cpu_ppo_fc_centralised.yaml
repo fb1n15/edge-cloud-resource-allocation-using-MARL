@@ -1,0 +1,75 @@
+#https://docs.ray.io/en/master/rllib-training.html
+name: edge_cloud_centralised_ppo_fc_depth2
+
+# the environment specifier
+env: edge_cloud
+
+env-config:
+  n_nodes: 3
+  num_agents: 3
+#  avg_resource_capacity: { 0: [ 5, 5, 5 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+#  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 3, 3, 3 ], 2: [ 3, 3, 3 ] }
+#  # set an easy environment, one agent have many resources and very cheep
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
+  avg_unit_cost: { 0: [ 3, 3, 3 ], 1: [ 1, 1, 1 ], 2: [ 1, 1, 1 ] }
+#  verbose: True
+  verbose: False
+  obs_length: 37
+  n_actions: 2
+  record_history: False
+  cooperative: True
+
+
+trainer: PPO
+trainer-config:
+  # Deep Learning framework Setting (PyTorch)
+  framework: torch
+  # number of workers for collecting samples parallelly.
+  num_workers: 4
+  # number of environments to evaluate vector-wise per worker. (???)
+  num_envs_per_worker: 1
+  # Number of GPUs to allocate to the trainer process.
+  num_gpus: 0
+  # This argument, in conjunction with worker_index, sets the random seed of
+  # each worker, so that identically configured trials will have identical
+  # results. This makes experiments reproducible.
+  seed: 123
+  # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
+  # https://gitmemory.com/issue/ray-project/ray/9399/683323479
+  "observation_filter": "MeanStdFilter"
+  # Whether to synchronize the statistics of remote filters.
+  "synchronize_filters": True
+
+  # Model config
+  model:
+#    custom_model: CentralisedCriticFCModel
+    custom_model: CentralisedModelFC
+    custom_model_config:
+      layers: [256, 256]
+
+  # Trainer parameters
+  # Learning rate
+  lr:
+    gridsearch: [0.0001]
+#    gridsearch: [0.00001, 0.001, 0.0001]
+  lambda: 1.0
+  entropy_coeff: 0.0
+#  # Sample batches of this size are collected from rollout workers and combined into a larger batch of `train_batch_size` for learning.
+#  rollout_fragment_length: 200
+  batch_mode: "complete_episodes"
+  # The size of each SGD epoch = Size of Training Set
+  train_batch_size:
+      gridsearch: [4000]
+#  # The minibatch size within each epoch.
+#  # This number of samples will be worked through before updating the model's internal parameters.
+#  sgd_minibatch_size: 400
+
+# stop critiera
+stop:
+  timesteps_total: 100_000
+
+#samples: 6 # number of triale space to scroll down
+#num_samples: 4
+
+# use the centralised-critic approach
+grouping: all_same

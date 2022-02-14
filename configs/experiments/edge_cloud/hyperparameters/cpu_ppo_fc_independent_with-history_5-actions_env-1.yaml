@@ -1,0 +1,76 @@
+name: edge_cloud_independent_ppo_with_history_5-actions_env-1
+# https://docs.ray.io/en/master/rllib-algorithms.html
+# rllib algorithms and their configs
+# common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
+
+#env: edge_cloud
+env: edge_cloud1
+
+env-config:
+  n_nodes: 3
+  num_agents: 3
+  n_tasks_in_total: 7
+  n_tasks_to_allocate: 5
+  duration: 20
+  usage_time_ub: 6
+  seed: 124
+
+# agents should learn that low-value tasks should not be allocated to node 0
+  avg_resource_capacity: { 0: [ 50, 50, 50 ], 1: [ 5, 5, 5], 2: [ 5, 5, 5 ] }
+  avg_unit_cost: { 0: [ 8, 8, 8 ], 1: [ 0, 0, 0 ], 2: [ 0, 0, 0 ] }
+#  verbose: True
+  verbose: False
+#  "log_level": "DEBUG"
+  record_history: True
+  history_len: 3
+  cooperative: True
+  n_actions: 5
+  auction_type: 'first-price'
+
+
+
+trainer: PPO
+trainer-config:
+  framework: torch
+  num_envs_per_worker: 1
+  # number of workers for collecting samples with.
+  num_workers: 7
+#  num_workers: 1  # used when checking the log
+  num_gpus: 0
+  # set a seed_value value for each worker as well as for the environment
+  seed: 124
+  # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
+  # https://gitmemory.com/issue/ray-project/ray/9399/683323479
+  "observation_filter": "MeanStdFilter"
+  # Whether to synchronize the statistics of remote filters.
+  "synchronize_filters": True
+
+  # Model config
+  model:
+    custom_model: FCModel
+    custom_model_config:
+      layers: [256, 256, 256, 256]
+
+  # Trainer parameters
+  lr:
+#    gridsearch: [0.0001, 0.001]
+    gridsearch: [0.0001]
+  lambda: 1.0
+  entropy_coeff: 0.0
+  batch_mode: "complete_episodes"
+#  rollout_fragment_length: 220
+  # The size of each SGD epoch = Size of Training Set
+  train_batch_size:
+#    gridsearch: [3000, 4000]
+    gridsearch: [3000]
+  # The minibatch size within each epoch.
+  # This number of samples will be worked through before updating the model's
+  #    internal parameters.
+#  sgd_minibatch_size: 128
+
+
+stop:
+  timesteps_total: 15_0000
+#  timesteps_total: 1_0000
+
+#samples: 3
