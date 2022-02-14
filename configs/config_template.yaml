@@ -83,8 +83,8 @@ trainer-config:
 
 
 stop:
-  timesteps_total: 10_0000
+  timesteps_total: 100
 #  timesteps_total: 6_0000
 #  timesteps_total: 6_000
 # how many trials to run for each hyperparameter combinations
-samples: 12
+samples: 1
