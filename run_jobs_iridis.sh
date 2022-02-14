@@ -5,7 +5,7 @@
 export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
 # run just one job
-CONFIG_FILE="./configs/iridis_5-actions_first-price_with-history_revenue.yaml"
+CONFIG_FILE="./configs/iridis5_config.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
 
 

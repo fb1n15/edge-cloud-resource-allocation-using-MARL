@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# run just one job
-CONFIG_FILE="./configs/local_5-actions_first-price_no-history_revenue.yaml"
+# run just one trial
+CONFIG_FILE="./configs/local_config_1.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
 
 
