@@ -209,7 +209,8 @@ def train(config):
 
 
 def main(config):
-    ray.init(log_to_driver=True)  # https://github.com/ray-project/ray/issues/5048
+    # to stop the warnings, they are too many (To disable ray workers from logging the output.)
+    ray.init(log_to_driver=False)  # https://github.com/ray-project/ray/issues/5048
     analysis = train(config)
     print(analysis)
 
