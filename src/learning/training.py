@@ -163,8 +163,8 @@ def get_trainer_config(config):
 
 def train(config):
     """
-    :param config:
-    :return: Analysis object
+    param config:
+    return: Analysis object
     """
 
     trainer_config = get_trainer_config(config)
@@ -210,7 +210,8 @@ def train(config):
 
 def main(config):
     # to stop the warnings, they are too many (To disable ray workers from logging the output.)
-    ray.init(log_to_driver=False)  # https://github.com/ray-project/ray/issues/5048
+    # https://github.com/ray-project/ray/issues/5048
+    ray.init(log_to_driver=False, include_dashboard=False)
     analysis = train(config)
     print(analysis)
 

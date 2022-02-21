@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="./configs/config_local.yaml"
+CONFIG_FILE="./configs/config_local_first-price.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE"
 
 

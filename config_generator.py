@@ -13,14 +13,31 @@ seed = 1
 random.seed(seed)  # set the seed for the random number generator
 
 # modify the config template
+# set the seeds
 config['env-config']['seed'] = random.randint(0, 10000)
 print("environment seed: ", config['env-config']['seed'])
 config['trainer-config']['seed'] = random.randint(0, 10000)
 print("RL algorithm seed: ", config['trainer-config']['seed'])
-config['trainer-config']['train_batch_size']['gridsearch'] = [1000]
-config['stop']['timesteps_total'] = 3000
+# stop the experiment after a certain number of timesteps
+config['stop']['timesteps_total'] = 10000
 
+# hyperparameters setting
+# learning rate
+config['trainer-config']['lr']['gridsearch'] = [0.0001]
+# train batch size
+config['trainer-config']['train_batch_size']['gridsearch'] = [3000]
+# mini-batch size
+config['trainer-config']['sgd_minibatch_size']['gridsearch'] = [64]
 
-# write the config file
-with open("./configs/config_local.yaml", 'w') as outfile:
-    yaml.dump(config, outfile)
+# set the number of CPU cores and GPUs
+config['trainer-config']['num_workers'] = 6  # number of CPU cores
+config['trainer-config']['num_gpus'] = 0  # number of GPUs
+
+for auction_type in ['first-price', 'second-price']:
+    # set the auction type
+    config['env-config']['auction_type'] = auction_type
+    # set the name of the trial
+    config['name'] = f'5-actions_{auction_type}_no-history_revenue'
+    # write the config file
+    with open(f"./configs/config_{auction_type}.yaml", 'w') as outfile:
+        yaml.dump(config, outfile)
