@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="./configs/config_local_first-price.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE"
+CONFIG_FILE="./configs/config_first-price.yaml"
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 2
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 3
 
 
 

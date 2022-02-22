@@ -19,7 +19,8 @@ print("environment seed: ", config['env-config']['seed'])
 config['trainer-config']['seed'] = random.randint(0, 10000)
 print("RL algorithm seed: ", config['trainer-config']['seed'])
 # stop the experiment after a certain number of timesteps
-config['stop']['timesteps_total'] = 10000
+config['stop']['timesteps_total'] = 5000
+config['samples'] = 1
 
 # hyperparameters setting
 # learning rate
