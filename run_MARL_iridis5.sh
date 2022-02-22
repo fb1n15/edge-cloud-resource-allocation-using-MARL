@@ -5,8 +5,8 @@
 export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
 # run just one job
-CONFIG_FILE="./configs/config_first-price.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE"
+CONFIG_FILE="./configs/config_file.yaml"
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
 
 

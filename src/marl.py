@@ -68,7 +68,7 @@ def main():
 
     restore = False
     config = load_yaml(args.config)  # the dictionary of configurations
-    env_seed = args.env_seed  # the seed for the environment
+    env_seed = int(args.env_seed)  # the seed for the environment
     config['env-config']['seed'] = env_seed
     print(f"The env seed = {config['env-config']['seed']}")
     if config['env-config']['random_seed']:
