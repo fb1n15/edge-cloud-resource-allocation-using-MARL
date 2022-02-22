@@ -1,0 +1,77 @@
+Running SLURM prolog script on gold52.cluster.local
+===============================================================================
+Job started on Tue Oct 26 12:47:37 BST 2021
+Job ID          : 596856
+Job name        : run_with_different_seeds.sh
+WorkDir         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud
+Command         : ./run_with_different_seeds.sh
+Partition       : serial
+Num hosts       : 1
+Num cores       : 14
+Num of tasks    : 14
+Hosts allocated : gold52
+Job Output Follows ...
+===============================================================================
+Starting Job
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Traceback (most recent call last):
+  File "./src/marl.py", line 10, in <module>
+    from numpy.random import randint
+ModuleNotFoundError: No module named 'numpy'
+Finishing job
+==============================================================================
+Running epilogue script on gold52.
+
+Submit time  : 2021-10-26T12:47:36
+Start time   : 2021-10-26T12:47:37
+End time     : 2021-10-26T12:47:39
+Elapsed time : 00:00:02 (Timelimit=02:00:00)
+
+Job ID: 596856
+Array Job ID: 596856_1
+Cluster: i5
+User/Group: fb1n15/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 14
+CPU Utilized: 00:00:01
+CPU Efficiency: 3.57% of 00:00:28 core-walltime
+Job Wall-clock time: 00:00:02
+Memory Utilized: 2.29 MB
+Memory Efficiency: 0.00% of 161.60 GB
+

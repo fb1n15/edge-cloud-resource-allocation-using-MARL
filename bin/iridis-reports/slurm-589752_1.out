@@ -1,0 +1,49 @@
+Running SLURM prolog script on gold53.cluster.local
+===============================================================================
+Job started on Fri Oct 22 13:23:38 BST 2021
+Job ID          : 589752
+Job name        : run_edge_hyperparameter_batch_partition.sh
+WorkDir         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud
+Command         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/run_edge_hyperparameter_batch_partition.sh
+Partition       : serial
+Num hosts       : 1
+Num cores       : 14
+Num of tasks    : 14
+Hosts allocated : gold53
+Job Output Follows ...
+===============================================================================
+Starting Job
+# conda environments:
+#
+jack                  *  /home/fb1n15/.conda/envs/jack
+maddpg                   /home/fb1n15/.conda/envs/maddpg
+marl-medium              /home/fb1n15/.conda/envs/marl-medium
+parametersharing         /home/fb1n15/.conda/envs/parametersharing
+py3venv                  /home/fb1n15/.conda/envs/py3venv
+base                     /local/software/conda/miniconda-py3-new
+serviceline              /local/software/conda/miniconda-py3-new/envs/serviceline
+
+Python 3.6.4 :: Anaconda, Inc.
+python: can't open file 'src/marl-disaster.py': [Errno 2] No such file or directory
+Finishing job
+==============================================================================
+Running epilogue script on gold53.
+
+Submit time  : 2021-10-22T13:23:25
+Start time   : 2021-10-22T13:23:26
+End time     : 2021-10-22T13:24:27
+Elapsed time : 00:01:01 (Timelimit=04:00:00)
+
+Job ID: 589752
+Array Job ID: 589752_1
+Cluster: i5
+User/Group: fb1n15/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 14
+CPU Utilized: 00:00:02
+CPU Efficiency: 0.23% of 00:14:14 core-walltime
+Job Wall-clock time: 00:01:01
+Memory Utilized: 12.62 MB
+Memory Efficiency: 0.01% of 161.60 GB
+

@@ -57,6 +57,7 @@ class CLIPromptExperimentChooser(ExperimentChooser):
 
 
 def main():
+    print("Start parsing arguments")
     parser = argparse.ArgumentParser()
     parser.add_argument('run_option', choices=['train', 'run', 'mapgen'])
     # parser.add_argument('--restore', action='store_true')
@@ -81,6 +82,7 @@ def main():
 
     # train the model
     if args.run_option == "train":
+        print("Start training")
         from learning import training
         training.main(config)
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is used to run the jobs on the iridis cluster.
+# This script is used to run the jobs on the iridis5 HPC
 # To use cplex
 export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 

@@ -1,0 +1,31 @@
+Running SLURM prolog script on gold52.cluster.local
+===============================================================================
+Job started on Tue Oct 26 13:02:25 BST 2021
+Job ID          : 596906
+Job name        : run_with_different_seeds.sh
+WorkDir         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud
+Command         : ./run_with_different_seeds.sh
+Partition       : serial
+Num hosts       : 1
+Num cores       : 14
+Num of tasks    : 14
+Hosts allocated : gold52
+Job Output Follows ...
+===============================================================================
+Starting Job
+Traceback (most recent call last):
+  File "./src/marl.py", line 97, in <module>
+    main()
+  File "./src/marl.py", line 68, in main
+    config = load_yaml(args.config)  # the dictionary of configurations
+  File "/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/src/common/config_file_handler.py", line 6, in load_yaml
+    with open(filename) as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'configs/experiments/hyperparameters/cpu_ppo_fc_independent_with_history.yaml'
+Traceback (most recent call last):
+  File "./src/marl.py", line 97, in <module>
+    main()
+  File "./src/marl.py", line 68, in main
+    config = load_yaml(args.config)  # the dictionary of configurations
+  File "/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/src/common/config_file_handler.py", line 6, in load_yaml
+    with open(filename) as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'configs/experiments/hyperparameters/cpu_ppo_fc_independent_with_history.yaml'
