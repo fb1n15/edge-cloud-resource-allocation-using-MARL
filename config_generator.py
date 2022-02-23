@@ -19,7 +19,7 @@ print("environment seed: ", config['env-config']['seed'])
 config['trainer-config']['seed'] = random.randint(0, 10000)
 print("RL algorithm seed: ", config['trainer-config']['seed'])
 # stop the experiment after a certain number of timesteps
-config['stop']['timesteps_total'] = 50000
+config['stop']['timesteps_total'] = 100_000
 config['samples'] = 1  # number of samples/trials
 # set the auction type
 config['env-config']['auction_type']['gridsearch'] = ['first-price', 'second-price']

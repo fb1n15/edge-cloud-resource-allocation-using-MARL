@@ -46,7 +46,7 @@ env-config:
 name: 5-actions_no-history_revenue
 samples: 1
 stop:
-  timesteps_total: 50000
+  timesteps_total: 100000
 trainer: PPO
 trainer-config:
   batch_mode: complete_episodes
