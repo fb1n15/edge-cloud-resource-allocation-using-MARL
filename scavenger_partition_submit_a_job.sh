@@ -3,22 +3,23 @@
 #SBATCH --requeue
 #SBATCH --partition=scavenger
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
-#SBATCH --time=02:00:00
+#SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
+#SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
+#SBATCH --time=00:15:00
 #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=fan_bi@icloud.com
+#SBATCH --mail-user=fb1n15@soton.ac.uk.com
 
 # (https://stackoverflow.com/a/67537416/7060068)
 # #SBATCH --nodes=2  # Number of nodes requested
 # #SBATCH --cpus-per-task=10  # use 10 CPU cores for each task
 
-# #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 # #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
+n_tasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
 CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/config_file.yaml"
-
 echo "Starting Job"
 
 module load conda/py3-latest
@@ -33,7 +34,7 @@ END=$(($1+10))
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value
-  python ./src/marl.py train --config $CONFIG_FILE  --env_seed "$SEED"
+  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE  --env_seed "$SEED"
 done
 #mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE2
 
