@@ -1,0 +1,47 @@
+Running SLURM prolog script on gold53.cluster.local
+===============================================================================
+Job started on Tue Oct 26 12:03:45 BST 2021
+Job ID          : 596801
+Job name        : run_with_different_seeds.sh
+WorkDir         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud
+Command         : ./run_with_different_seeds.sh
+Partition       : serial
+Num hosts       : 1
+Num cores       : 14
+Num of tasks    : 14
+Hosts allocated : gold53
+Job Output Follows ...
+===============================================================================
+Starting Job
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+python: can't open file 'marl.py': [Errno 2] No such file or directory
+Finishing job
+==============================================================================
+Running epilogue script on gold53.
+
+Submit time  : 2021-10-26T12:03:32
+Start time   : 2021-10-26T12:03:33
+End time     : 2021-10-26T12:38:10
+Elapsed time : 00:34:37 (Timelimit=02:00:00)
+
+Job ID: 596801
+Array Job ID: 596801_1
+Cluster: i5
+User/Group: fb1n15/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 14
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.00% of 08:04:38 core-walltime
+Job Wall-clock time: 00:34:37
+Memory Utilized: 19.28 MB
+Memory Efficiency: 0.01% of 161.60 GB
+

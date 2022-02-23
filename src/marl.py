@@ -57,15 +57,20 @@ class CLIPromptExperimentChooser(ExperimentChooser):
 
 
 def main():
+    print("Start parsing arguments")
     parser = argparse.ArgumentParser()
     parser.add_argument('run_option', choices=['train', 'run', 'mapgen'])
     # parser.add_argument('--restore', action='store_true')
     parser.add_argument('--config', type=str, help='File containing the config')
     parser.add_argument('--checkpoint', type=str, help='Path to the checkpoint to run')
+    # allow set the seed manually
+    parser.add_argument('--env_seed', type=str, help='Environment seed')
     args = parser.parse_args()  # get all arguments
 
     restore = False
     config = load_yaml(args.config)  # the dictionary of configurations
+    env_seed = int(args.env_seed)  # the seed for the environment
+    config['env-config']['seed'] = env_seed
     print(f"The env seed = {config['env-config']['seed']}")
     if config['env-config']['random_seed']:
         config['env-config']['seed'] = random.randint(0, 1000)
@@ -77,6 +82,7 @@ def main():
 
     # train the model
     if args.run_option == "train":
+        print("Start training")
         from learning import training
         training.main(config)
 

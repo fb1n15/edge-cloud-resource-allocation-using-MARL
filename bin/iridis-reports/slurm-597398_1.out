@@ -1,0 +1,1758 @@
+Running SLURM prolog script on gold51.cluster.local
+===============================================================================
+Job started on Tue Oct 26 15:18:20 BST 2021
+Job ID          : 597398
+Job name        : run_with_different_seeds.sh
+WorkDir         : /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud
+Command         : ./run_with_different_seeds.sh
+Partition       : serial
+Num hosts       : 3
+Num cores       : 12
+Num of tasks    : 12
+Hosts allocated : gold[51-53]
+Job Output Follows ...
+===============================================================================
+Starting Job
+The seed = 124
+The random seed = 925
+The seed = 124
+The random seed = 794
+The seed = 124
+The random seed = 279
+The seed = 124
+The random seed = 678
+The seed = 124
+The random seed = 455
+The seed = 124
+The random seed = 219
+The seed = 124
+The random seed = 336
+The seed = 124
+The seed = 124
+The random seed = 597
+The seed = 124
+The random seed = 892
+The random seed = 909
+2021-10-26 15:18:45,123	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8266[39m[22m
+2021-10-26 15:18:45,123	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8267[39m[22m
+2021-10-26 15:18:45,221	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8268[39m[22m
+2021-10-26 15:18:45,221	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8269[39m[22m
+2021-10-26 15:18:45,835	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8265[39m[22m
+2021-10-26 15:18:45,835	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8266[39m[22m
+2021-10-26 15:18:46,541	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8266[39m[22m
+2021-10-26 15:18:46,565	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8265[39m[22m
+2021-10-26 15:18:46,592	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8267[39m[22m
+2021-10-26 15:18:46,614	INFO services.py:1247 -- View the Ray dashboard at [1m[32mhttp://127.0.0.1:8268[39m[22m
+
+<class 'environments.edge_cloud.simulation.environment.EdgeCloudEnv1'>
+start training
+
+<class 'environments.edge_cloud.simulation.environment.EdgeCloudEnv1'>
+start training
+== Status ==
+Memory usage on this node: 46.6/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 PENDING)
++-------------------------------+----------+-------+--------+--------------------+
+| Trial name                    | status   | loc   |     lr |   train_batch_size |
+|-------------------------------+----------+-------+--------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | PENDING  |       | 0.0001 |               3000 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | PENDING  |       | 0.001  |               3000 |
++-------------------------------+----------+-------+--------+--------------------+
+
+
+== Status ==
+Memory usage on this node: 46.6/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 PENDING)
++-------------------------------+----------+-------+--------+--------------------+
+| Trial name                    | status   | loc   |     lr |   train_batch_size |
+|-------------------------------+----------+-------+--------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | PENDING  |       | 0.0001 |               3000 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | PENDING  |       | 0.001  |               3000 |
++-------------------------------+----------+-------+--------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00000:
+  agent_timesteps_total: 9450
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.16190476190476
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.533333333333333
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 9093.853088651103
+    Social Welfare (Online Myopic)_min: 8192.785553567319
+    Social Welfare (Random Allocation)_max: 7303.550598850631
+    Social Welfare (Random Allocation)_mean: 5534.4087877916845
+    Social Welfare (Random Allocation)_min: 3456.818754324206
+    Social Welfare_max: 9219.519948703215
+    Social Welfare_mean: 8027.326145670626
+    Social Welfare_min: 6658.489940328781
+  date: 2021-10-26_15-25-17
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27658.559846109656
+  episode_reward_mean: 24081.978437011876
+  episode_reward_min: 19975.46982098633
+  episodes_this_iter: 105
+  episodes_total: 105
+  experiment_id: da010a11f2ad466087b7ad545b1fce84
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.5996981921496691
+          entropy_coeff: 0.0
+          kl: 0.008815318613239533
+          policy_loss: 0.0014780368991531767
+          total_loss: 17552714.26891892
+          vf_explained_var: 0.0035156048834323883
+          vf_loss: 17552713.961711712
+        model: {}
+    num_agent_steps_sampled: 9450
+    num_agent_steps_trained: 9450
+    num_steps_sampled: 3150
+    num_steps_trained: 3150
+  iterations_since_restore: 1
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.92605042016807
+    ram_util_percent: 6.599999999999999
+  pid: 171346
+  policy_reward_max:
+    default: 9219.519948703215
+  policy_reward_mean:
+    default: 8027.326145670627
+  policy_reward_min:
+    default: 6658.489940328781
+  sampler_perf:
+    mean_action_processing_ms: 0.3827577914375512
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 460.5291014427996
+    mean_inference_ms: 6.158620090756665
+    mean_raw_obs_processing_ms: 11.000174387887997
+  time_since_restore: 333.8390328884125
+  time_this_iter_s: 333.8390328884125
+  time_total_s: 333.8390328884125
+  timers:
+    learn_throughput: 113.554
+    learn_time_ms: 27740.132
+    sample_throughput: 10.292
+    sample_time_ms: 306057.469
+    update_time_ms: 6.108
+  timestamp: 1635258317
+  timesteps_since_restore: 0
+  timesteps_total: 3150
+  training_iteration: 1
+  trial_id: b20a9_00000
+  
+== Status ==
+Memory usage on this node: 49.8/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      1 |          333.839 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  |                     | 0.001  |               3000 |        |                  |      |          |                      |                      |                    |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00001:
+  agent_timesteps_total: 9450
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.16190476190476
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.533333333333333
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 9093.853088651103
+    Social Welfare (Online Myopic)_min: 8192.785553567319
+    Social Welfare (Random Allocation)_max: 7303.550598850631
+    Social Welfare (Random Allocation)_mean: 5534.4087877916845
+    Social Welfare (Random Allocation)_min: 3456.818754324206
+    Social Welfare_max: 9219.519948703215
+    Social Welfare_mean: 8027.326145670626
+    Social Welfare_min: 6658.489940328781
+  date: 2021-10-26_15-25-18
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27658.559846109656
+  episode_reward_mean: 24081.978437011876
+  episode_reward_min: 19975.46982098633
+  episodes_this_iter: 105
+  episodes_total: 105
+  experiment_id: 5c4abab48a08498492c4c55fb4f6869a
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.001
+          entropy: 1.513871910443177
+          entropy_coeff: 0.0
+          kl: 0.11704072306168711
+          policy_loss: 0.05776758837566852
+          total_loss: 17551071.286486488
+          vf_explained_var: 0.019300125539302826
+          vf_loss: 17551070.964864865
+        model: {}
+    num_agent_steps_sampled: 9450
+    num_agent_steps_trained: 9450
+    num_steps_sampled: 3150
+    num_steps_trained: 3150
+  iterations_since_restore: 1
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.92866108786611
+    ram_util_percent: 6.599999999999999
+  pid: 171326
+  policy_reward_max:
+    default: 9219.519948703215
+  policy_reward_mean:
+    default: 8027.326145670627
+  policy_reward_min:
+    default: 6658.489940328781
+  sampler_perf:
+    mean_action_processing_ms: 0.3944198983218137
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 451.89172802183026
+    mean_inference_ms: 6.48720298440634
+    mean_raw_obs_processing_ms: 11.016999787271684
+  time_since_restore: 334.74816370010376
+  time_this_iter_s: 334.74816370010376
+  time_total_s: 334.74816370010376
+  timers:
+    learn_throughput: 102.145
+    learn_time_ms: 30838.515
+    sample_throughput: 10.367
+    sample_time_ms: 303838.854
+    update_time_ms: 21.844
+  timestamp: 1635258318
+  timesteps_since_restore: 0
+  timesteps_total: 3150
+  training_iteration: 1
+  trial_id: b20ac_00001
+  
+== Status ==
+Memory usage on this node: 49.8/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  |                     | 0.0001 |               3000 |        |                  |      |          |                      |                      |                    |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      1 |          334.748 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00000:
+  agent_timesteps_total: 9450
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.16190476190476
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.533333333333333
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 9093.853088651103
+    Social Welfare (Online Myopic)_min: 8192.785553567319
+    Social Welfare (Random Allocation)_max: 7303.550598850631
+    Social Welfare (Random Allocation)_mean: 5534.4087877916845
+    Social Welfare (Random Allocation)_min: 3456.818754324206
+    Social Welfare_max: 9219.519948703215
+    Social Welfare_mean: 8027.326145670626
+    Social Welfare_min: 6658.489940328781
+  date: 2021-10-26_15-25-29
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27658.559846109656
+  episode_reward_mean: 24081.978437011876
+  episode_reward_min: 19975.46982098633
+  episodes_this_iter: 105
+  episodes_total: 105
+  experiment_id: f8e03264c7c34a7687e49173a14d3809
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.5996981921496691
+          entropy_coeff: 0.0
+          kl: 0.008815318613239533
+          policy_loss: 0.0014780368991531767
+          total_loss: 17552714.26891892
+          vf_explained_var: 0.0035156048834323883
+          vf_loss: 17552713.961711712
+        model: {}
+    num_agent_steps_sampled: 9450
+    num_agent_steps_trained: 9450
+    num_steps_sampled: 3150
+    num_steps_trained: 3150
+  iterations_since_restore: 1
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.964574898785425
+    ram_util_percent: 6.6
+  pid: 171417
+  policy_reward_max:
+    default: 9219.519948703215
+  policy_reward_mean:
+    default: 8027.326145670627
+  policy_reward_min:
+    default: 6658.489940328781
+  sampler_perf:
+    mean_action_processing_ms: 0.3735611064687206
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 463.8413663522566
+    mean_inference_ms: 6.192385300214621
+    mean_raw_obs_processing_ms: 10.757350090377495
+  time_since_restore: 346.36681842803955
+  time_this_iter_s: 346.36681842803955
+  time_total_s: 346.36681842803955
+  timers:
+    learn_throughput: 82.661
+    learn_time_ms: 38107.322
+    sample_throughput: 10.22
+    sample_time_ms: 308211.404
+    update_time_ms: 9.276
+  timestamp: 1635258329
+  timesteps_since_restore: 0
+  timesteps_total: 3150
+  training_iteration: 1
+  trial_id: b20ac_00000
+  
+== Status ==
+Memory usage on this node: 49.8/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      1 |          346.367 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      1 |          334.748 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00001:
+  agent_timesteps_total: 9450
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.16190476190476
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.533333333333333
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 9093.853088651103
+    Social Welfare (Online Myopic)_min: 8192.785553567319
+    Social Welfare (Random Allocation)_max: 7303.550598850631
+    Social Welfare (Random Allocation)_mean: 5534.4087877916845
+    Social Welfare (Random Allocation)_min: 3456.818754324206
+    Social Welfare_max: 9219.519948703215
+    Social Welfare_mean: 8027.326145670626
+    Social Welfare_min: 6658.489940328781
+  date: 2021-10-26_15-25-42
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27658.559846109656
+  episode_reward_mean: 24081.978437011876
+  episode_reward_min: 19975.46982098633
+  episodes_this_iter: 105
+  episodes_total: 105
+  experiment_id: 9fb32876720640538419092a9e4a68ee
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.001
+          entropy: 1.513871910443177
+          entropy_coeff: 0.0
+          kl: 0.11704072306168711
+          policy_loss: 0.05776758837566852
+          total_loss: 17551071.286486488
+          vf_explained_var: 0.019300125539302826
+          vf_loss: 17551070.964864865
+        model: {}
+    num_agent_steps_sampled: 9450
+    num_agent_steps_trained: 9450
+    num_steps_sampled: 3150
+    num_steps_trained: 3150
+  iterations_since_restore: 1
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 10.001953125
+    ram_util_percent: 6.599999999999998
+  pid: 171392
+  policy_reward_max:
+    default: 9219.519948703215
+  policy_reward_mean:
+    default: 8027.326145670627
+  policy_reward_min:
+    default: 6658.489940328781
+  sampler_perf:
+    mean_action_processing_ms: 0.3840590052294845
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 461.98174866556934
+    mean_inference_ms: 6.43012890158289
+    mean_raw_obs_processing_ms: 11.285618707986341
+  time_since_restore: 358.55833768844604
+  time_this_iter_s: 358.55833768844604
+  time_total_s: 358.55833768844604
+  timers:
+    learn_throughput: 61.981
+    learn_time_ms: 50822.24
+    sample_throughput: 10.238
+    sample_time_ms: 307662.802
+    update_time_ms: 23.924
+  timestamp: 1635258342
+  timesteps_since_restore: 0
+  timesteps_total: 3150
+  training_iteration: 1
+  trial_id: b20a9_00001
+  
+== Status ==
+Memory usage on this node: 49.8/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      1 |          333.839 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      1 |          358.558 | 3150 |    24082 |              27658.6 |              19975.5 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00000:
+  agent_timesteps_total: 18900
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.409523809523808
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 14
+    Bad Allocations Number_mean: 6.152380952380953
+    Bad Allocations Number_min: 2
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 8807.242033750053
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7899.162126828118
+    Social Welfare (Random Allocation)_mean: 5457.097407951896
+    Social Welfare (Random Allocation)_min: 3888.1292006071553
+    Social Welfare_max: 9206.785565279099
+    Social Welfare_mean: 7999.137798974094
+    Social Welfare_min: 6714.454867620475
+  date: 2021-10-26_15-31-29
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27620.3566958373
+  episode_reward_mean: 23997.413396922282
+  episode_reward_min: 20143.364602861435
+  episodes_this_iter: 105
+  episodes_total: 210
+  experiment_id: da010a11f2ad466087b7ad545b1fce84
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.584746137556729
+          entropy_coeff: 0.0
+          kl: 0.018195911197172728
+          policy_loss: 0.004404350303557621
+          total_loss: 16873026.68738739
+          vf_explained_var: 0.014319381676614285
+          vf_loss: 16873026.40135135
+        model: {}
+    num_agent_steps_sampled: 18900
+    num_agent_steps_trained: 18900
+    num_steps_sampled: 6300
+    num_steps_trained: 6300
+  iterations_since_restore: 2
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.977504725897921
+    ram_util_percent: 6.683931947069942
+  pid: 171346
+  policy_reward_max:
+    default: 9206.785565279099
+  policy_reward_mean:
+    default: 7999.137798974094
+  policy_reward_min:
+    default: 6714.454867620475
+  sampler_perf:
+    mean_action_processing_ms: 0.3474734682208673
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 478.7842918066256
+    mean_inference_ms: 5.8675047899408055
+    mean_raw_obs_processing_ms: 10.99398988849298
+  time_since_restore: 705.6652772426605
+  time_this_iter_s: 371.82624435424805
+  time_total_s: 705.6652772426605
+  timers:
+    learn_throughput: 101.72
+    learn_time_ms: 30967.289
+    sample_throughput: 9.788
+    sample_time_ms: 321822.331
+    update_time_ms: 9.091
+  timestamp: 1635258689
+  timesteps_since_restore: 0
+  timesteps_total: 6300
+  training_iteration: 2
+  trial_id: b20a9_00000
+  
+Result for PPO_EdgeCloudEnv1_b20ac_00001:
+  agent_timesteps_total: 18900
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 28.60952380952381
+    Allocated Tasks Number_min: 25
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.504761904761905
+    Bad Allocations Number_min: 1
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 8807.242033750053
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7886.312692320824
+    Social Welfare (Random Allocation)_mean: 5454.690507335335
+    Social Welfare (Random Allocation)_min: 3993.6764038328247
+    Social Welfare_max: 8857.690324940027
+    Social Welfare_mean: 7595.790692926532
+    Social Welfare_min: 6212.450802427609
+  date: 2021-10-26_15-31-29
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 26573.070974820075
+  episode_reward_mean: 22787.372078779597
+  episode_reward_min: 18637.3524072828
+  episodes_this_iter: 105
+  episodes_total: 210
+  experiment_id: 5c4abab48a08498492c4c55fb4f6869a
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.30000000000000004
+          cur_lr: 0.001
+          entropy: 1.2516942950142074
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.15826879244482328
+          total_loss: .inf
+          vf_explained_var: 0.08230109512805939
+          vf_loss: 14567135.024324324
+        model: {}
+    num_agent_steps_sampled: 18900
+    num_agent_steps_trained: 18900
+    num_steps_sampled: 6300
+    num_steps_trained: 6300
+  iterations_since_restore: 2
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.973244781783682
+    ram_util_percent: 6.6842504743833
+  pid: 171326
+  policy_reward_max:
+    default: 8857.690324940027
+  policy_reward_mean:
+    default: 7595.790692926533
+  policy_reward_min:
+    default: 6212.450802427609
+  sampler_perf:
+    mean_action_processing_ms: 0.3418467897540704
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 476.7254306814388
+    mean_inference_ms: 5.996476535660987
+    mean_raw_obs_processing_ms: 11.18121767308767
+  time_since_restore: 705.9805202484131
+  time_this_iter_s: 371.2323565483093
+  time_total_s: 705.9805202484131
+  timers:
+    learn_throughput: 96.539
+    learn_time_ms: 32629.185
+    sample_throughput: 9.834
+    sample_time_ms: 320305.361
+    update_time_ms: 13.916
+  timestamp: 1635258689
+  timesteps_since_restore: 0
+  timesteps_total: 6300
+  training_iteration: 2
+  trial_id: b20ac_00001
+  
+[2m[36m(pid=171326)[0m 2021-10-26 15:19:24,667	INFO trainer.py:716 -- Current log_level is WARN. For more information, set 'log_level': 'INFO' / 'DEBUG' or use the -v and -vv flags.
+[2m[36m(pid=171417)[0m 2021-10-26 15:19:24,664	INFO trainer.py:716 -- Current log_level is WARN. For more information, set 'log_level': 'INFO' / 'DEBUG' or use the -v and -vv flags.
+[2m[36m(pid=171423)[0m 2021-10-26 15:19:42,391	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171387)[0m 2021-10-26 15:19:42,392	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171403)[0m 2021-10-26 15:19:42,421	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171398)[0m 2021-10-26 15:19:42,493	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171397)[0m 2021-10-26 15:19:42,602	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171356)[0m 2021-10-26 15:19:42,714	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171422)[0m 2021-10-26 15:19:42,971	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171326)[0m 2021-10-26 15:19:43,087	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171417)[0m 2021-10-26 15:19:43,086	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171424)[0m 2021-10-26 15:19:43,062	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171421)[0m 2021-10-26 15:19:43,198	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171326)[0m 2021-10-26 15:19:43,522	INFO trainable.py:109 -- Trainable.setup took 18.837 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
+[2m[36m(pid=171326)[0m 2021-10-26 15:19:43,525	WARNING util.py:55 -- Install gputil for GPU system monitoring.
+[2m[36m(pid=171417)[0m 2021-10-26 15:19:43,554	INFO trainable.py:109 -- Trainable.setup took 18.886 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
+[2m[36m(pid=171417)[0m 2021-10-26 15:19:43,560	WARNING util.py:55 -- Install gputil for GPU system monitoring.
+[2m[36m(pid=171387)[0m 2021-10-26 15:19:43,817	WARNING deprecation.py:34 -- DeprecationWarning: `policy_mapping_fn(agent_id)` has been deprecated. Use `policy_mapping_fn(agent_id, episode, **kwargs)` instead. This will raise an error in the future!
+[2m[36m(pid=171362)[0m 2021-10-26 15:19:43,874	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171398)[0m 2021-10-26 15:19:44,536	WARNING deprecation.py:34 -- DeprecationWarning: `policy_mapping_fn(agent_id)` has been deprecated. Use `policy_mapping_fn(agent_id, episode, **kwargs)` instead. This will raise an error in the future!
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 51.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      1 |          346.367 | 3150 |  24082   |              27658.6 |              19975.5 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      2 |          705.981 | 6300 |  22787.4 |              26573.1 |              18637.4 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+[2m[36m(pid=171346)[0m 2021-10-26 15:19:24,662	INFO trainer.py:716 -- Current log_level is WARN. For more information, set 'log_level': 'INFO' / 'DEBUG' or use the -v and -vv flags.
+[2m[36m(pid=171392)[0m 2021-10-26 15:19:24,666	INFO trainer.py:716 -- Current log_level is WARN. For more information, set 'log_level': 'INFO' / 'DEBUG' or use the -v and -vv flags.
+[2m[36m(pid=171325)[0m 2021-10-26 15:19:42,484	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171415)[0m 2021-10-26 15:19:42,627	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171361)[0m 2021-10-26 15:19:42,800	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171376)[0m 2021-10-26 15:19:43,033	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171346)[0m 2021-10-26 15:19:43,290	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171333)[0m 2021-10-26 15:19:43,275	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171368)[0m 2021-10-26 15:19:43,326	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171294)[0m 2021-10-26 15:19:43,401	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171348)[0m 2021-10-26 15:19:43,617	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171346)[0m 2021-10-26 15:19:43,690	INFO trainable.py:109 -- Trainable.setup took 19.030 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
+[2m[36m(pid=171346)[0m 2021-10-26 15:19:43,693	WARNING util.py:55 -- Install gputil for GPU system monitoring.
+[2m[36m(pid=171392)[0m 2021-10-26 15:19:43,889	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171416)[0m 2021-10-26 15:19:43,853	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171370)[0m 2021-10-26 15:19:44,122	WARNING catalog.py:549 -- Custom ModelV2 should accept all custom options as **kwargs, instead of expecting them in config['custom_model_config']!
+[2m[36m(pid=171392)[0m 2021-10-26 15:19:44,189	INFO trainable.py:109 -- Trainable.setup took 19.524 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
+[2m[36m(pid=171392)[0m 2021-10-26 15:19:44,194	WARNING util.py:55 -- Install gputil for GPU system monitoring.
+[2m[36m(pid=171333)[0m 2021-10-26 15:19:44,613	WARNING deprecation.py:34 -- DeprecationWarning: `policy_mapping_fn(agent_id)` has been deprecated. Use `policy_mapping_fn(agent_id, episode, **kwargs)` instead. This will raise an error in the future!
+[2m[36m(pid=171361)[0m 2021-10-26 15:19:44,956	WARNING deprecation.py:34 -- DeprecationWarning: `policy_mapping_fn(agent_id)` has been deprecated. Use `policy_mapping_fn(agent_id, episode, **kwargs)` instead. This will raise an error in the future!
+2021-10-26 15:31:29,852	WARNING trial_runner.py:563 -- Trial Runner checkpointing failed: [Errno 2] No such file or directory: '/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history/.tmp_generator' -> '/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history/basic-variant-state-2021-10-26_15-19-14.json'
+== Status ==
+Memory usage on this node: 51.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      2 |          705.665 | 6300 |  23997.4 |              27620.4 |              20143.4 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      1 |          358.558 | 3150 |  24082   |              27658.6 |              19975.5 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00000:
+  agent_timesteps_total: 18900
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.409523809523808
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 14
+    Bad Allocations Number_mean: 6.152380952380953
+    Bad Allocations Number_min: 2
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 8807.242033750053
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7899.162126828118
+    Social Welfare (Random Allocation)_mean: 5457.097407951896
+    Social Welfare (Random Allocation)_min: 3888.1292006071553
+    Social Welfare_max: 9206.785565279099
+    Social Welfare_mean: 7999.137798974094
+    Social Welfare_min: 6714.454867620475
+  date: 2021-10-26_15-31-53
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27620.3566958373
+  episode_reward_mean: 23997.413396922282
+  episode_reward_min: 20143.364602861435
+  episodes_this_iter: 105
+  episodes_total: 210
+  experiment_id: f8e03264c7c34a7687e49173a14d3809
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.584746137556729
+          entropy_coeff: 0.0
+          kl: 0.018195911197172728
+          policy_loss: 0.004404350303557621
+          total_loss: 16873026.68738739
+          vf_explained_var: 0.014319381676614285
+          vf_loss: 16873026.40135135
+        model: {}
+    num_agent_steps_sampled: 18900
+    num_agent_steps_trained: 18900
+    num_steps_sampled: 6300
+    num_steps_trained: 6300
+  iterations_since_restore: 2
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 10.007339449541284
+    ram_util_percent: 6.69394495412844
+  pid: 171417
+  policy_reward_max:
+    default: 9206.785565279099
+  policy_reward_mean:
+    default: 7999.137798974094
+  policy_reward_min:
+    default: 6714.454867620475
+  sampler_perf:
+    mean_action_processing_ms: 0.318669403100373
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 489.56834549567316
+    mean_inference_ms: 6.012107114012897
+    mean_raw_obs_processing_ms: 10.999950957997843
+  time_since_restore: 729.4007031917572
+  time_this_iter_s: 383.03388476371765
+  time_total_s: 729.4007031917572
+  timers:
+    learn_throughput: 76.42
+    learn_time_ms: 41219.442
+    sample_throughput: 9.74
+    sample_time_ms: 323408.414
+    update_time_ms: 22.736
+  timestamp: 1635258713
+  timesteps_since_restore: 0
+  timesteps_total: 6300
+  training_iteration: 2
+  trial_id: b20ac_00000
+  
+== Status ==
+Memory usage on this node: 51.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      2 |          729.401 | 6300 |  23997.4 |              27620.4 |              20143.4 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      2 |          705.981 | 6300 |  22787.4 |              26573.1 |              18637.4 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00001:
+  agent_timesteps_total: 18900
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 28.60952380952381
+    Allocated Tasks Number_min: 25
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.504761904761905
+    Bad Allocations Number_min: 1
+    Social Welfare (Online Myopic)_max: 9887.298120835676
+    Social Welfare (Online Myopic)_mean: 8807.242033750053
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7886.312692320824
+    Social Welfare (Random Allocation)_mean: 5454.690507335335
+    Social Welfare (Random Allocation)_min: 3993.6764038328247
+    Social Welfare_max: 8857.690324940027
+    Social Welfare_mean: 7595.790692926532
+    Social Welfare_min: 6212.450802427609
+  date: 2021-10-26_15-31-56
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 26573.070974820075
+  episode_reward_mean: 22787.372078779597
+  episode_reward_min: 18637.3524072828
+  episodes_this_iter: 105
+  episodes_total: 210
+  experiment_id: 9fb32876720640538419092a9e4a68ee
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.30000000000000004
+          cur_lr: 0.001
+          entropy: 1.2516942950142074
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.15826879244482328
+          total_loss: .inf
+          vf_explained_var: 0.08230109512805939
+          vf_loss: 14567135.024324324
+        model: {}
+    num_agent_steps_sampled: 18900
+    num_agent_steps_trained: 18900
+    num_steps_sampled: 6300
+    num_steps_trained: 6300
+  iterations_since_restore: 2
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.975471698113207
+    ram_util_percent: 6.698113207547169
+  pid: 171392
+  policy_reward_max:
+    default: 8857.690324940027
+  policy_reward_mean:
+    default: 7595.790692926533
+  policy_reward_min:
+    default: 6212.450802427609
+  sampler_perf:
+    mean_action_processing_ms: 0.3630163176110773
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 482.12570395382687
+    mean_inference_ms: 5.865141439778194
+    mean_raw_obs_processing_ms: 11.231214975573351
+  time_since_restore: 731.9333024024963
+  time_this_iter_s: 373.3749647140503
+  time_total_s: 731.9333024024963
+  timers:
+    learn_throughput: 68.459
+    learn_time_ms: 46012.93
+    sample_throughput: 9.848
+    sample_time_ms: 319863.11
+    update_time_ms: 31.518
+  timestamp: 1635258716
+  timesteps_since_restore: 0
+  timesteps_total: 6300
+  training_iteration: 2
+  trial_id: b20a9_00001
+  
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 51.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      2 |          705.665 | 6300 |  23997.4 |              27620.4 |              20143.4 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      2 |          731.933 | 6300 |  22787.4 |              26573.1 |              18637.4 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00000:
+  agent_timesteps_total: 28350
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.419047619047618
+    Allocated Tasks Number_min: 27
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.828571428571428
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9718.733748204579
+    Social Welfare (Online Myopic)_mean: 8970.866038916472
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7500.308337068168
+    Social Welfare (Random Allocation)_mean: 5593.45734795943
+    Social Welfare (Random Allocation)_min: 3758.2663214270156
+    Social Welfare_max: 9294.820375261532
+    Social Welfare_mean: 8038.417341800684
+    Social Welfare_min: 6445.078494603251
+  date: 2021-10-26_15-36-36
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27884.4611257846
+  episode_reward_mean: 24115.252025402053
+  episode_reward_min: 19335.23548380974
+  episodes_this_iter: 105
+  episodes_total: 315
+  experiment_id: da010a11f2ad466087b7ad545b1fce84
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.5625350365767607
+          entropy_coeff: 0.0
+          kl: 0.023187605126125617
+          policy_loss: 0.008069554482049704
+          total_loss: 16464452.908108108
+          vf_explained_var: 0.03559638187289238
+          vf_loss: 16464452.673423423
+        model: {}
+    num_agent_steps_sampled: 28350
+    num_agent_steps_trained: 28350
+    num_steps_sampled: 9450
+    num_steps_trained: 9450
+  iterations_since_restore: 3
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.786301369863015
+    ram_util_percent: 6.655707762557076
+  pid: 171346
+  policy_reward_max:
+    default: 9294.820375261532
+  policy_reward_mean:
+    default: 8038.417341800683
+  policy_reward_min:
+    default: 6445.078494603251
+  sampler_perf:
+    mean_action_processing_ms: 0.35944365749026286
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 457.5344997004564
+    mean_inference_ms: 6.400381428170368
+    mean_raw_obs_processing_ms: 10.872616810750733
+  time_since_restore: 1012.236819267273
+  time_this_iter_s: 306.5715420246124
+  time_total_s: 1012.236819267273
+  timers:
+    learn_throughput: 105.536
+    learn_time_ms: 29847.615
+    sample_throughput: 10.243
+    sample_time_ms: 307522.605
+    update_time_ms: 7.783
+  timestamp: 1635258996
+  timesteps_since_restore: 0
+  timesteps_total: 9450
+  training_iteration: 3
+  trial_id: b20a9_00000
+  
+== Status ==
+Memory usage on this node: 49.9/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      3 |         1012.24  | 9450 |  24115.3 |              27884.5 |              19335.2 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      2 |          731.933 | 6300 |  22787.4 |              26573.1 |              18637.4 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00001:
+  agent_timesteps_total: 28350
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.533333333333335
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 6.20952380952381
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9718.733748204579
+    Social Welfare (Online Myopic)_mean: 8970.866038916472
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7561.037728969207
+    Social Welfare (Random Allocation)_mean: 5639.056399037374
+    Social Welfare (Random Allocation)_min: 3444.0735201120983
+    Social Welfare_max: 9393.3159210423
+    Social Welfare_mean: 8191.429139103084
+    Social Welfare_min: 6668.9270033924095
+  date: 2021-10-26_15-37-04
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 28179.947763126926
+  episode_reward_mean: 24574.287417309253
+  episode_reward_min: 20006.78101017722
+  episodes_this_iter: 105
+  episodes_total: 315
+  experiment_id: 5c4abab48a08498492c4c55fb4f6869a
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.4500000000000001
+          cur_lr: 0.001
+          entropy: 0.9873753228405804
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.15913675058977092
+          total_loss: .inf
+          vf_explained_var: 0.16473977267742157
+          vf_loss: 16097216.598648649
+        model: {}
+    num_agent_steps_sampled: 28350
+    num_agent_steps_trained: 28350
+    num_steps_sampled: 9450
+    num_steps_trained: 9450
+  iterations_since_restore: 3
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.861425576519915
+    ram_util_percent: 6.651153039832283
+  pid: 171326
+  policy_reward_max:
+    default: 9393.3159210423
+  policy_reward_mean:
+    default: 8191.429139103086
+  policy_reward_min:
+    default: 6668.9270033924095
+  sampler_perf:
+    mean_action_processing_ms: 0.3591197562053808
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 467.56667004004777
+    mean_inference_ms: 6.47971722135337
+    mean_raw_obs_processing_ms: 11.40906426214403
+  time_since_restore: 1040.1731925010681
+  time_this_iter_s: 334.19267225265503
+  time_total_s: 1040.1731925010681
+  timers:
+    learn_throughput: 100.221
+    learn_time_ms: 31430.5
+    sample_throughput: 9.993
+    sample_time_ms: 315233.536
+    update_time_ms: 13.16
+  timestamp: 1635259024
+  timesteps_since_restore: 0
+  timesteps_total: 9450
+  training_iteration: 3
+  trial_id: b20ac_00001
+  
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 49.9/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      2 |          729.401 | 6300 |  23997.4 |              27620.4 |              20143.4 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      3 |         1040.17  | 9450 |  24574.3 |              28179.9 |              20006.8 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00000:
+  agent_timesteps_total: 28350
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.419047619047618
+    Allocated Tasks Number_min: 27
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 5.828571428571428
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9718.733748204579
+    Social Welfare (Online Myopic)_mean: 8970.866038916472
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7500.308337068168
+    Social Welfare (Random Allocation)_mean: 5593.45734795943
+    Social Welfare (Random Allocation)_min: 3758.2663214270156
+    Social Welfare_max: 9294.820375261532
+    Social Welfare_mean: 8038.417341800684
+    Social Welfare_min: 6445.078494603251
+  date: 2021-10-26_15-38-05
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27884.4611257846
+  episode_reward_mean: 24115.252025402053
+  episode_reward_min: 19335.23548380974
+  episodes_this_iter: 105
+  episodes_total: 315
+  experiment_id: f8e03264c7c34a7687e49173a14d3809
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.19999999999999996
+          cur_lr: 0.00010000000000000003
+          entropy: 1.5625350365767607
+          entropy_coeff: 0.0
+          kl: 0.023187605126125617
+          policy_loss: 0.008069554482049704
+          total_loss: 16464452.908108108
+          vf_explained_var: 0.03559638187289238
+          vf_loss: 16464452.673423423
+        model: {}
+    num_agent_steps_sampled: 28350
+    num_agent_steps_trained: 28350
+    num_steps_sampled: 9450
+    num_steps_trained: 9450
+  iterations_since_restore: 3
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.803013182674201
+    ram_util_percent: 6.633145009416196
+  pid: 171417
+  policy_reward_max:
+    default: 9294.820375261532
+  policy_reward_mean:
+    default: 8038.417341800683
+  policy_reward_min:
+    default: 6445.078494603251
+  sampler_perf:
+    mean_action_processing_ms: 0.3096309431894061
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 497.55655091506094
+    mean_inference_ms: 5.858103350190999
+    mean_raw_obs_processing_ms: 11.506358685788499
+  time_since_restore: 1101.610090970993
+  time_this_iter_s: 372.20938777923584
+  time_total_s: 1101.610090970993
+  timers:
+    learn_throughput: 84.362
+    learn_time_ms: 37339.049
+    sample_throughput: 9.551
+    sample_time_ms: 329793.852
+    update_time_ms: 20.371
+  timestamp: 1635259085
+  timesteps_since_restore: 0
+  timesteps_total: 9450
+  training_iteration: 3
+  trial_id: b20ac_00000
+  
+== Status ==
+Memory usage on this node: 49.9/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      3 |          1101.61 | 9450 |  24115.3 |              27884.5 |              19335.2 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      3 |          1040.17 | 9450 |  24574.3 |              28179.9 |              20006.8 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00001:
+  agent_timesteps_total: 28350
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.533333333333335
+    Allocated Tasks Number_min: 26
+    Bad Allocations Number_max: 16
+    Bad Allocations Number_mean: 6.20952380952381
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9718.733748204579
+    Social Welfare (Online Myopic)_mean: 8970.866038916472
+    Social Welfare (Online Myopic)_min: 7795.893183921842
+    Social Welfare (Random Allocation)_max: 7561.037728969207
+    Social Welfare (Random Allocation)_mean: 5639.056399037374
+    Social Welfare (Random Allocation)_min: 3444.0735201120983
+    Social Welfare_max: 9393.3159210423
+    Social Welfare_mean: 8191.429139103084
+    Social Welfare_min: 6668.9270033924095
+  date: 2021-10-26_15-38-11
+  done: false
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 28179.947763126926
+  episode_reward_mean: 24574.287417309253
+  episode_reward_min: 20006.78101017722
+  episodes_this_iter: 105
+  episodes_total: 315
+  experiment_id: 9fb32876720640538419092a9e4a68ee
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.4500000000000001
+          cur_lr: 0.001
+          entropy: 0.9873753228405804
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.15913675058977092
+          total_loss: .inf
+          vf_explained_var: 0.16473977267742157
+          vf_loss: 16097216.598648649
+        model: {}
+    num_agent_steps_sampled: 28350
+    num_agent_steps_trained: 28350
+    num_steps_sampled: 9450
+    num_steps_trained: 9450
+  iterations_since_restore: 3
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.797947761194031
+    ram_util_percent: 6.63134328358209
+  pid: 171392
+  policy_reward_max:
+    default: 9393.3159210423
+  policy_reward_mean:
+    default: 8191.429139103086
+  policy_reward_min:
+    default: 6668.9270033924095
+  sampler_perf:
+    mean_action_processing_ms: 0.3526387802196645
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 494.40361264519817
+    mean_inference_ms: 5.798181662920101
+    mean_raw_obs_processing_ms: 11.587020469556592
+  time_since_restore: 1107.3154802322388
+  time_this_iter_s: 375.38217782974243
+  time_total_s: 1107.3154802322388
+  timers:
+    learn_throughput: 76.549
+    learn_time_ms: 41150.129
+    sample_throughput: 9.607
+    sample_time_ms: 327880.552
+    update_time_ms: 23.823
+  timestamp: 1635259091
+  timesteps_since_restore: 0
+  timesteps_total: 9450
+  training_iteration: 3
+  trial_id: b20a9_00001
+  
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 49.9/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |   ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      3 |          1012.24 | 9450 |  24115.3 |              27884.5 |              19335.2 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      3 |          1107.32 | 9450 |  24574.3 |              28179.9 |              20006.8 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20a9_00000:
+  agent_timesteps_total: 37800
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.64761904761905
+    Allocated Tasks Number_min: 28
+    Bad Allocations Number_max: 14
+    Bad Allocations Number_mean: 6.152380952380953
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9548.7581621365
+    Social Welfare (Online Myopic)_mean: 8998.299992790966
+    Social Welfare (Online Myopic)_min: 7940.2185287015
+    Social Welfare (Random Allocation)_max: 7595.848139463799
+    Social Welfare (Random Allocation)_mean: 5713.912731429197
+    Social Welfare (Random Allocation)_min: 4210.0886792356905
+    Social Welfare_max: 9356.013150952798
+    Social Welfare_mean: 8157.091040975737
+    Social Welfare_min: 6596.6455070559105
+  date: 2021-10-26_15-40-30
+  done: true
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 28068.039452858404
+  episode_reward_mean: 24471.273122927214
+  episode_reward_min: 19789.936521167747
+  episodes_this_iter: 105
+  episodes_total: 420
+  experiment_id: da010a11f2ad466087b7ad545b1fce84
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.30000000000000004
+          cur_lr: 0.00010000000000000003
+          entropy: 1.545704576507345
+          entropy_coeff: 0.0
+          kl: 0.0212652327241367
+          policy_loss: 0.007853564555307868
+          total_loss: 16564141.26036036
+          vf_explained_var: 0.04438931494951248
+          vf_loss: 16564141.00045045
+        model: {}
+    num_agent_steps_sampled: 37800
+    num_agent_steps_trained: 37800
+    num_steps_sampled: 12600
+    num_steps_trained: 12600
+  iterations_since_restore: 4
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 10.306646525679758
+    ram_util_percent: 6.602114803625378
+  pid: 171346
+  policy_reward_max:
+    default: 9356.013150952798
+  policy_reward_mean:
+    default: 8157.091040975736
+  policy_reward_min:
+    default: 6596.6455070559105
+  sampler_perf:
+    mean_action_processing_ms: 0.38560852556179454
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 415.04818853146026
+    mean_inference_ms: 7.282473028108083
+    mean_raw_obs_processing_ms: 10.68437333052142
+  time_since_restore: 1245.9500439167023
+  time_this_iter_s: 233.71322464942932
+  time_total_s: 1245.9500439167023
+  timers:
+    learn_throughput: 103.792
+    learn_time_ms: 30349.122
+    sample_throughput: 11.206
+    sample_time_ms: 281095.627
+    update_time_ms: 8.039
+  timestamp: 1635259230
+  timesteps_since_restore: 0
+  timesteps_total: 12600
+  training_iteration: 4
+  trial_id: b20a9_00000
+  
+== Status ==
+Memory usage on this node: 51.0/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | RUNNING  | 10.13.39.108:171346 | 0.0001 |               3000 |      4 |          1245.95 | 12600 |  24471.3 |              28068   |              19789.9 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING  | 10.13.39.108:171392 | 0.001  |               3000 |      3 |          1107.32 |  9450 |  24574.3 |              28179.9 |              20006.8 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00001:
+  agent_timesteps_total: 37800
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.79047619047619
+    Allocated Tasks Number_min: 28
+    Bad Allocations Number_max: 15
+    Bad Allocations Number_mean: 7.104761904761904
+    Bad Allocations Number_min: 1
+    Social Welfare (Online Myopic)_max: 9548.7581621365
+    Social Welfare (Online Myopic)_mean: 8998.299992790966
+    Social Welfare (Online Myopic)_min: 7940.2185287015
+    Social Welfare (Random Allocation)_max: 7226.507746909067
+    Social Welfare (Random Allocation)_mean: 5645.498463884971
+    Social Welfare (Random Allocation)_min: 4284.401252245399
+    Social Welfare_max: 9260.343498766093
+    Social Welfare_mean: 8414.514033610567
+    Social Welfare_min: 6964.4019115518095
+  date: 2021-10-26_15-41-30
+  done: true
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27781.03049629827
+  episode_reward_mean: 25243.5421008317
+  episode_reward_min: 20893.205734655414
+  episodes_this_iter: 105
+  episodes_total: 420
+  experiment_id: 5c4abab48a08498492c4c55fb4f6869a
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.6749999999999998
+          cur_lr: 0.001
+          entropy: 0.9576918035449724
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.16871869819425467
+          total_loss: .inf
+          vf_explained_var: 0.1990945041179657
+          vf_loss: 16136426.923873873
+        model: {}
+    num_agent_steps_sampled: 37800
+    num_agent_steps_trained: 37800
+    num_steps_sampled: 12600
+    num_steps_trained: 12600
+  iterations_since_restore: 4
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 10.185185185185185
+    ram_util_percent: 6.625925925925926
+  pid: 171326
+  policy_reward_max:
+    default: 9260.343498766093
+  policy_reward_mean:
+    default: 8414.514033610567
+  policy_reward_min:
+    default: 6964.4019115518095
+  sampler_perf:
+    mean_action_processing_ms: 0.40950430900697804
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 438.98991121748344
+    mean_inference_ms: 7.1991482408970695
+    mean_raw_obs_processing_ms: 11.350610605169507
+  time_since_restore: 1306.6199097633362
+  time_this_iter_s: 266.44671726226807
+  time_total_s: 1306.6199097633362
+  timers:
+    learn_throughput: 104.734
+    learn_time_ms: 30076.268
+    sample_throughput: 10.623
+    sample_time_ms: 296521.336
+    update_time_ms: 13.617
+  timestamp: 1635259290
+  timesteps_since_restore: 0
+  timesteps_total: 12600
+  training_iteration: 4
+  trial_id: b20ac_00001
+  
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 50.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 12.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 RUNNING)
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status   | loc                 |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING  | 10.13.39.108:171417 | 0.0001 |               3000 |      3 |          1101.61 |  9450 |  24115.3 |              27884.5 |              19335.2 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | RUNNING  | 10.13.39.108:171326 | 0.001  |               3000 |      4 |          1306.62 | 12600 |  25243.5 |              27781   |              20893.2 |                 30 |
++-------------------------------+----------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+Result for PPO_EdgeCloudEnv1_b20ac_00000:
+  agent_timesteps_total: 37800
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.64761904761905
+    Allocated Tasks Number_min: 28
+    Bad Allocations Number_max: 14
+    Bad Allocations Number_mean: 6.152380952380953
+    Bad Allocations Number_min: 0
+    Social Welfare (Online Myopic)_max: 9548.7581621365
+    Social Welfare (Online Myopic)_mean: 8998.299992790966
+    Social Welfare (Online Myopic)_min: 7940.2185287015
+    Social Welfare (Random Allocation)_max: 7595.848139463799
+    Social Welfare (Random Allocation)_mean: 5713.912731429197
+    Social Welfare (Random Allocation)_min: 4210.0886792356905
+    Social Welfare_max: 9356.013150952798
+    Social Welfare_mean: 8157.091040975737
+    Social Welfare_min: 6596.6455070559105
+  date: 2021-10-26_15-42-43
+  done: true
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 28068.039452858404
+  episode_reward_mean: 24471.273122927214
+  episode_reward_min: 19789.936521167747
+  episodes_this_iter: 105
+  episodes_total: 420
+  experiment_id: f8e03264c7c34a7687e49173a14d3809
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.30000000000000004
+          cur_lr: 0.00010000000000000003
+          entropy: 1.545704576507345
+          entropy_coeff: 0.0
+          kl: 0.0212652327241367
+          policy_loss: 0.007853564555307868
+          total_loss: 16564141.26036036
+          vf_explained_var: 0.04438931494951248
+          vf_loss: 16564141.00045045
+        model: {}
+    num_agent_steps_sampled: 37800
+    num_agent_steps_trained: 37800
+    num_steps_sampled: 12600
+    num_steps_trained: 12600
+  iterations_since_restore: 4
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.95989847715736
+    ram_util_percent: 6.598477157360406
+  pid: 171417
+  policy_reward_max:
+    default: 9356.013150952798
+  policy_reward_mean:
+    default: 8157.091040975736
+  policy_reward_min:
+    default: 6596.6455070559105
+  sampler_perf:
+    mean_action_processing_ms: 0.3313336567195905
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 467.9387569049198
+    mean_inference_ms: 5.909497716132726
+    mean_raw_obs_processing_ms: 11.370200592579703
+  time_since_restore: 1379.0081284046173
+  time_this_iter_s: 277.39803743362427
+  time_total_s: 1379.0081284046173
+  timers:
+    learn_throughput: 94.458
+    learn_time_ms: 33348.24
+    sample_throughput: 10.117
+    sample_time_ms: 311343.816
+    update_time_ms: 17.667
+  timestamp: 1635259363
+  timesteps_since_restore: 0
+  timesteps_total: 12600
+  training_iteration: 4
+  trial_id: b20ac_00000
+  
+== Status ==
+Memory usage on this node: 49.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 6.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (1 RUNNING, 1 TERMINATED)
++-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status     | loc                 |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | RUNNING    | 10.13.39.108:171417 | 0.0001 |               3000 |      4 |          1379.01 | 12600 |  24471.3 |                28068 |              19789.9 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | TERMINATED |                     | 0.001  |               3000 |      4 |          1306.62 | 12600 |  25243.5 |                27781 |              20893.2 |                 30 |
++-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+== Status ==
+Memory usage on this node: 49.4/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_4_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_0_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_0_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_2_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_1_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_4_fd170f74d8a6d21a19e0663bd3d131a1, 0.0/1.0 CPU_group_3_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_5_59c8d54071d446ddd6042a51c91e091d, 0.0/6.0 CPU_group_59c8d54071d446ddd6042a51c91e091d, 0.0/1.0 CPU_group_3_fd170f74d8a6d21a19e0663bd3d131a1)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 TERMINATED)
++-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status     | loc   |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20ac_00000 | TERMINATED |       | 0.0001 |               3000 |      4 |          1379.01 | 12600 |  24471.3 |                28068 |              19789.9 |                 30 |
+| PPO_EdgeCloudEnv1_b20ac_00001 | TERMINATED |       | 0.001  |               3000 |      4 |          1306.62 | 12600 |  25243.5 |                27781 |              20893.2 |                 30 |
++-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+2021-10-26 15:42:43,685	INFO tune.py:545 -- Total run time: 1409.87 seconds (1408.90 seconds for the tuning loop).
+<ray.tune.analysis.experiment_analysis.ExperimentAnalysis object at 0x2b0877fbae80>
+[2m[36m(pid=171398)[0m 2021-10-26 15:42:43,619	ERROR worker.py:421 -- SystemExit was raised from the worker
+[2m[36m(pid=171398)[0m Traceback (most recent call last):
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 632, in ray._raylet.task_execution_handler
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 486, in ray._raylet.execute_task
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 523, in ray._raylet.execute_task
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 530, in ray._raylet.execute_task
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 534, in ray._raylet.execute_task
+[2m[36m(pid=171398)[0m   File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task.function_executor
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/_private/function_manager.py", line 563, in actor_method_executor
+[2m[36m(pid=171398)[0m     return method(__ray_actor, *args, **kwargs)
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/actor.py", line 1027, in __ray_terminate__
+[2m[36m(pid=171398)[0m     ray.actor.exit_actor()
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/actor.py", line 1089, in exit_actor
+[2m[36m(pid=171398)[0m     ray.worker.disconnect()
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/worker.py", line 1374, in disconnect
+[2m[36m(pid=171398)[0m     worker.import_thread.join_import_thread()
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/_private/import_thread.py", line 50, in join_import_thread
+[2m[36m(pid=171398)[0m     self.t.join()
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/threading.py", line 1056, in join
+[2m[36m(pid=171398)[0m     self._wait_for_tstate_lock()
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/threading.py", line 1072, in _wait_for_tstate_lock
+[2m[36m(pid=171398)[0m     elif lock.acquire(block, timeout):
+[2m[36m(pid=171398)[0m   File "/home/fb1n15/.conda/envs/jack/lib/python3.6/site-packages/ray/worker.py", line 418, in sigterm_handler
+[2m[36m(pid=171398)[0m     sys.exit(1)
+[2m[36m(pid=171398)[0m SystemExit: 1
+[0mResult for PPO_EdgeCloudEnv1_b20a9_00001:
+  agent_timesteps_total: 37800
+  custom_metrics:
+    Allocated Tasks Number_max: 30
+    Allocated Tasks Number_mean: 29.79047619047619
+    Allocated Tasks Number_min: 28
+    Bad Allocations Number_max: 15
+    Bad Allocations Number_mean: 7.104761904761904
+    Bad Allocations Number_min: 1
+    Social Welfare (Online Myopic)_max: 9548.7581621365
+    Social Welfare (Online Myopic)_mean: 8998.299992790966
+    Social Welfare (Online Myopic)_min: 7940.2185287015
+    Social Welfare (Random Allocation)_max: 7226.507746909067
+    Social Welfare (Random Allocation)_mean: 5645.498463884971
+    Social Welfare (Random Allocation)_min: 4284.401252245399
+    Social Welfare_max: 9260.343498766093
+    Social Welfare_mean: 8414.514033610567
+    Social Welfare_min: 6964.4019115518095
+  date: 2021-10-26_15-42-50
+  done: true
+  episode_len_mean: 30.0
+  episode_media: {}
+  episode_reward_max: 27781.03049629827
+  episode_reward_mean: 25243.5421008317
+  episode_reward_min: 20893.205734655414
+  episodes_this_iter: 105
+  episodes_total: 420
+  experiment_id: 9fb32876720640538419092a9e4a68ee
+  hostname: gold53.cluster.local
+  info:
+    learner:
+      default:
+        custom_metrics: {}
+        learner_stats:
+          allreduce_latency: 0.0
+          cur_kl_coeff: 0.6749999999999998
+          cur_lr: 0.001
+          entropy: 0.9576918035449724
+          entropy_coeff: 0.0
+          kl: .inf
+          policy_loss: 0.16871869819425467
+          total_loss: .inf
+          vf_explained_var: 0.1990945041179657
+          vf_loss: 16136426.923873873
+        model: {}
+    num_agent_steps_sampled: 37800
+    num_agent_steps_trained: 37800
+    num_steps_sampled: 12600
+    num_steps_trained: 12600
+  iterations_since_restore: 4
+  node_ip: 10.13.39.108
+  num_healthy_workers: 5
+  off_policy_estimator: {}
+  perf:
+    cpu_util_percent: 9.903291139240507
+    ram_util_percent: 6.586582278481012
+  pid: 171392
+  policy_reward_max:
+    default: 9260.343498766093
+  policy_reward_mean:
+    default: 8414.514033610567
+  policy_reward_min:
+    default: 6964.4019115518095
+  sampler_perf:
+    mean_action_processing_ms: 0.36470571334094387
+    mean_env_render_ms: 0.0
+    mean_env_wait_ms: 465.92394461096495
+    mean_inference_ms: 5.805036634833319
+    mean_raw_obs_processing_ms: 11.336898595650295
+  time_since_restore: 1385.882295846939
+  time_this_iter_s: 278.5668156147003
+  time_total_s: 1385.882295846939
+  timers:
+    learn_throughput: 86.098
+    learn_time_ms: 36586.296
+    sample_throughput: 10.167
+    sample_time_ms: 309821.847
+    update_time_ms: 18.446
+  timestamp: 1635259370
+  timesteps_since_restore: 0
+  timesteps_total: 12600
+  training_iteration: 4
+  trial_id: b20a9_00001
+  
+WARNING:root:NaN or Inf found in input tensor.
+WARNING:root:NaN or Inf found in input tensor.
+== Status ==
+Memory usage on this node: 45.6/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 6.0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_0_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_98dec67c9eecd333b40f690f530be81e, 0.0/6.0 CPU_group_98dec67c9eecd333b40f690f530be81e, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (1 RUNNING, 1 TERMINATED)
++-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status     | loc                 |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00001 | RUNNING    | 10.13.39.108:171392 | 0.001  |               3000 |      4 |          1385.88 | 12600 |  25243.5 |                27781 |              20893.2 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00000 | TERMINATED |                     | 0.0001 |               3000 |      4 |          1245.95 | 12600 |  24471.3 |                28068 |              19789.9 |                 30 |
++-------------------------------+------------+---------------------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+== Status ==
+Memory usage on this node: 45.6/755.6 GiB
+Using FIFO scheduling algorithm.
+Resources requested: 0/64 CPUs, 0/0 GPUs, 0.0/523.74 GiB heap, 0.0/186.26 GiB objects (0.0/6.0 CPU_group_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_1_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_5_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_3_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_2_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_4_4405abe92f5de4c52065854670549be6, 0.0/1.0 CPU_group_0_4405abe92f5de4c52065854670549be6)
+Result logdir: /mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/results/edge_cloud_independent_ppo_with_history
+Number of trials: 2/2 (2 TERMINATED)
++-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+| Trial name                    | status     | loc   |     lr |   train_batch_size |   iter |   total time (s) |    ts |   reward |   episode_reward_max |   episode_reward_min |   episode_len_mean |
+|-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------|
+| PPO_EdgeCloudEnv1_b20a9_00000 | TERMINATED |       | 0.0001 |               3000 |      4 |          1245.95 | 12600 |  24471.3 |                28068 |              19789.9 |                 30 |
+| PPO_EdgeCloudEnv1_b20a9_00001 | TERMINATED |       | 0.001  |               3000 |      4 |          1385.88 | 12600 |  25243.5 |                27781 |              20893.2 |                 30 |
++-------------------------------+------------+-------+--------+--------------------+--------+------------------+-------+----------+----------------------+----------------------+--------------------+
+
+
+2021-10-26 15:42:51,040	INFO tune.py:545 -- Total run time: 1417.22 seconds (1416.25 seconds for the tuning loop).
+<ray.tune.analysis.experiment_analysis.ExperimentAnalysis object at 0x2ba67249d6a0>
+[0m
