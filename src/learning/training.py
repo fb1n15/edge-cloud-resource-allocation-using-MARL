@@ -185,8 +185,8 @@ def train(config):
         stop=config["stop"],  # stopping criteria
         # # If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
         # Trainable.setup took 145.656 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
-        # reuse_actors=False,
-        reuse_actors=True,
+        reuse_actors=False,
+        # reuse_actors=True,
         local_dir="./results",
         # local directory to save training results to
         # Verbosity mode. 0 = silent, 1 = only status updates, 2 = status and brief trial results, 3 = status and detailed trial results. Defaults to 3.

@@ -33,7 +33,7 @@ config['trainer-config']['train_batch_size']['gridsearch'] = [3000, 4000]
 config['trainer-config']['sgd_minibatch_size']['gridsearch'] = [64, 128]
 
 # set the number of CPU cores and GPUs
-config['trainer-config']['num_workers'] = 5  # number of CPU cores
+config['trainer-config']['num_workers'] = 7  # number of CPU cores
 config['trainer-config']['num_gpus'] = 0  # number of GPUs
 
 # set the name of the trial
