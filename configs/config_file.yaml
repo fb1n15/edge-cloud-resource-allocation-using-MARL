@@ -65,7 +65,7 @@ trainer-config:
         - - 256
           - 256
   num_gpus: 0
-  num_workers: 9
+  num_workers: 18
   observation_filter:
     gridsearch:
     - MeanStdFilter

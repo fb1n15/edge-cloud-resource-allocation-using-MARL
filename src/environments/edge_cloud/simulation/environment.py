@@ -102,7 +102,7 @@ class EdgeCloudEnv(MultiAgentEnv):
                  p_high_value_tasks=0.3, high_value_slackness=0,
                  low_value_slackness=0, resource_ratio=1, valuation_ratio=10,
                  resource_coefficient=0.2,
-                 forgiveness_factor=30, logging_level=logging.DEBUG,
+                 forgiveness_factor=30, logging_level=logging.ERROR,
                  allow_negative_reward=False,
                  alpha=1.0, lam=1e2, occup_len=4, history_len=3):
         """

@@ -4,7 +4,7 @@
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --cpus-per-task=10  # use 10 CPU cores for each task
-#SBATCH --time=00:10:00
+#SBATCH --time=02:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fb1n15@soton.ac.uk.com
 
