@@ -3,8 +3,10 @@
 #SBATCH --partition=gpu
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
-#SBATCH --cpus-per-task=10  # use 10 CPU cores for each task
+#SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
+#SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
 #SBATCH --time=02:00:00
+
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fb1n15@soton.ac.uk.com
 
@@ -29,7 +31,6 @@ echo "Starting Job"
 #do
 #  python ./src/marl.py train --config $CONFIG_FILE --env_seed "$SEED"
 #done
-python --version
 mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE --env_seed 1
 
 echo "Job Finished"

@@ -66,8 +66,12 @@ trainer-config:
   lr:
      gridsearch: [0.0001]
 #    gridsearch: [0.0001, 0.001]
-  lambda: 1.0
-  entropy_coeff: 0.0
+  clip_param:
+    gridsearch: [0.2]  # clipping range
+  lambda:  # controls the entropy trade-off in the model.
+    gridsearch: [1.0]
+  entropy_coeff:  # controls the entropy trade-off in the model.
+    gridsearch: [0.0]
   batch_mode: "complete_episodes"
 #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set

@@ -22,15 +22,21 @@ print("RL algorithm seed: ", config['trainer-config']['seed'])
 config['stop']['timesteps_total'] = 100_000
 config['samples'] = 1  # number of samples/trials
 # set the auction type
-config['env-config']['auction_type']['gridsearch'] = ['first-price', 'second-price']
+config['env-config']['auction_type']['gridsearch'] = ['first-price']
 
 # hyperparameters setting
 # learning rate
-config['trainer-config']['lr']['gridsearch'] = [0.0001, 0.001]
+config['trainer-config']['lr']['gridsearch'] = [0.0001]
+# clipping range
+config['trainer-config']['clip_param']['gridsearch'] = [0.1, 0.2, 0.3]
+# controls the entropy trade-off in the model.
+config['trainer-config']['lambda']['gridsearch'] = [0.9, 0.95, 1.0]
+# controls the entropy trade-off in the model.
+config['trainer-config']['entropy_coeff']['gridsearch'] = [0, 0.01]
 # train batch size
-config['trainer-config']['train_batch_size']['gridsearch'] = [3000, 4000]
+config['trainer-config']['train_batch_size']['gridsearch'] = [3000]
 # mini-batch size
-config['trainer-config']['sgd_minibatch_size']['gridsearch'] = [64, 128]
+config['trainer-config']['sgd_minibatch_size']['gridsearch'] = [128]
 
 # set the number of CPU cores and GPUs
 config['trainer-config']['num_workers'] = 18  # number of CPU cores

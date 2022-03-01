@@ -3,7 +3,6 @@ env-config:
   auction_type:
     gridsearch:
     - first-price
-    - second-price
   avg_resource_capacity:
     0:
     - 6
@@ -50,13 +49,24 @@ stop:
 trainer: PPO
 trainer-config:
   batch_mode: complete_episodes
-  entropy_coeff: 0.0
+  clip_param:
+    gridsearch:
+    - 0.1
+    - 0.2
+    - 0.3
+  entropy_coeff:
+    gridsearch:
+    - 0
+    - 0.01
   framework: torch
-  lambda: 1.0
+  lambda:
+    gridsearch:
+    - 0.9
+    - 0.95
+    - 1.0
   lr:
     gridsearch:
     - 0.0001
-    - 0.001
   model:
     custom_model: FCModel
     custom_model_config:
@@ -72,10 +82,8 @@ trainer-config:
   seed: 9325
   sgd_minibatch_size:
     gridsearch:
-    - 64
     - 128
   synchronize_filters: true
   train_batch_size:
     gridsearch:
     - 3000
-    - 4000
