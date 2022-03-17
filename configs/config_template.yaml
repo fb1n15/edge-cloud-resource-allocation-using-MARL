@@ -1,4 +1,4 @@
-name: 5-actions_first-price_no-history_revenue
+name: Hyperparameter_Optimization
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters

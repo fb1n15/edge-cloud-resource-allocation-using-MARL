@@ -1,10 +1,20 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="./configs/config_file.yaml"
+CONFIG_FILE="./configs/config_HPO_local.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 2
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 3
+
+
+
+
+
+
+
+
+
+
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 2
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 3
 
 
 

@@ -13,6 +13,18 @@ env-config:
     - 6
     - 6
     2:
+    - 6
+    - 6
+    - 6
+    3:
+    - 6
+    - 6
+    - 6
+    4:
+    - 4
+    - 4
+    - 4
+    5:
     - 4
     - 4
     - 4
@@ -26,17 +38,29 @@ env-config:
     - 2
     - 2
     2:
-    - 3
-    - 3
-    - 3
+    - 2
+    - 2
+    - 2
+    3:
+    - 2
+    - 2
+    - 2
+    4:
+    - 4
+    - 4
+    - 4
+    5:
+    - 4
+    - 4
+    - 4
   cooperative: false
   duration: 7
   history_len: 4
   n_actions: 5
-  n_nodes: 3
+  n_nodes: 6
   n_tasks_in_total: 42
   n_tasks_to_allocate: 40
-  num_agents: 3
+  num_agents: 6
   random_seed: false
   record_history: false
   seed: 2201
