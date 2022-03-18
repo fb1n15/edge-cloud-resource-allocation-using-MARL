@@ -222,7 +222,7 @@ class CustomCallbacks(DefaultCallbacks):
     # Runs when an episode is done.
     def on_episode_end(self, *, worker: RolloutWorker, base_env: BaseEnv,
                        policies: Dict[str, Policy], episode: MultiAgentEpisode,
-                       env_index: int, **kwargs):
+                       env_index: int, benchmarks=False, **kwargs):
         assert len(base_env.get_unwrapped()) == 1
         env = base_env.get_unwrapped()[0]
         if isinstance(env, GroupAgentsWrapper):
@@ -233,15 +233,16 @@ class CustomCallbacks(DefaultCallbacks):
         # episode.custom_metrics["Agents Crashed"] = env.num_agents_crashed()
         # episode.custom_metrics["Map Explored"] = env.get_map_explored()
         episode.custom_metrics["Social Welfare (PPO)"] = env.get_total_sw()
-        episode.custom_metrics[
-            "Social Welfare (Online Myopic)"] = env.get_total_sw_online_myopic()
-        episode.custom_metrics[
-            "Social Welfare (Random Allocation)"] = env.get_total_sw_random_allocation()
-        episode.custom_metrics[
-            "Social Welfare (All Bidding Zero)"] = env.get_total_sw_bidding_zero()
-        episode.custom_metrics[
-            "Social Welfare (Offline Optimal)"] = env.get_total_sw_offline_optimal()
-        episode.custom_metrics[
-            "Allocated Tasks Number (PPO)"] = env.get_total_allocated_task_num()
-        episode.custom_metrics[
-            "Bad Allocations Number (PPO)"] = env.get_num_bad_allocations()
+        if benchmarks:
+            episode.custom_metrics[
+                "Social Welfare (Online Myopic)"] = env.get_total_sw_online_myopic()
+            episode.custom_metrics[
+                "Social Welfare (Random Allocation)"] = env.get_total_sw_random_allocation()
+            episode.custom_metrics[
+                "Social Welfare (All Bidding Zero)"] = env.get_total_sw_bidding_zero()
+            episode.custom_metrics[
+                "Social Welfare (Offline Optimal)"] = env.get_total_sw_offline_optimal()
+            episode.custom_metrics[
+                "Allocated Tasks Number (PPO)"] = env.get_total_allocated_task_num()
+            episode.custom_metrics[
+                "Bad Allocations Number (PPO)"] = env.get_num_bad_allocations()

@@ -16,7 +16,7 @@
 
 n_tasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/config_file.yaml"
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/config_HPO_iridis5.yaml"
 echo "Starting Job"
 
 module load conda/py3-latest

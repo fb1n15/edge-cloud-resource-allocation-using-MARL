@@ -61,7 +61,8 @@ trainer-config:
     custom_model: FCModel
     custom_model_config:
       layers:
-        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ] ]
+#        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ] ]
+        gridsearch: [ [ 256, 256 ] ]
 
   # Trainer parameters
   lr:
@@ -80,17 +81,18 @@ trainer-config:
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-    gridsearch: [ 3000, 4000 ]
+#    gridsearch: [ 3000, 4000 ]
+    gridsearch: [ 3000 ]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
   sgd_minibatch_size:
     #    gridsearch: [32, 64, 128]
-    gridsearch: [ 64, 128 ]
+    gridsearch: [ 128 ]
 
 
 stop:
-  timesteps_total: 8_0000
+  timesteps_total: 100
 #  timesteps_total: 6_0000
 # how many trials to run for each hyperparameter combinations
 samples: 1
