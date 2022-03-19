@@ -156,7 +156,7 @@ def compute_walfare_based_on_tasks(model_solution, df_tasks, df_nodes):
 
 def offline_optimal(df_tasks, df_nodes, timestamp_nr, task_nr, node_nr,
                     mipgap=0.1):
-    """Solve the constraints allocation problem using CPLEX.
+    """Solve the allocation problem using CPLEX.
 
     Args:
         df_tasks (dataframe): A dataframe containing information about the tasks.

@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 #SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
-#SBATCH --time=60:00:00
+#SBATCH --time=02:00:00
 
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fb1n15@soton.ac.uk.com
@@ -17,7 +17,8 @@
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
 n_tasks=1
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/config_file.yaml"
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation/config_HPO_iridis5.yaml"
+
 
 module load conda/py3-latest
 source activate edge-cloud-resource-allocation
@@ -26,13 +27,12 @@ module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
-START=$1
-END=$(($1+9))
+START=1
+END=3
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value
   mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE  --env_seed "$SEED"
 done
-#mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE2
 
 echo "Job Finished"  # print Job Finished
