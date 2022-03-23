@@ -1,0 +1,1 @@
+rllib rollout "/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/Hyperparameter_Optimization/PPO_EdgeCloudEnv1_eea29_00000_0_clip_param=0.3,entropy_coeff=0.01,auction_type=first-price,lambda=0.9,lr=0.0001,layers=[256, 256],_2022-03-22_16-12-55/checkpoint_000004" --run PPO --episodes 3

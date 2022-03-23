@@ -9,7 +9,7 @@
 #SBATCH --mail-user=fan_bi@icloud.com
 
 case $SLURM_ARRAY_TASK_ID in
-# Scaling up experiment
+# Scaling up checkpoint
   1)
     CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml"
     ;;

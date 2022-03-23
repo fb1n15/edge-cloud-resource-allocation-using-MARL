@@ -76,7 +76,7 @@ or
 cd MARL-ReverseAuction/marl-edge-cloud
 module load conda/py3-latest
 source activate jack
-bash ./src/run_MARL_mac.sh
+bash ./src/train_MARL_mac.sh
 ```
 
 ## Request an interactive node
@@ -89,7 +89,7 @@ sinteractive -p gpu --gres=gpu:2 --time=04:00:00 --mem=16GB --job-name=marl-edge
 
 then use it like a local machine, e.g.,
 ```shell
-bash ./run_MARL_mac.sh
+bash ./train_MARL_mac.sh
 ```
 
 ## Submit batch jobs

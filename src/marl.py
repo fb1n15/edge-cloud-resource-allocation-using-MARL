@@ -34,15 +34,15 @@ class CLIPromptExperimentChooser(ExperimentChooser):
         while True:
             try:
                 response = int(input(
-                    f"\nEnter experiment number (1-{len(self.experiments)}) >> ")) - 1
+                    f"\nEnter checkpoint number (1-{len(self.experiments)}) >> ")) - 1
                 return response
             except ValueError:
                 print("invalid integer, please try again")
 
     def select_experiment(self):
         """
-        Prompt the user to select which experiment to run
-        :return: Name of the experiment the user picked
+        Prompt the user to select which checkpoint to run
+        :return: Name of the checkpoint the user picked
         """
 
         for i, e in enumerate(self.experiments):
@@ -60,7 +60,7 @@ def main():
     print("Start parsing arguments")
     parser = argparse.ArgumentParser()
     parser.add_argument('run_option', choices=['train', 'run', 'mapgen'])
-    # parser.add_argument('--restore', action='store_true')
+    # parser.add_argument('--restore', action='store_true')  # restore training from checkpoint
     parser.add_argument('--config', type=str, help='File containing the config')
     parser.add_argument('--checkpoint', type=str, help='Path to the checkpoint to run')
     # allow set the seed manually
@@ -94,7 +94,7 @@ def main():
         # experiments = explore_checkpoints()
         # chooser = CLIPromptExperimentChooser(experiments)
         # choice = chooser.select_experiment()
-
+        print("Start executing")
         run_model.main(args.checkpoint, config)
 
     elif args.run_option == "mapgen":

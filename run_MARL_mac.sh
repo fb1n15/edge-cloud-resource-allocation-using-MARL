@@ -1,52 +1,7 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="./configs/config_HPO_local.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
-
-
-
-
-
-
-
-
-
-
-#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 2
-#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 3
-
-
-
-
-
-
-
-
-
-
-
-
-
-#for CONFIG_FILE in "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without_history.yaml" "Users/fan/OneDrive - University of Southampton/My-Projects/MARL-Jack/marl-disaster-relief/configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_with_history.yaml" "./configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_without_history.yaml"
-#do
-#    python "./src/marl.py" train --config "$CONFIG_FILE"
-#done
-
-## run just one job (ppo with history)
-#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_with-history_5-actions_env-2_local.yaml"
-#python "./src/marl.py" train --config "$CONFIG_FILE"
-
-
-
-## run just one job PPO without history
-#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_ppo_fc_independent_without_history.yaml"
-#python "./src/marl.py" train --config "$CONFIG_FILE"
-
-## run just one job DQN with history
-#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_with_history.yaml"
-#python "./src/marl.py" train --config "$CONFIG_FILE"
-
-## run just one job DQN without history
-#CONFIG_FILE="./configs/experiments/edge_cloud/hyperparameters/cpu_DQN_fc_independent_without_history.yaml"
-#python "./src/marl.py" train --config "$CONFIG_FILE"
+CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/configs/config_HPO_execution_local.yaml"  # config file for RLlib
+CHECKPOINT_DIR="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/Hyperparameter_Optimization/PPO_EdgeCloudEnv1_52046_00000_0_clip_param=0.3,entropy_coeff=0.01,auction_type=first-price,lambda=0.9,lr=0.0001,layers=[256, 256],_2022-03-22_17-27-17/checkpoint_000033/checkpoint-33"  # checkpoint dir for RLlib
+# execute the trained agent/policy
+python "./src/marl.py" run --config "$CONFIG_FILE" --checkpoint "$CHECKPOINT_DIR" --env_seed 1

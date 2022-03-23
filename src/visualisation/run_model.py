@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pygame
 import ray
 import thorpy
@@ -10,6 +12,7 @@ from environments import environment_map
 from learning.training import CustomCallbacks, get_trainer_config
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
+from ray.rllib.agents.ppo.ppo import PPOTrainer
 
 WIDTH = 640
 HEIGHT = 720
@@ -26,22 +29,28 @@ def training_config(config):
 
         trainer_config["multiagent"] = {
             "policies": {
-                "default": (None, env.get_observation_space(config["env-config"]), env.get_action_space(), {}),
-            },
+                "default": (None, env.get_observation_space(config["env-config"]),
+                            env.get_action_space(), {}),
+                },
             "policy_mapping_fn": lambda agent_id: "default"
-        }
+            }
 
     elif config["grouping"] == "all_same":
         obs_space = Tuple(
-            [env.get_observation_space(config["env-config"]) for i in range(config["env-config"]["num_agents"])])
-        act_space = Tuple([env.get_action_space() for i in range(config["env-config"]["num_agents"])])
+            [env.get_observation_space(config["env-config"]) for i in
+             range(config["env-config"]["num_agents"])])
+        act_space = Tuple(
+            [env.get_action_space() for i in range(config["env-config"]["num_agents"])])
         grouping = {
-            "group_1": ["drone_" + str(i) for i in range(config["env-config"]["num_agents"])],
-        }
+            "group_1": ["drone_" + str(i) for i in
+                        range(config["env-config"]["num_agents"])],
+            }
 
         # Register the environment with Ray, and use this in the config
         register_env(config["env"],
-                     lambda env_cfg: env(env_cfg).with_agent_groups(grouping, obs_space=obs_space, act_space=act_space))
+                     lambda env_cfg: env(env_cfg).with_agent_groups(grouping,
+                                                                    obs_space=obs_space,
+                                                                    act_space=act_space))
         trainer_config["env"] = config["env"]
         # trainer_config["env"] = env
 
@@ -55,9 +64,9 @@ def training_config(config):
         trainer_config["multiagent"] = {
             "policies": {
                 "default": (None, obs_space, act_space, {}),
-            },
+                },
             "policy_mapping_fn": lambda agent_id: "default"
-        }
+            }
 
     elif config["grouping"] == "radar-rescue":
         trainer_config["env"] = env
@@ -65,12 +74,14 @@ def training_config(config):
         trainer_config["multiagent"] = {
             "policies": {
                 "radar": (
-                None, env.get_observation_space(config["env-config"], "radar"), env.get_action_space("radar"), {}),
+                    None, env.get_observation_space(config["env-config"], "radar"),
+                    env.get_action_space("radar"), {}),
                 "rescue": (
-                None, env.get_observation_space(config["env-config"], "rescue"), env.get_action_space("rescue"), {}),
-            },
+                    None, env.get_observation_space(config["env-config"], "rescue"),
+                    env.get_action_space("rescue"), {}),
+                },
             "policy_mapping_fn": lambda agent_id: agent_id.split("_")[0]
-        }
+            }
 
     # ModelCatalog.register_custom_model("CustomVisionNetwork", CustomVisionNetwork)
 
@@ -84,8 +95,8 @@ class SimulationRunner:
     def __init__(self, experiment, env, config):
 
         # Create logger which doesn't do anything
-        # del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
-        # experiment["best trial"]["config"]["explore"] = False
+        # del checkpoint["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
+        # checkpoint["best trial"]["config"]["explore"] = False
         # # TODO remove sampled stuff from config
         # trainer_config = {"env_config": training_config(config)["env_config"],
         #                   "multiagent": training_config(config)["multiagent"],
@@ -100,11 +111,9 @@ class SimulationRunner:
                                     env=env)
 
         self.agent.restore(experiment)  # Restore the last checkpoint
-        # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
+        # self.agent.restore(checkpoint["best trial"]["path"])  # Restore the last checkpoint
 
-
-
-        self.gridworld = self.env.controller
+        # self.gridworld = self.env.controller
 
         self.episode_reward = 0
         self.done = False
@@ -135,12 +144,13 @@ class SimulationRunner:
                 policy_id = agent_id.split("_")[0]
                 if policy_id not in self.model_state:
                     policy_id = "default"
-                action[agent_id], self.model_state[policy_id], _ = self.agent.compute_action(
+                action[agent_id], self.model_state[
+                    policy_id], _ = self.agent.compute_action(
                     observation=agent_obs,
                     policy_id=policy_id,
                     state=self.model_state[policy_id],
                     full_fetch=True
-                )
+                    )
             self.obs, self.reward, self.done, self.info = self.env.step(action)
             if self.done["__all__"]:
                 self.restart_simulation()
@@ -200,22 +210,49 @@ def start_displaying(runner, env):
     while running:
         clock.tick(60)
 
-        screen.blit(env["render"](runner.gridworld, WIDTH, HEIGHT - MENU_HEIGHT), (0, MENU_HEIGHT))
+        screen.blit(env["render"](runner.gridworld, WIDTH, HEIGHT - MENU_HEIGHT),
+                    (0, MENU_HEIGHT))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 break
             menu.react(event)
-        hud = render_HUD(runner.get_rescued(), runner.get_time(), runner.num_agents_crashed())
-        screen.blit(hud, (WIDTH-hud.get_width(), 0))
+        hud = render_HUD(runner.get_rescued(), runner.get_time(),
+                         runner.num_agents_crashed())
+        screen.blit(hud, (WIDTH - hud.get_width(), 0))
         pygame.display.update()
 
     pygame.quit()
     runner.running = False
 
 
-def main(experiment, config):
-    ray.init()
-    env = environment_map(config["env"])
-    runner = SimulationRunner(experiment, env["env"], config)
-    start_displaying(runner, env)
+def main(checkpoint, config):
+    trainer_config = get_trainer_config(config)
+    # pprint(f"trainer_config = {trainer_config}")
+    env_class = environment_map(config["env"])['env']
+    agent = PPOTrainer(config=trainer_config, env=env_class)
+    # print(f"checkpoint = {checkpoint}")
+    agent.restore(checkpoint)  # restore the model from the last checkpoint
+
+    # https://docs.ray.io/en/latest/rllib-training.html#accessing-policy-state
+    policy_map = agent.workers.local_worker().policy_map
+    model_state = {p: m.get_initial_state() for p, m in policy_map.items()}
+    print(model_state)
+
+    env = env_class(config['env-config'])  # create an environment instance
+    print(f"Environment: {env}")
+    obs = env.reset()  # reset the environment
+    done = False  # initialize the done flag
+    action = {}  # initialize the action dictionary
+    while not done:
+        for agent_id, agent_obs in obs.items():
+            policy_id = agent_id.split("_")[0]
+            action[agent_id], model_state[policy_id], _ = agent.compute_action(
+                observation=agent_obs,
+                policy_id=policy_id,
+                state=model_state[policy_id],
+                full_fetch=True
+                )
+        print(f"action = {action}")
+        obs, reward, done, info = env.step(action)  # step the environment
+        print(f"reward: {reward}")  # print the reward of this step

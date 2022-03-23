@@ -8,7 +8,7 @@
 #SBATCH --mail-user=jp6g18@soton.ac.uk
 
 case $SLURM_ARRAY_TASK_ID in
-# Scaling up experiment
+# Scaling up checkpoint
   1)
     CONFIG_FILE="configs/experiments/uncertainty_action/qmix.yaml"
     ;;

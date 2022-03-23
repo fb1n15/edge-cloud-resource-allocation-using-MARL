@@ -8,7 +8,7 @@
 #SBATCH --mail-user=fan_bi@icloud.com
 
 case $SLURM_ARRAY_TASK_ID in
-# Depth experiment
+# Depth checkpoint
   1)
     CONFIG_FILE="configs/experiments/fc_depth/ppo_fc_independent_depth1.yaml"
     ;;

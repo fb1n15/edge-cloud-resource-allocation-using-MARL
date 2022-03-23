@@ -1,4 +1,4 @@
-# read the config template and modify it to generate the config file used in the experiment
+# read the config template and modify it to generate the config file used in the checkpoint
 import random  # for generating random numbers
 
 import yaml  # for reading the config template
@@ -29,7 +29,7 @@ config['env-config']['avg_resource_capacity'] = {0: [6, 6, 6], 1: [6, 6, 6], 2: 
 config['env-config']['avg_unit_cost'] = {0: [2, 2, 2], 1: [2, 2, 2], 2: [2, 2, 2],
                                          3: [2, 2, 2], 4: [4, 4, 4], 5: [4, 4, 4]}
 
-# stop the experiment after a certain number of timesteps
+# stop the checkpoint after a certain number of timesteps
 config['stop']['timesteps_total'] = 100_000
 config['samples'] = 1  # number of samples/trials
 # set the auction type

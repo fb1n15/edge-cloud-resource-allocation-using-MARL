@@ -176,24 +176,24 @@ def train(config):
             scheduler = PopulationBasedTraining(**config["scheduler-config"])
     print("start training")
     # pprint(f"trainer_config = {trainer_config}")
-    # execute training
+    # training the agent
     analysis = tune.run(
         run_or_experiment=config["trainer"],  # this is the model to train
-        name=config["name"],  # name of the experiment
-        scheduler=scheduler,  # Scheduler for executing the experiment (default: FIFO)
+        name=config["name"],  # name of the checkpoint
+        scheduler=scheduler,  # Scheduler for executing the checkpoint (default: FIFO)
         config=trainer_config,  # algorithm-specific configuration (e.g., num_workers)
         stop=config["stop"],  # stopping criteria
         # # If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
         # Trainable.setup took 145.656 seconds. If your trainable is slow to initialize, consider setting reuse_actors=True to reduce actor creation overheads.
-        reuse_actors=False,
-        # reuse_actors=True,
+        # reuse_actors=False,
+        reuse_actors=True,
         local_dir="./results",
         # local directory to save training results to
         # Verbosity mode. 0 = silent, 1 = only status updates, 2 = status and brief trial results, 3 = status and detailed trial results. Defaults to 3.
         verbose=3,
-        # Whether to checkpoint at the end of the experiment regardless of the checkpoint_freq
+        # Whether to checkpoint at the end of the checkpoint regardless of the checkpoint_freq
         # (When training deep learning models, the checkpoint is the weights of the model. These weights can be used to make predictions as is, or used as the basis for ongoing training.)
-        checkpoint_at_end=True,
+        checkpoint_at_end=True,  # whether to checkpoint at the end of the checkpoint
         # number of times to sample from the hyperparameter space.
         num_samples=config.get("samples", 1),  # to take multiple random samples
         fail_fast=True,
@@ -201,10 +201,11 @@ def train(config):
         ## how to checkpoint?
         # https://docs.ray.io/en/latest/tune/user-guide.html#checkpointing
         # name="my_experiment",
+        restore=config.get("restore", None),  # checkpoint to restore from
         # resume=True  # You can then call tune.run() with resume=True to continue this run in the future:
         )
 
-    # Object for experiment analysis.
+    # Object for checkpoint analysis.
     return analysis
 
 

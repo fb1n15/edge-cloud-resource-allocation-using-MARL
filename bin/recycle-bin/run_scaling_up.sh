@@ -8,7 +8,7 @@
 #SBATCH --mail-user=fan_bi@icloud.com
 
 case $SLURM_ARRAY_TASK_ID in
-# Scaling up experiment
+# Scaling up checkpoint
   1)
     CONFIG_FILE="configs/experiments/scaling_up/ppo_fc_independent.yaml"
     ;;
