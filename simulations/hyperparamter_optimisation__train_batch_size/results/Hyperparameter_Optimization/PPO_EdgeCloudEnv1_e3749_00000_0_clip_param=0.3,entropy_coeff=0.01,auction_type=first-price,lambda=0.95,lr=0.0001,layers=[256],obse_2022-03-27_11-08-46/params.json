@@ -1,0 +1,116 @@
+{
+  "batch_mode": "complete_episodes",
+  "callbacks": "<class 'learning.training.CustomCallbacks'>",
+  "clip_param": 0.3,
+  "entropy_coeff": 0.01,
+  "env": "<class 'environments.edge_cloud.simulation.environment.EdgeCloudEnv1'>",
+  "env_config": {
+    "auction_type": "first-price",
+    "avg_resource_capacity": {
+      "0": [
+        6,
+        6,
+        6
+      ],
+      "1": [
+        6,
+        6,
+        6
+      ],
+      "2": [
+        6,
+        6,
+        6
+      ],
+      "3": [
+        6,
+        6,
+        6
+      ],
+      "4": [
+        4,
+        4,
+        4
+      ],
+      "5": [
+        4,
+        4,
+        4
+      ]
+    },
+    "avg_unit_cost": {
+      "0": [
+        2,
+        2,
+        2
+      ],
+      "1": [
+        2,
+        2,
+        2
+      ],
+      "2": [
+        2,
+        2,
+        2
+      ],
+      "3": [
+        2,
+        2,
+        2
+      ],
+      "4": [
+        4,
+        4,
+        4
+      ],
+      "5": [
+        4,
+        4,
+        4
+      ]
+    },
+    "cooperative": false,
+    "duration": 12,
+    "history_len": 4,
+    "n_actions": 5,
+    "n_nodes": 6,
+    "n_tasks_in_total": 42,
+    "n_tasks_to_allocate": 40,
+    "num_agents": 6,
+    "random_seed": false,
+    "record_history": false,
+    "seed": 1,
+    "usage_time_ub": 3,
+    "verbose": false
+  },
+  "framework": "torch",
+  "lambda": 0.95,
+  "lr": 0.0001,
+  "model": {
+    "custom_model": "FCModel",
+    "custom_model_config": {
+      "layers": [
+        256
+      ]
+    }
+  },
+  "multiagent": {
+    "policies": {
+      "default": [
+        null,
+        "Box(0.0, 10000.0, (16,), float16)",
+        "Discrete(5)",
+        {}
+      ]
+    },
+    "policy_mapping_fn": "<function get_trainer_config.<locals>.<lambda> at 0x7ff623387158>"
+  },
+  "num_gpus": 0,
+  "num_workers": 7,
+  "observation_filter": "MeanStdFilter",
+  "seed": 142,
+  "sgd_minibatch_size": 128,
+  "synchronize_filters": true,
+  "train_batch_size": 3000
+}

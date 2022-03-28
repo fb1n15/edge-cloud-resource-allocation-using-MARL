@@ -39,8 +39,8 @@ env-config:
   history_len: 4
   cooperative: False
   n_actions: 5
-  auction_type:
-    gridsearch: [ 'first-price' ]
+  auction_type: 'first-price'
+#    gridsearch: [ 'first-price' ]
 
 trainer: PPO
 trainer-config:
@@ -62,7 +62,7 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers: [256, 256]
+      layers: [256]
 #        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ] ]
 
   # Trainer parameters

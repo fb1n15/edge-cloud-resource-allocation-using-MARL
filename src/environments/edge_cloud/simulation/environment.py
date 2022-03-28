@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from time import strftime
 from collections import deque
@@ -135,6 +136,12 @@ class EdgeCloudEnv(MultiAgentEnv):
         # myfile.touch(exist_ok=True)
         # config the log of the program
         fmtStr = "%(asctime)s: %(levelname)s: %(funcName)s() -> %(message)s"
+        # create the log folder if it is not exist
+        log_path = './logs/'
+        isExists = os.path.exists(log_path)
+        if not isExists:
+            os.makedirs(log_path)
+        # logging setting
         logging.basicConfig(level=logging_level,
                             filename='./logs/edge_cloud_resource_allocation{}.log'.format(
                                 strftime('_%Y_%m_%d_%T')), filemode='w', format=fmtStr)

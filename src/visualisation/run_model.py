@@ -1,5 +1,6 @@
 from pprint import pprint
 
+import pandas as pd
 import pygame
 import ray
 import thorpy
@@ -12,7 +13,6 @@ from environments import environment_map
 from learning.training import CustomCallbacks, get_trainer_config
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
-from ray.rllib.agents.ppo.ppo import PPOTrainer
 
 WIDTH = 640
 HEIGHT = 720
@@ -95,8 +95,8 @@ class SimulationRunner:
     def __init__(self, experiment, env, config):
 
         # Create logger which doesn't do anything
-        # del checkpoint["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
-        # checkpoint["best trial"]["config"]["explore"] = False
+        # del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
+        # experiment["best trial"]["config"]["explore"] = False
         # # TODO remove sampled stuff from config
         # trainer_config = {"env_config": training_config(config)["env_config"],
         #                   "multiagent": training_config(config)["multiagent"],
@@ -111,7 +111,7 @@ class SimulationRunner:
                                     env=env)
 
         self.agent.restore(experiment)  # Restore the last checkpoint
-        # self.agent.restore(checkpoint["best trial"]["path"])  # Restore the last checkpoint
+        # self.agent.restore(experiment["best trial"]["path"])  # Restore the last checkpoint
 
         # self.gridworld = self.env.controller
 
@@ -131,14 +131,11 @@ class SimulationRunner:
         self.speed_callback = callback
 
     def step_simulation(self):
-        clock = pygame.time.Clock()
-        while self.running:
+        self.done = {"__all__": False}  # set the done flag to false
+        counter = 0  # Reset episodes counter
+        while counter < 3:
+            episode_reward = 0  # Reset episode reward
             self.timestep += 1
-            fr = self.speed_callback()
-            if fr is not None:
-                clock.tick(self.speed_callback())
-            else:
-                raise Exception("speed callback not set")
             action = {}
             for agent_id, agent_obs in self.obs.items():
                 policy_id = agent_id.split("_")[0]
@@ -152,10 +149,38 @@ class SimulationRunner:
                     full_fetch=True
                     )
             self.obs, self.reward, self.done, self.info = self.env.step(action)
+            episode_reward += sum(self.reward.values())
+
+            # print(f"reward: {self.reward}")
+
             if self.done["__all__"]:
+                counter += 1  # Increment episodes counter
+                print(f"episode ID = {counter}")  # Print episode ID
+                print(f"episode_reward: {episode_reward}")  # Print episode reward
+                episode_social_welfare = self.env.get_total_sw()
+                print(f"episode_social_welfare: {episode_social_welfare}")  # Print episode social welfare
+                social_welfare_online_myopic = self.env.get_total_sw_online_myopic()
+                print(f"social_welfare_online_myopic: {social_welfare_online_myopic}")
+                social_welfare_bidding_zero = self.env.get_total_sw_bidding_zero()
+                print(f"social_welfare_bidding_zero: {social_welfare_bidding_zero}")
+                social_welfare_offline_optimal = self.env.get_total_sw_offline_optimal()
+                print(f"social_welfare_offline_optimal: {social_welfare_offline_optimal}")
+                social_welfare_random_allocation = self.env.get_total_sw_random_allocation()
+                print(f"social_welfare_random_allocation: {social_welfare_random_allocation}")
+                # save the results to a dataframe
+                if counter == 1:
+                    self.df = pd.DataFrame({"PPO": [episode_social_welfare],
+                                   "offline_optimal": [social_welfare_offline_optimal],
+                                   "online_myopic": [social_welfare_online_myopic],
+                                   "bidding_zero": [social_welfare_bidding_zero],
+                                   "random_allocation": [social_welfare_random_allocation]})
+                else:
+                    self.df = self.df.append({"PPO": episode_social_welfare,
+                                   "offline_optimal": social_welfare_offline_optimal,
+                                   "online_myopic": social_welfare_online_myopic,
+                                   "bidding_zero": social_welfare_bidding_zero,
+                                   "random_allocation": social_welfare_random_allocation}, ignore_index=True)
                 self.restart_simulation()
-        # episode_reward += reward
-        # Check if all the drones have run out of battery
 
     def restart_simulation(self):
         self.done = False
@@ -226,33 +251,10 @@ def start_displaying(runner, env):
     runner.running = False
 
 
-def main(checkpoint, config):
-    trainer_config = get_trainer_config(config)
-    # pprint(f"trainer_config = {trainer_config}")
-    env_class = environment_map(config["env"])['env']
-    agent = PPOTrainer(config=trainer_config, env=env_class)
-    # print(f"checkpoint = {checkpoint}")
-    agent.restore(checkpoint)  # restore the model from the last checkpoint
-
-    # https://docs.ray.io/en/latest/rllib-training.html#accessing-policy-state
-    policy_map = agent.workers.local_worker().policy_map
-    model_state = {p: m.get_initial_state() for p, m in policy_map.items()}
-    print(model_state)
-
-    env = env_class(config['env-config'])  # create an environment instance
-    print(f"Environment: {env}")
-    obs = env.reset()  # reset the environment
-    done = False  # initialize the done flag
-    action = {}  # initialize the action dictionary
-    while not done:
-        for agent_id, agent_obs in obs.items():
-            policy_id = agent_id.split("_")[0]
-            action[agent_id], model_state[policy_id], _ = agent.compute_action(
-                observation=agent_obs,
-                policy_id=policy_id,
-                state=model_state[policy_id],
-                full_fetch=True
-                )
-        print(f"action = {action}")
-        obs, reward, done, info = env.step(action)  # step the environment
-        print(f"reward: {reward}")  # print the reward of this step
+def main(experiment, config):
+    ray.init()
+    env = environment_map(config["env"])
+    runner = SimulationRunner(experiment, env["env"], config)
+    runner.step_simulation()
+    print(runner.df)
+    runner.df.to_csv(f"{experiment}_results.csv")  # save the results to a csv file

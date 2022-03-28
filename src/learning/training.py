@@ -212,13 +212,12 @@ def train(config):
 def main(config):
     # to stop the warnings, they are too many (To disable ray workers from logging the output.)
     # https://github.com/ray-project/ray/issues/5048
-    ray.init(log_to_driver=False, include_dashboard=False)
+    ray.init(log_to_driver=True, include_dashboard=False)
     analysis = train(config)
     print(analysis)
 
 
 class CustomCallbacks(DefaultCallbacks):
-
     # callbacks can be used for custom metrics
     # Runs when an episode is done.
     def on_episode_end(self, *, worker: RolloutWorker, base_env: BaseEnv,

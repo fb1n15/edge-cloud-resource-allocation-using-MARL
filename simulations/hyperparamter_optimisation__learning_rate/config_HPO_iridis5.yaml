@@ -1,0 +1,97 @@
+name: Hyperparameter_Optimization__Learning_Rate
+# https://docs.ray.io/en/master/rllib-algorithms.html
+# rllib algorithms and their configs
+# common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
+
+#env: edge_cloud
+env: edge_cloud1
+
+env-config:
+  n_nodes: 6
+  num_agents: 6
+  n_tasks_in_total: 42
+  n_tasks_to_allocate: 40
+  duration: 12
+  usage_time_ub: 3
+  seed: 142
+  random_seed: False
+
+  # agents should learn that low-value tasks should not be allocated to node 0
+  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 6, 6, 6 ],
+                           3: [ 6, 6, 6 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
+  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 2, 2, 2 ],
+                   3: [ 2, 2, 2 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
+
+  ## try with aboundant resources and # zero unit cost
+  #  # agents should learn that low-value tasks should not be allocated to node 0
+  #  avg_resource_capacity: { 0: [1e6, 1e6, 1e6], 1: [1e6, 1e6, 1e6], 2:[1e6, 1e6, 1e6]}
+  #  avg_unit_cost: { 0: [0, 0, 0], 1:[0, 0, 0], 2:[0, 0, 0]}
+
+  #  verbose: True
+  verbose: False
+  #  "log_level": "DEBUG"
+  record_history: False
+  #  record_history:
+  #    gridsearch: [ True, False ]
+  history_len: 4
+  cooperative: False
+  n_actions: 5
+  auction_type:
+    gridsearch: [ 'first-price' ]
+
+trainer: PPO
+trainer-config:
+  #  "log_level": "ERROR" # Set the ray.rllib.* log level for the agent process and its workers.
+  framework: torch
+  # number of workers for collecting samples with.
+  num_workers: 18 # use 6 cores out of 8 CPU cores
+  num_gpus: 0
+  #  # set a seed_value value for each worker as well as for the environment
+  seed: 142
+  #  # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
+  #  # https://gitmemory.com/issue/ray-project/ray/9399/683323479
+  #  # https://intellabs.github.io/coach/components/filters/input_filters.html
+  "observation_filter":
+    gridsearch: [ 'MeanStdFilter' ]
+  # Whether to synchronize the statistics of remote filters.
+  "synchronize_filters": True
+
+  # Model config
+  model:
+    custom_model: FCModel
+    custom_model_config:
+      layers:
+        gridsearch: [ [ 256, 256 ] ]
+
+  # Trainer parameters
+  lr:
+#    gridsearch: [0.0001, 0.001]
+    gridsearch: [ 0.001, 0.0005, 0.0001, 0.000_05, 0.000_01 ]
+  clip_param:
+    #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
+    gridsearch: [ 0.3 ]  # clipping range
+  lambda: # controls the entropy trade-off in the model.
+    #    gridsearch: [ 0.9, 0.95, 1.0 ]
+    gridsearch: [ 0.95 ]
+  entropy_coeff: # controls the entropy trade-off in the model.
+    #    gridsearch: [ 0.0, 0.01 ]
+    gridsearch: [ 0.01 ]
+  batch_mode: "complete_episodes"
+  #  rollout_fragment_length: 220
+  # The size of each SGD epoch = Size of Training Set
+  train_batch_size:
+#    gridsearch: [ 3000, 4000 ]
+    gridsearch: [ 3000 ]
+  # The minibatch size within each epoch.
+  # This number of samples will be worked through before updating the model's
+  #    internal parameters.
+  sgd_minibatch_size:
+    #    gridsearch: [32, 64, 128]
+    gridsearch: [ 128 ]
+
+
+stop:
+  timesteps_total: 10_0000
+#  timesteps_total: 6_0000
+# how many trials to run for each hyperparameter combinations
+samples: 1
