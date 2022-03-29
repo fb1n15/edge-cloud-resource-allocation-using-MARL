@@ -1,4 +1,4 @@
-name: Hyperparameter_Optimization
+name: resource_coefficient=1.5
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -20,10 +20,12 @@ env-config:
 #  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 4, 4, 4 ] }
 #  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 4, 4, 4 ] }
 
-  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 6, 6, 6 ],
-                           3: [ 6, 6, 6 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
+# Resource Coefficient = 1.5 (4 * 1.5 = 6)
+  avg_resource_capacity: { 0: [ 8, 8, 8 ], 1: [ 8, 8, 8 ], 2: [ 8, 8, 8 ],
+                           3: [ 8, 8, 8 ], 4: [ 6, 6, 6 ], 5: [ 6, 6, 6 ] }
   avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 2, 2, 2 ],
                    3: [ 2, 2, 2 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
+
 
   ## try with aboundant resources and # zero unit cost
   #  # agents should learn that low-value tasks should not be allocated to node 0
@@ -96,6 +98,5 @@ stop:
 #  timesteps_total: 100
   timesteps_total: 10_0000
 
-restore: "/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/Hyperparameter_Optimization/PPO_EdgeCloudEnv1_eea29_00000_0_clip_param=0.3,entropy_coeff=0.01,auction_type=first-price,lambda=0.9,lr=0.0001,layers=[256, 256],_2022-03-22_16-12-55/checkpoint_000004/checkpoint-4"
 # how many trials to run for each hyperparameter combinations
 samples: 1

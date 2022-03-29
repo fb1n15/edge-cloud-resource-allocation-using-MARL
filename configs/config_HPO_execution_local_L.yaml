@@ -16,14 +16,16 @@ env-config:
   seed: 142
   random_seed: False
 
-  # agents should learn that low-value tasks should not be allocated to node 0
-  #  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 4, 4, 4 ] }
-  #  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 4, 4, 4 ] }
+# agents should learn that low-value tasks should not be allocated to node 0
+#  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 4, 4, 4 ] }
+#  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 4, 4, 4 ] }
 
-  avg_resource_capacity: { 0: [ 7, 7, 7 ], 1: [ 7, 7, 7 ], 2: [ 7, 7, 7 ],
-                           3: [ 7, 7, 7 ], 4: [ 5, 5, 5 ], 5: [ 5, 5, 5 ] }
+# Resource Coefficient = 1.5 (4 * 1.5 = 6)
+  avg_resource_capacity: { 0: [ 8, 8, 8 ], 1: [ 8, 8, 8 ], 2: [ 8, 8, 8 ],
+                           3: [ 8, 8, 8 ], 4: [ 6, 6, 6 ], 5: [ 6, 6, 6 ] }
   avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 2, 2, 2 ],
                    3: [ 2, 2, 2 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
+
 
   ## try with aboundant resources and # zero unit cost
   #  # agents should learn that low-value tasks should not be allocated to node 0
@@ -39,8 +41,8 @@ env-config:
   history_len: 4
   cooperative: False
   n_actions: 5
-  auction_type:
-    gridsearch: [ 'first-price' ]
+  auction_type: 'first-price'
+#    gridsearch: [ 'first-price' ]
 
 trainer: PPO
 trainer-config:
@@ -54,8 +56,7 @@ trainer-config:
   #  # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
   #  # https://gitmemory.com/issue/ray-project/ray/9399/683323479
   #  # https://intellabs.github.io/coach/components/filters/input_filters.html
-  "observation_filter":
-    gridsearch: [ 'MeanStdFilter' ]
+  "observation_filter": 'MeanStdFilter'
   # Whether to synchronize the statistics of remote filters.
   "synchronize_filters": True
 
@@ -63,37 +64,38 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers: [ 256 ]
+      layers: [256]
+#        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ] ]
 
   # Trainer parameters
-  lr:
+  lr: 0.0001
     #    gridsearch: [0.0001, 0.001]
-    gridsearch: [ 0.0001 ]
-  clip_param:
+#    gridsearch: [ 0.0001 ]
+  clip_param: 0.3
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
-    gridsearch: [ 0.3 ]  # clipping range
-  lambda: # controls the entropy trade-off in the model.
+#    gridsearch: [ 0.3 ]  # clipping range
+  lambda: 0.9 # controls the entropy trade-off in the model.
     #    gridsearch: [ 0.9, 0.95, 1.0 ]
-    gridsearch: [ 0.9 ]
-  entropy_coeff: # controls the entropy trade-off in the model.
+#    gridsearch: [ 0.9 ]
+  entropy_coeff: 0.01 # controls the entropy trade-off in the model.
     #    gridsearch: [ 0.0, 0.01 ]
-    gridsearch: [ 0.01 ]
+#    gridsearch: [ 0.01 ]
   batch_mode: "complete_episodes"
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
-  train_batch_size:
-    #    gridsearch: [ 3000, 4000 ]
-    gridsearch: [ 3000 ]
+  train_batch_size: 3000
+#    gridsearch: [ 3000, 4000 ]
+#    gridsearch: [ 3000 ]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
-  sgd_minibatch_size:
+  sgd_minibatch_size: 128
     #    gridsearch: [32, 64, 128]
-    gridsearch: [ 128 ]
+#    gridsearch: [ 128 ]
 
 
 stop:
-  #  timesteps_total: 100
+#  timesteps_total: 100
   timesteps_total: 10_0000
 
 restore: "/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/Hyperparameter_Optimization/PPO_EdgeCloudEnv1_eea29_00000_0_clip_param=0.3,entropy_coeff=0.01,auction_type=first-price,lambda=0.9,lr=0.0001,layers=[256, 256],_2022-03-22_16-12-55/checkpoint_000004/checkpoint-4"
