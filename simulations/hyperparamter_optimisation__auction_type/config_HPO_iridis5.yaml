@@ -45,7 +45,7 @@ trainer-config:
   framework: torch
   # number of workers for collecting samples with.
   num_workers: 38 # use 6 cores out of 8 CPU cores
-  num_gpus: 2
+  num_gpus: 0
   #  # set a seed_value value for each worker as well as for the environment
   seed: 142
   #  # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
@@ -61,7 +61,7 @@ trainer-config:
     custom_model: FCModel
     custom_model_config:
       layers:
-        gridsearch: [ [256] ]
+        gridsearch: [ [256, 256] ]
 
   # Trainer parameters
   lr:

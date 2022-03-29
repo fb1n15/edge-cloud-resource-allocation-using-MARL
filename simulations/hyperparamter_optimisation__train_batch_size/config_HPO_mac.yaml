@@ -1,4 +1,4 @@
-name: Hyperparameter_Optimization
+name: Hyperparameter_Optimization__train_batch_size
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -16,10 +16,7 @@ env-config:
   seed: 142
   random_seed: False
 
-# agents should learn that low-value tasks should not be allocated to node 0
-#  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 4, 4, 4 ] }
-#  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 4, 4, 4 ] }
-
+  # agents should learn that low-value tasks should not be allocated to node 0
   avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 6, 6, 6 ],
                            3: [ 6, 6, 6 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
   avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 2, 2, 2 ],
@@ -63,18 +60,19 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers: [256]
+      layers:
+        gridsearch: [ [ 256 ] ]
 
   # Trainer parameters
   lr:
-    #    gridsearch: [0.0001, 0.001]
+#    gridsearch: [0.0001, 0.001]
     gridsearch: [ 0.0001 ]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
     gridsearch: [ 0.3 ]  # clipping range
   lambda: # controls the entropy trade-off in the model.
     #    gridsearch: [ 0.9, 0.95, 1.0 ]
-    gridsearch: [ 0.9 ]
+    gridsearch: [ 0.95 ]
   entropy_coeff: # controls the entropy trade-off in the model.
     #    gridsearch: [ 0.0, 0.01 ]
     gridsearch: [ 0.01 ]
@@ -83,7 +81,7 @@ trainer-config:
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
 #    gridsearch: [ 3000, 4000 ]
-    gridsearch: [ 3000 ]
+    gridsearch: [ 1000, 2000, 3000, 4000, 5000 ]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
@@ -93,9 +91,7 @@ trainer-config:
 
 
 stop:
-#  timesteps_total: 100
   timesteps_total: 10_0000
-
-restore: "/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/Hyperparameter_Optimization/PPO_EdgeCloudEnv1_eea29_00000_0_clip_param=0.3,entropy_coeff=0.01,auction_type=first-price,lambda=0.9,lr=0.0001,layers=[256, 256],_2022-03-22_16-12-55/checkpoint_000004/checkpoint-4"
+#  timesteps_total: 6_0000
 # how many trials to run for each hyperparameter combinations
 samples: 1

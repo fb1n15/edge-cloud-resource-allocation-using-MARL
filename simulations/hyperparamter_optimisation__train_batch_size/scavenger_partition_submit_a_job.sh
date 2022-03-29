@@ -5,7 +5,7 @@
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
-#SBATCH --time=02:00:00
+#SBATCH --time=01:00:00
 #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 #SBATCH --mail-type=ALL
@@ -19,7 +19,7 @@
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
 n_tasks=1
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__model_depth/config_HPO_iridis5.yaml"
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__train_batch_size/config_HPO_iridis5.yaml"
 
 module load conda/py3-latest
 source activate edge-cloud-resource-allocation

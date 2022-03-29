@@ -133,7 +133,7 @@ class SimulationRunner:
     def step_simulation(self):
         self.done = {"__all__": False}  # set the done flag to false
         counter = 0  # Reset episodes counter
-        while counter < 3:
+        while counter < 100:
             episode_reward = 0  # Reset episode reward
             self.timestep += 1
             action = {}
@@ -169,17 +169,17 @@ class SimulationRunner:
                 print(f"social_welfare_random_allocation: {social_welfare_random_allocation}")
                 # save the results to a dataframe
                 if counter == 1:
-                    self.df = pd.DataFrame({"PPO": [episode_social_welfare],
-                                   "offline_optimal": [social_welfare_offline_optimal],
-                                   "online_myopic": [social_welfare_online_myopic],
-                                   "bidding_zero": [social_welfare_bidding_zero],
-                                   "random_allocation": [social_welfare_random_allocation]})
+                    self.df = pd.DataFrame({"DAPPO": [episode_social_welfare],
+                                   "Offline Optimal": [social_welfare_offline_optimal],
+                                   "Online Greedy": [social_welfare_online_myopic],
+                                   "Bidding Zero": [social_welfare_bidding_zero],
+                                   "Random Allocation": [social_welfare_random_allocation]})
                 else:
-                    self.df = self.df.append({"PPO": episode_social_welfare,
-                                   "offline_optimal": social_welfare_offline_optimal,
-                                   "online_myopic": social_welfare_online_myopic,
-                                   "bidding_zero": social_welfare_bidding_zero,
-                                   "random_allocation": social_welfare_random_allocation}, ignore_index=True)
+                    self.df = self.df.append({"DAPPO": episode_social_welfare,
+                                   "Offline Optimal": social_welfare_offline_optimal,
+                                   "Online Greedy": social_welfare_online_myopic,
+                                   "Bidding Zero": social_welfare_bidding_zero,
+                                   "Random Allocation": social_welfare_random_allocation}, ignore_index=True)
                 self.restart_simulation()
 
     def restart_simulation(self):

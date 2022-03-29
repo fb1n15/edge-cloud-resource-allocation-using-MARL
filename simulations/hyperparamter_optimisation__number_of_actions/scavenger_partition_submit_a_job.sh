@@ -19,7 +19,7 @@
 
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
 n_tasks=1
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__model_depth/config_HPO_iridis5.yaml"
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__number_of_actions/config_HPO_iridis5.yaml"
 
 module load conda/py3-latest
 source activate edge-cloud-resource-allocation

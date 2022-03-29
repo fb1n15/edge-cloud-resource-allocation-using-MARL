@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="./configs/config_HPO_local.yaml"
+CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__train_batch_size/config_HPO_mac.yaml"
 python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
 
