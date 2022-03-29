@@ -1,4 +1,4 @@
-name: Hyperparameter_Optimization
+name: resource_coefficient=1.6
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -20,9 +20,9 @@ env-config:
 #  avg_resource_capacity: { 0: [ 6, 6, 6 ], 1: [ 6, 6, 6 ], 2: [ 4, 4, 4 ] }
 #  avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 4, 4, 4 ] }
 
-# Resource Coefficient = 2 (4 * 2 = 8)
-  avg_resource_capacity: { 0: [ 10, 10, 10 ], 1: [ 10, 10, 10 ], 2: [ 10, 10, 10 ],
-                           3: [ 10, 10, 10 ], 4: [ 8, 8, 8 ], 5: [ 8, 8, 8 ] }
+# Resource Coefficient = 1.6 (4 * 1.6 = 6.4)
+  avg_resource_capacity: { 0: [ 9.6, 9.6, 9.6 ], 1: [ 9.6, 9.6, 9.6 ], 2: [ 9.6, 9.6, 9.6 ],
+                           3: [ 9.6, 9.6, 9.6 ], 4: [ 6.4, 6.4, 6.4 ], 5: [ 6.4, 6.4, 6.4 ] }
   avg_unit_cost: { 0: [ 2, 2, 2 ], 1: [ 2, 2, 2 ], 2: [ 2, 2, 2 ],
                    3: [ 2, 2, 2 ], 4: [ 4, 4, 4 ], 5: [ 4, 4, 4 ] }
 
