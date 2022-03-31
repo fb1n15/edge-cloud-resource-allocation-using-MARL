@@ -1,4 +1,4 @@
-name: Hyperparameter_Optimization__train_batch_size
+name: Hyperparameter_Optimization__Learning_Rate
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -44,7 +44,7 @@ trainer-config:
   #  "log_level": "ERROR" # Set the ray.rllib.* log level for the agent process and its workers.
   framework: torch
   # number of workers for collecting samples with.
-  num_workers: 6 # use 6 cores out of 8 CPU cores
+  num_workers: 5 # use 6 cores out of 8 CPU cores
   num_gpus: 0
   #  # set a seed_value value for each worker as well as for the environment
   seed: 142
@@ -65,8 +65,8 @@ trainer-config:
 
   # Trainer parameters
   lr:
-#    gridsearch: [0.0001, 0.001]
-    gridsearch: [ 0.0001 ]
+    gridsearch: [0.01, 0.1]
+#    gridsearch: [ 0.001, 0.0005, 0.0001, 0.000_05, 0.000_01 ]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
     gridsearch: [ 0.3 ]  # clipping range
@@ -80,8 +80,8 @@ trainer-config:
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-    gridsearch: [ 4000 ]
-#    gridsearch: [ 1000, 2000, 3000, 4000, 5000 ]
+#    gridsearch: [ 3000, 4000 ]
+    gridsearch: [ 3000 ]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.

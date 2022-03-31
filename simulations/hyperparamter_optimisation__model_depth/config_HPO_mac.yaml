@@ -61,12 +61,12 @@ trainer-config:
     custom_model: FCModel
     custom_model_config:
       layers:
-#        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ], [ 256, 256, 256, 256 ], [ 256, 256, 256, 256, 256 ] ]
-        gridsearch: [ [ 256, 256 ], [ 256, 256, 256, 256 ], [ 256, 256, 256, 256, 256 ] ]
+        #        gridsearch: [ [ 256, 256 ], [ 256, 256, 256 ], [ 256, 256, 256, 256 ], [ 256, 256, 256, 256, 256 ] ]
+        gridsearch: [ [ 256, 256, 256, 256 ] ]
 
   # Trainer parameters
   lr:
-#    gridsearch: [0.0001, 0.001]
+    #    gridsearch: [0.0001, 0.001]
     gridsearch: [ 0.0001 ]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
@@ -81,7 +81,7 @@ trainer-config:
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-#    gridsearch: [ 3000, 4000 ]
+    #    gridsearch: [ 3000, 4000 ]
     gridsearch: [ 3000 ]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's

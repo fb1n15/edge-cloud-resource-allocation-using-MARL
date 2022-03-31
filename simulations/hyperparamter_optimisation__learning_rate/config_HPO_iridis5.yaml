@@ -61,7 +61,7 @@ trainer-config:
     custom_model: FCModel
     custom_model_config:
       layers:
-        gridsearch: [ [ 256, 256 ] ]
+        gridsearch: [ [ 256 ] ]
 
   # Trainer parameters
   lr:
