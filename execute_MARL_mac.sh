@@ -34,10 +34,10 @@
 #CHECKPOINT_DIR="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/resource_coefficient=1/PPO_EdgeCloudEnv1_42ae1_00000_0_2022-03-29_17-21-17/checkpoint_000033/checkpoint-33"  # checkpoint dir for RLlib
 #python "./src/marl.py" run --config "$CONFIG_FILE" --checkpoint "$CHECKPOINT_DIR" --env_seed 1
 
-# execute the trained agent/policy (RC = 1, n_actions = 60)
-CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/number_of_tasks/config_execution_n_tasks_local_L.yaml"  # config file for RLlib
-CHECKPOINT_DIR="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/resource_coefficient=1/PPO_EdgeCloudEnv1_42ae1_00000_0_2022-03-29_17-21-17/checkpoint_000033/checkpoint-33"  # checkpoint dir for RLlib
-python "./src/marl.py" run --config "$CONFIG_FILE" --checkpoint "$CHECKPOINT_DIR" --env_seed 1
+## execute the trained agent/policy (RC = 1, n_actions = 60)
+#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/number_of_tasks/config_execution_n_tasks_local_L.yaml"  # config file for RLlib
+#CHECKPOINT_DIR="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/results/resource_coefficient=1/PPO_EdgeCloudEnv1_42ae1_00000_0_2022-03-29_17-21-17/checkpoint_000033/checkpoint-33"  # checkpoint dir for RLlib
+#python "./src/marl.py" run --config "$CONFIG_FILE" --checkpoint "$CHECKPOINT_DIR" --env_seed 1
 
 
 # execute the trained agent/policy (RC = 1, n_actions = 80)
