@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# train for different auction types
+#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__auction_type/config_HPO_mac.yaml"
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+
 ## train for different train_batch_size
 #CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__train_batch_size/config_HPO_mac.yaml"
 #python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
@@ -9,13 +13,13 @@
 #python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
 
-# train for different learning_rate
-CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__learning_rate/config_HPO_mac.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
-
-# train for different clip_param
-CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__PPO_clip_param/config_HPO_mac.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+## train for different learning_rate
+#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__learning_rate/config_HPO_mac.yaml"
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+#
+## train for different clip_param
+#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__PPO_clip_param/config_HPO_mac.yaml"
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
 
 ## train for different model_depths
@@ -26,7 +30,7 @@ python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 #CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/resource_coefficient/config_HPO_execution_local_S.yaml"
 #python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
-#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/resource_coefficient/config_HPO_execution_local_M.yaml"
+#CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/resource_coefficient/config_execution_n_tasks_local_M.yaml"
 #python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 
 #CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/resource_coefficient/config_HPO_execution_local_L.yaml"

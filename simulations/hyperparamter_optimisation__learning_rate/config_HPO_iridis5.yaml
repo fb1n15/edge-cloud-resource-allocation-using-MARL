@@ -44,7 +44,7 @@ trainer-config:
   #  "log_level": "ERROR" # Set the ray.rllib.* log level for the agent process and its workers.
   framework: torch
   # number of workers for collecting samples with.
-  num_workers: 38 # use 6 cores out of 8 CPU cores
+  num_workers: 18 # use 6 cores out of 8 CPU cores
   num_gpus: 0
   #  # set a seed_value value for each worker as well as for the environment
   seed: 142
@@ -66,7 +66,7 @@ trainer-config:
   # Trainer parameters
   lr:
 #    gridsearch: [0.0001, 0.001]
-    gridsearch: [ 0.001, 0.0005, 0.0001, 0.000_05, 0.000_01 ]
+    gridsearch: [ 0.1, 0.01, 0.001, 0.0001]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
     gridsearch: [ 0.3 ]  # clipping range

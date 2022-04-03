@@ -1,15 +1,22 @@
 #!/bin/bash
 
-# This script is used to run the jobs on the iridis5 HPC
-# To use cplex
-export PYTHONPATH="/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
+export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
+# run just one trial
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__learning_rate/config_HPO_test.yaml"
 
-# run just one job
-CONFIG_FILE="./configs/config_file.yaml"
-python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+python ./src/marl.py train --config "$CONFIG_FILE" --env_seed 1
 
 
 
+
+
+
+
+
+
+
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 2
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 3
 
 
 

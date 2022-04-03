@@ -55,7 +55,8 @@ def get_trainer_config(config):
             "policies": {
                 "default": (
                     None, env.get_observation_space(config["env-config"]),
-                    env.get_action_space(config["env-config"]), {}),
+                    env.get_action_space(config["env-config"])
+                    , {}),
                 },
             # all agents are bound to the 'default' policy
             "policy_mapping_fn": lambda agent_id: "default"

@@ -35,8 +35,8 @@ env-config:
   #    gridsearch: [ True, False ]
   history_len: 4
   cooperative: False
-  n_actions:
-    gridsearch: [2, 4, 6, 8, 10 ]
+  n_actions: 8
+#    gridsearch: [ 2, 4, 6, 8, 10 ]
   auction_type:
     gridsearch: [ 'first-price' ]
 
@@ -45,7 +45,7 @@ trainer-config:
   #  "log_level": "ERROR" # Set the ray.rllib.* log level for the agent process and its workers.
   framework: torch
   # number of workers for collecting samples with.
-  num_workers: 6 # use 6 cores out of 8 CPU cores
+  num_workers: 5 # use 6 cores out of 8 CPU cores
   num_gpus: 0
   #  # set a seed_value value for each worker as well as for the environment
   seed: 142
@@ -61,8 +61,7 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers:
-        gridsearch: [ [ 256, 256 ] ]
+      layers: [256]
 
   # Trainer parameters
   lr:
