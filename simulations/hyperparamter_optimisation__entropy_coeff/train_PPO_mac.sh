@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run just one trial
-CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__model_depth/config_HPO_iridis5.yaml"
+CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__entropy_coeff/config_HPO_mac.yaml"
 python ../../src/marl.py train --config "$CONFIG_FILE" --env_seed 1
 
 

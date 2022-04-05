@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# train for different auction types
+# train for different entropy coeff
+CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__entropy_coeff/config_HPO_mac.yaml"
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
+
+## train for different auction types
 #CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/hyperparamter_optimisation__auction_type/config_HPO_mac.yaml"
 #python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed 1
 

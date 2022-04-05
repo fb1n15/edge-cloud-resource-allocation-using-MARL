@@ -9,8 +9,8 @@ env: edge_cloud1
 env-config:
   n_nodes: 6
   num_agents: 6
-  n_tasks_in_total: 82
-  n_tasks_to_allocate: 80
+  n_tasks_in_total: 32
+  n_tasks_to_allocate: 30
   duration: 12
   usage_time_ub: 3
   seed: 142

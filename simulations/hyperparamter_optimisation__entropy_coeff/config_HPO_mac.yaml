@@ -74,8 +74,8 @@ trainer-config:
     #    gridsearch: [ 0.9, 0.95, 1.0 ]
     gridsearch: [ 0.95 ]
   entropy_coeff: # controls the entropy trade-off in the model.
-    gridsearch: [ 0.0, 0.01 ]
-#    gridsearch: [ 0.01 ]
+#    gridsearch: [ 0.0, 0.01 ]
+    gridsearch: [ 0.01 ]
   batch_mode: "complete_episodes"
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set

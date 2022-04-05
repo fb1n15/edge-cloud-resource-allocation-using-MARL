@@ -65,8 +65,8 @@ trainer-config:
 
   # Trainer parameters
   lr:
-#    gridsearch: [0.0001, 0.001]
-    gridsearch: [ 0.1, 0.01, 0.001, 0.0001]
+#    gridsearch: [0.01, 0.1]
+    gridsearch: [ 0.1, 0.01, 0.001, 0.0001 ]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
     gridsearch: [ 0.3 ]  # clipping range

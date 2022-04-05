@@ -28,8 +28,8 @@ module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
-START=1
-END=2
+START=$1
+END=$(($1+9))
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value

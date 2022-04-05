@@ -1,24 +1,25 @@
 #!/bin/bash
 
-#SBATCH --partition=gpu
+#SBATCH --partition=batch
+#SBATCH --job-name=learning_rate
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 #SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
-#SBATCH --gres=gpu:2  # use 2 GPUs for each task
-#SBATCH --time=02:00:00
+# #SBATCH --time=01:00:00  # set to 1 hour
+#SBATCH --time=24:00:00
+#SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fb1n15@soton.ac.uk.com
 
 # (https://stackoverflow.com/a/67537416/7060068)
 # #SBATCH --nodes=2  # Number of nodes requested
-# #SBATCH --exclusive          # I don't want to share my compute node with anyone
-# #SBATCH --ntasks-per-node=4  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 
+n_tasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
-n_tasks=1
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__cooperative/config_HPO_iridis5.yaml"
+CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__learning_rate/config_HPO_iridis5.yaml"
+echo "Starting Job"
 
 module load conda/py3-latest
 source activate edge-cloud-resource-allocation
@@ -27,8 +28,8 @@ module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
-START=1
-END=2
+START=$1
+END=$(($1+9))
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value
