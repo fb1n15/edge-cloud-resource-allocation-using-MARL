@@ -1,13 +1,14 @@
 #!/bin/bash
 
 #SBATCH --partition=batch
+#SBATCH --nodes=1  # Number of nodes requested
 #SBATCH --job-name=clip_param
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 #SBATCH --cpus-per-task=40  # use 40 CPU cores for each task
 # #SBATCH --time=01:00:00
-#SBATCH --time=24:00:00
+#SBATCH --time=60:00:00
 #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 #SBATCH --mail-type=ALL

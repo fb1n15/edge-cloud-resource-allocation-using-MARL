@@ -1,6 +1,8 @@
 #!/bin/bash
 
 #SBATCH --partition=batch
+#SBATCH --nodes=1  # Number of nodes requested
+#SBATCH --job-name=number_of_actions
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
@@ -16,7 +18,10 @@
 
 n_tasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
-CONFIG_FILE="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/configs/config_HPO_iridis5.yaml"
+CONFIG_FILE_2="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__number_of_actions/config_HPO_iridis5_2.yaml"
+CONFIG_FILE_4="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__number_of_actions/config_HPO_iridis5_4.yaml"
+CONFIG_FILE_6="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__number_of_actions/config_HPO_iridis5_6.yaml"
+CONFIG_FILE_8="/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/simulations/hyperparamter_optimisation__number_of_actions/config_HPO_iridis5_8.yaml"
 echo "Starting Job"
 
 module load conda/py3-latest
@@ -26,12 +31,15 @@ module load openmpi/3.0.0/intel
 export PYTHONPATH="${PYTHONPATH}:${SLURM_SUBMIT_DIR}/src"
 export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86-64_linux"
 
-START=1
-END=2
+START=$1
+END=$(($1+9))
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value
-  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE  --env_seed "$SEED"
+  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE_2  --env_seed "$SEED"
+  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE_4  --env_seed "$SEED"
+  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE_6  --env_seed "$SEED"
+  mpirun -np $n_tasks --bind-to none python ./src/marl.py train --config $CONFIG_FILE_8  --env_seed "$SEED"
 done
 
 echo "Job Finished"  # print Job Finished

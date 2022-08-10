@@ -68,8 +68,8 @@ trainer-config:
 #    gridsearch: [0.0001, 0.001]
     gridsearch: [ 0.0001 ]
   clip_param:
-    gridsearch: [ 0.1, 0.2, 0.3, 0.4 ]  # clipping range
-#    gridsearch: [ 0.2 ]  # clipping range
+#    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
+    gridsearch: [ 0.3 ]  # clipping range
   lambda: # controls the entropy trade-off in the model.
     #    gridsearch: [ 0.9, 0.95, 1.0 ]
     gridsearch: [ 0.95 ]

@@ -1,4 +1,4 @@
-name: Hyperparameter_Optimization__entropy_coeff
+name: Hyperparameter_Optimization__number_of_actions
 # https://docs.ray.io/en/master/rllib-algorithms.html
 # rllib algorithms and their configs
 # common hyperparameters: https://docs.ray.io/en/master/rllib-training.html#common-parameters
@@ -35,7 +35,8 @@ env-config:
   #    gridsearch: [ True, False ]
   history_len: 4
   cooperative: False
-  n_actions: 5
+  n_actions: 6
+#    gridsearch: [ 2, 4, 6, 8, 10 ]
   auction_type:
     gridsearch: [ 'first-price' ]
 
@@ -44,7 +45,7 @@ trainer-config:
   #  "log_level": "ERROR" # Set the ray.rllib.* log level for the agent process and its workers.
   framework: torch
   # number of workers for collecting samples with.
-  num_workers: 18 # use 6 cores out of 8 CPU cores
+  num_workers: 38 # use 6 cores out of 8 CPU cores
   num_gpus: 0
   #  # set a seed_value value for each worker as well as for the environment
   seed: 142
@@ -60,12 +61,11 @@ trainer-config:
   model:
     custom_model: FCModel
     custom_model_config:
-      layers:
-        gridsearch: [ [ 256, 256 ] ]
+      layers: [256]
 
   # Trainer parameters
   lr:
-    #    gridsearch: [0.0001, 0.001]
+#    gridsearch: [0.0001, 0.001]
     gridsearch: [ 0.0001 ]
   clip_param:
     #    gridsearch: [ 0.1, 0.2, 0.3 ]  # clipping range
@@ -74,14 +74,14 @@ trainer-config:
     #    gridsearch: [ 0.9, 0.95, 1.0 ]
     gridsearch: [ 0.95 ]
   entropy_coeff: # controls the entropy trade-off in the model.
-    gridsearch: [ 0.0, 0.01 ]
-  #    gridsearch: [ 0.01 ]
+    #    gridsearch: [ 0.0, 0.01 ]
+    gridsearch: [ 0.01 ]
   batch_mode: "complete_episodes"
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-    #    gridsearch: [ 3000, 4000 ]
-    gridsearch: [ 3000 ]
+#    gridsearch: [ 3000, 4000 ]
+    gridsearch: [3000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.

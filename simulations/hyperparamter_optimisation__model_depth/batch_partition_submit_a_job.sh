@@ -1,20 +1,20 @@
 #!/bin/bash
 
 #SBATCH --partition=batch
+#SBATCH --nodes=1  # Number of nodes requested
 #SBATCH --job-name=model_depth
 #SBATCH --output=/mainfs/home/fb1n15/MARL-ReverseAuction/marl-edge-cloud/iridis-reports/%j.out  # change the output log destination
 #SBATCH --ntasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 #SBATCH --ntasks-per-node=1  # Tasks per node  (https://stackoverflow.com/a/51141287/7060068)
 #SBATCH --cpus-per-task=40  # use 10 CPU cores for each task
 # #SBATCH --time=1:00:00
-#SBATCH --time=24:00:00
+#SBATCH --time=60:00:00
 #SBATCH --exclusive          # I don't want to share my compute node with anyone
 
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=fb1n15@soton.ac.uk.com
 
 # (https://stackoverflow.com/a/67537416/7060068)
-# #SBATCH --nodes=2  # Number of nodes requested
 
 n_tasks=1  # Number of Tasks (up-to 32 jobs running at the same time)
 cd "$HOME"/MARL-ReverseAuction/marl-edge-cloud/ || exit  # cd to he project location
@@ -30,6 +30,7 @@ export PYTHONPATH="${PYTHONPATH}:/local/software/cplex/12.8/cplex/python/3.6/x86
 
 START=$1
 END=$(($1+9))
+# run 10 trials
 for SEED in $(seq "$START" "$END")
 do
   echo "Starting a Job with SEED=$SEED"  # print the seed value

@@ -80,8 +80,8 @@ trainer-config:
   #  rollout_fragment_length: 220
   # The size of each SGD epoch = Size of Training Set
   train_batch_size:
-#    gridsearch: [ 4000 ]
-    gridsearch: [ 1000, 2000, 3000, 4000]
+#   gridsearch: [ 5000 ]
+    gridsearch: [5000]
   # The minibatch size within each epoch.
   # This number of samples will be worked through before updating the model's
   #    internal parameters.
