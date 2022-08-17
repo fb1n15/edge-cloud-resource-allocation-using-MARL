@@ -1,36 +1,47 @@
 #!/bin/bash
 
-## Train the model (3 fog nodes)
-CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_3_nodes.yaml"
-# execute the trained agent/policy
-for SEED in {1..10}
-do
-  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
-done
+### Train the model (3 fog nodes)
+#CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_3_nodes.yaml"
+## execute the trained agent/policy
+##for SEED in {1..10}
+##do
+##  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
+##done
+#
+#SEED=1
+#python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
 
-## Train the model (6 fog nodes)
-CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_6_nodes.yaml"
-# execute the trained agent/policy
-for SEED in {1..10}
-do
-  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
-done
 
-## Train the model (9 fog nodes)
-CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_9_nodes.yaml"
-# execute the trained agent/policy
-for SEED in {1..10}
-do
-  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
-done
+### Train the model (6 fog nodes)
+#CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_6_nodes.yaml"
+## execute the trained agent/policy
+#for SEED in {1..10}
+#do
+#  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
+#done
+#
+### Train the model (9 fog nodes)
+#CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_9_nodes.yaml"
+## execute the trained agent/policy
+#for SEED in {1..10}
+#do
+#  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
+#done
+#
 
 ## Train the model (12 fog nodes)
 CONFIG_FILE="/Users/fan/Library/Mobile Documents/com~apple~CloudDocs/GitHub_Projects/edge-cloud-resource-allocation-using-MARL/simulations/number_of_fog_nodes/config_HPO_execution_local_12_nodes.yaml"
 # execute the trained agent/policy
-for SEED in {1..10}
-do
-  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
-done
+#for SEED in {1..10}
+#do
+#  python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
+#done
+
+SEED=1 # seed for the experiment
+echo "fog nodes number: 12"
+echo "SEED: $SEED"
+python "./src/marl.py" train --config "$CONFIG_FILE" --env_seed "$SEED"
+
 
 ### execute the trained agent/policy (RC = 0.7)
 #CONFIG_FILE="/Users/fan/OneDrive - University of Southampton/My-Projects/Edge-Cloud-Resource-Allocation/marl-edge-cloud/simulations/resource_coefficient/config_HPO_execution_local_S.yaml"  # config file for RLlib
