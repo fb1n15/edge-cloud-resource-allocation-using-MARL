@@ -1,4 +1,5 @@
 from pprint import pprint
+from random import random
 
 import pandas as pd
 import pygame
@@ -13,6 +14,7 @@ from environments import environment_map
 from learning.training import CustomCallbacks, get_trainer_config
 from visualisation.gridworld_vis import render_HUD
 import ray.rllib.agents.ppo as ppo
+import random
 
 WIDTH = 640
 HEIGHT = 720
@@ -92,7 +94,7 @@ def training_config(config):
 
 
 class SimulationRunner:
-    def __init__(self, experiment, env, config):
+    def __init__(self, experiment, env, config, fake_pct=0):
 
         # Create logger which doesn't do anything
         # del experiment["best trial"]["config"]["callbacks"]  # Get rid of any callbacks
@@ -104,6 +106,7 @@ class SimulationRunner:
         #                   "framework": "torch",
         #                   "explore": False}
         self.env = env(config["env-config"])
+        self.fake_pct = fake_pct  # percentage of task types are fake
         # https://docs.ray.io/en/latest/rllib-training.html#accessing-policy-state
         # accessing model obs
         trainer_config = get_trainer_config(config)
@@ -138,12 +141,18 @@ class SimulationRunner:
             self.timestep += 1
             action = {}
             for agent_id, agent_obs in self.obs.items():
+                # for 20% probability
+                fake_obs = agent_obs.copy()
+                if random.random() < self.fake_pct:
+                    # change the valuation coefficient to 1 million
+                    fake_obs[0] = 1e6
+
                 policy_id = agent_id.split("_")[0]
                 if policy_id not in self.model_state:
                     policy_id = "default"
                 action[agent_id], self.model_state[
                     policy_id], _ = self.agent.compute_action(
-                    observation=agent_obs,
+                    observation=fake_obs,
                     policy_id=policy_id,
                     state=self.model_state[policy_id],
                     full_fetch=True
@@ -158,7 +167,8 @@ class SimulationRunner:
                 print(f"episode ID = {counter}")  # Print episode ID
                 print(f"episode_reward: {episode_reward}")  # Print episode reward
                 episode_social_welfare = self.env.get_total_sw()
-                print(f"episode_social_welfare: {episode_social_welfare}")  # Print episode social welfare
+                print(
+                    f"episode_social_welfare: {episode_social_welfare}")  # Print episode social welfare
                 social_welfare_online_myopic = self.env.get_total_sw_online_myopic()
                 print(f"social_welfare_online_myopic: {social_welfare_online_myopic}")
                 social_welfare_bidding_zero = self.env.get_total_sw_bidding_zero()
@@ -166,20 +176,25 @@ class SimulationRunner:
                 social_welfare_offline_optimal = self.env.get_total_sw_offline_optimal()
                 print(f"social_welfare_offline_optimal: {social_welfare_offline_optimal}")
                 social_welfare_random_allocation = self.env.get_total_sw_random_allocation()
-                print(f"social_welfare_random_allocation: {social_welfare_random_allocation}")
+                print(
+                    f"social_welfare_random_allocation: {social_welfare_random_allocation}")
                 # save the results to a dataframe
                 if counter == 1:
                     self.df = pd.DataFrame({"DAPPO": [episode_social_welfare],
-                                   "Offline Optimal": [social_welfare_offline_optimal],
-                                   "Online Greedy": [social_welfare_online_myopic],
-                                   "Bidding Zero": [social_welfare_bidding_zero],
-                                   "Random Allocation": [social_welfare_random_allocation]})
+                                            "Offline Optimal": [
+                                                social_welfare_offline_optimal],
+                                            "Online Greedy": [
+                                                social_welfare_online_myopic],
+                                            "Bidding Zero": [social_welfare_bidding_zero],
+                                            "Random Allocation": [
+                                                social_welfare_random_allocation]})
                 else:
                     self.df = self.df.append({"DAPPO": episode_social_welfare,
-                                   "Offline Optimal": social_welfare_offline_optimal,
-                                   "Online Greedy": social_welfare_online_myopic,
-                                   "Bidding Zero": social_welfare_bidding_zero,
-                                   "Random Allocation": social_welfare_random_allocation}, ignore_index=True)
+                                              "Offline Optimal": social_welfare_offline_optimal,
+                                              "Online Greedy": social_welfare_online_myopic,
+                                              "Bidding Zero": social_welfare_bidding_zero,
+                                              "Random Allocation": social_welfare_random_allocation},
+                                             ignore_index=True)
                 self.restart_simulation()
 
     def restart_simulation(self):
@@ -254,7 +269,9 @@ def start_displaying(runner, env):
 def main(experiment, config):
     ray.init()
     env = environment_map(config["env"])
-    runner = SimulationRunner(experiment, env["env"], config)
-    runner.step_simulation()
-    print(runner.df)
-    runner.df.to_csv(f"{experiment}_results.csv")  # save the results to a csv file
+    # for probability in [0.4, 0.6, 0.8]:
+    for probability in [0.0, 1.0]:
+        runner = SimulationRunner(experiment, env["env"], config, fake_pct=probability)
+        runner.step_simulation()
+        print(runner.df)
+        runner.df.to_csv(f"{experiment}_results_fake_pct={runner.fake_pct}.csv")  # save the results to a csv file
